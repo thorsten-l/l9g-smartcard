@@ -38,7 +38,7 @@ public class UserinfoController
     log.debug("serial={}", serial);
 
     // TODO: request userinfo from e.g. qr-travel service
-    return new Userinfo("Tanja Test");
+    return new Userinfo("Tanja Test", "tanja@test.net");
   }
 
 }

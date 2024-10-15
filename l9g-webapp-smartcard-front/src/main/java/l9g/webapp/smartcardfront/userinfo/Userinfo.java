@@ -27,4 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class Userinfo
 {
   private final String name;
+
+  private final String mail;
+
 }

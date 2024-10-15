@@ -12,7 +12,7 @@
 
       <!-- Input group for Timestamp -->
       <div class="mb-3">
-        <label for="timestamp" class="form-label">Timestamp</label>
+        <label for="timestamp" class="form-label">Smartcard monitor heartbeat</label>
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-clock"></i></span> 
           <input id="timestamp" type="text" class="form-control"> 
@@ -46,6 +46,14 @@
         </div>
       </div>
 
+      <div class="mb-3">
+        <label for="mail" class="form-label">E-Mail</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-envelope-at"></i></span> 
+          <input id="mail" type="text" class="form-control">
+        </div>
+      </div>
+
     </div>
 
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
@@ -74,9 +82,10 @@
 
             fetch("/api/v1/userinfo/" + serial)
                     .then(response => response.json())
-                    .then(data => {
-                      if (data.name) {
-                        document.getElementById("userinfo").value = data.name;
+                    .then(userinfo => {
+                      if (userinfo.name) {
+                        document.getElementById("userinfo").value = userinfo.name;
+                        document.getElementById("mail").value = userinfo.mail;
                       }
                     })
                     .catch(error => {
@@ -89,6 +98,7 @@
             document.getElementById("cardSerial").value = '';
             document.getElementById("cardAtr").value = '';
             document.getElementById("userinfo").value = '';
+            document.getElementById("mail").value = '';
           }
         };
 
