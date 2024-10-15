@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>L9G Smartcard Front</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" ></link>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}" ></link>
+  </head>
+
+  <body>
+    <div style="margin-top: 2em" class="container">
+      <h1>L9G Smartcard Front</h1>
+
+      <!-- Input group for Timestamp -->
+      <div class="mb-3">
+        <label for="timestamp" class="form-label">Timestamp</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-clock"></i></span> 
+          <input id="timestamp" type="text" class="form-control"> 
+        </div>
+      </div>
+
+      <!-- Input group for ATR -->
+      <div class="mb-3">
+        <label for="cardAtr" class="form-label">ATR (Hex)</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-card-heading"></i></span> 
+          <input id="cardAtr" type="text" class="form-control">
+        </div>
+      </div>
+
+      <!-- Input group for Serial -->
+      <div class="mb-3">
+        <label for="cardSerial" class="form-label">Serial</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-vcard"></i></span> 
+          <input id="cardSerial" type="text" class="form-control">
+        </div>
+      </div>
+
+      <!-- Input group for User Info -->
+      <div class="mb-3">
+        <label for="userinfo" class="form-label">User Info</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person"></i></span> 
+          <input id="userinfo" type="text" class="form-control">
+        </div>
+      </div>
+
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript">
+      var ws;
+
+      function connect() {
+        ws = new WebSocket("ws://localhost:38080/scmon");
+
+        ws.onmessage = function (event) {
+          var dtoEvent = JSON.parse(event.data);
+          console.log("Received event: ", dtoEvent);
+
+          // Handle heartbeat event
+          if (dtoEvent.event === "heartbeat") {
+            document.getElementById("timestamp").value
+                    = new Date(dtoEvent.timestamp).toLocaleString();
+          }
+
+          // Handle cardInserted event
+          if (dtoEvent.event === "cardInserted" && dtoEvent.card) {
+            document.getElementById("cardAtr").value = dtoEvent.card.atr;
+
+            var serial = dtoEvent.card.serial;
+            document.getElementById("cardSerial").value = serial;
+
+            fetch("/api/v1/userinfo/" + serial)
+                    .then(response => response.json())
+                    .then(data => {
+                      if (data.name) {
+                        document.getElementById("userinfo").value = data.name;
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error fetching user info:', error);
+                    });
+          }
+
+          // Handle cardRemoved event
+          if (dtoEvent.event === "cardRemoved") {
+            document.getElementById("cardSerial").value = '';
+            document.getElementById("cardAtr").value = '';
+            document.getElementById("userinfo").value = '';
+          }
+        };
+
+        ws.onopen = function () {
+          console.log("WebSocket connection opened.");
+        };
+
+        ws.onclose = function () {
+          console.log("WebSocket connection closed.");
+        };
+
+        ws.onerror = function (error) {
+          console.log("WebSocket error: ", error);
+        };
+      }
+
+      window.onload = function () {
+        connect();
+      };
+    </script>
+  </body>
+</html>
