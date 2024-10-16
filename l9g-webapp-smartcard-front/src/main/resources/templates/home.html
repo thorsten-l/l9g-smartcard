@@ -7,8 +7,22 @@
   </head>
 
   <body>
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"> L9G Smartcard Front</a>
+        <div class="d-flex">
+          <span class="navbar-text">
+            Hi, <span style="margin-right: 1em" th:text="${fullname}">fullname</span>
+          </span>
+          <form style="margin-left: 1em" method="post" action="/logout">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"></input>
+            <input class="btn btn-outline-secondary" type="submit" value="Logout"></input>
+          </form>
+        </div>
+      </div>
+    </nav>
+
     <div style="margin-top: 2em" class="container">
-      <h1>L9G Smartcard Front</h1>
 
       <!-- Input group for Timestamp -->
       <div class="mb-3">
@@ -83,8 +97,9 @@
             fetch("/api/v1/userinfo/" + serial)
                     .then(response => response.json())
                     .then(userinfo => {
-                      if (userinfo.name) {
-                        document.getElementById("userinfo").value = userinfo.name;
+                      if (userinfo.mail) {
+                        document.getElementById("userinfo").value 
+                          = userinfo.givenName + " " + userinfo.sn;
                         document.getElementById("mail").value = userinfo.mail;
                       }
                     })

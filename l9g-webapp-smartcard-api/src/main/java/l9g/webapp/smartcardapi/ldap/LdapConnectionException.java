@@ -13,26 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.smartcard.dto;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+package l9g.webapp.smartcardapi.ldap;
 
 /**
  *
- * @author Thorsten Ludewig (t.ludewig@gmail.com)
+ * @author Thorsten Ludewig (t.ludewig@ostfalia.de)
  */
-@RequiredArgsConstructor
-@Getter
-public class DtoCard
+public class LdapConnectionException extends RuntimeException
 {
 
-  private final String protocol;
+  /** Field description */
+  private static final long serialVersionUID = 1916708941089543928L;
 
-  private final String atr;
+  //~--- constructors ---------------------------------------------------------
 
-  private final String uid;
+  public LdapConnectionException() {}
 
-  private final String serial;
+  public LdapConnectionException(String message)
+  {
+    super(message);
+  }
 
+  public LdapConnectionException(Throwable cause)
+  {
+    super(cause);
+  }
+
+  public LdapConnectionException(String message, Throwable cause)
+  {
+    super(message, cause);
+  }
 }

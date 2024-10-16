@@ -59,7 +59,6 @@ public class SmartcardHandler implements ApplicationRunner
 
           CardTerminal terminal = terminals.list().get(0);
           log.debug("Using card reader: {}", terminal.getName());
-
           log.debug("Waiting for a card...");
 
           // DO NOT USE BLOCKING I/O
@@ -90,7 +89,7 @@ public class SmartcardHandler implements ApplicationRunner
 
             webSockerHandler.fireEvent(new DtoEvent(
               new DtoCard(card.getProtocol(), bytesToHex(cardAtr), 
-                bytesToHex(uidBytes), serial)));
+                bytesToHex(uidBytes), Long.toString(serial))));
 
             // remove active sessions on card
             card.disconnect(true);

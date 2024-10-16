@@ -6,6 +6,19 @@ spring:
   config:
     import: optional:file:config.yaml
 
+  security:
+    oauth2:
+      client:
+        registration:
+          app:
+            client-id: kasse
+            client-secret: "*** not set ***"
+            scope: openid,profile,email
+        provider:
+          app:
+            issuer-uri: https://id.dev.sonia.de/realms/dev
+            user-name-attribute: preferred_username
+
 logging:
   pattern:
     console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
@@ -14,3 +27,21 @@ logging:
 
 server:
   port: 8080
+
+management:
+  server:
+    port: 9091
+  endpoints:
+    web:
+      exposure:
+        include: info,health,metrics
+
+app:
+  api:
+    base-url: http://kasse.dev.sonia.de:8081
+  oauth2:
+    registration-id: app
+    client-id: kasse
+  debug-oidc: true
+  account-cache:
+    expire-after-write: 15

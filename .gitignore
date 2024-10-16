@@ -4,12 +4,14 @@ private/
 
 nb-configuration.xml
 config.yaml
+secret.bin
 
 .DS_Store
 Thumbs.db
 
 *.bak
 *.log
+*.jar
 
 rebel.xml
 .rebel.xml*

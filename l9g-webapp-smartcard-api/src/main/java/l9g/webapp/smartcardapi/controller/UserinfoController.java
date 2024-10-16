@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.userinfo;
+package l9g.webapp.smartcardapi.controller;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import l9g.webapp.smartcardfront.client.ApiClientService;
+import l9g.webapp.smartcardapi.crypto.CryptoHandler;
+import l9g.webapp.smartcardapi.ldap.LdapUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,28 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/v1/userinfo",
                 produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@RequiredArgsConstructor
 public class UserinfoController
 {
-  private final ApiClientService apiClientService;
-
-  private final Cache<Long, Map<String, String>> accountCache;
-
-  @Value("${app.account-cache.expire-after-write}")
-  private int accountCacheExpireAfterWrite;
+  private final CryptoHandler cryptoHandler;
+  private final LdapUtil ldapUtil;
   
-  public UserinfoController(ApiClientService apiClientService)
-  {
-    this.apiClientService = apiClientService;
-    this.accountCache = Caffeine.newBuilder()
-      .expireAfterWrite(accountCacheExpireAfterWrite, TimeUnit.MINUTES)
-      .build();
-  }
-
   @GetMapping("/{serial}")
-  public Map<String, String> findBySerial(@PathVariable long serial)
+  public Map<String,String> findBySerial(@PathVariable long serial)
   {
-    log.debug("serial = {}", serial);
-    return accountCache.get(serial, apiClientService :: findBySerial);
+    log.debug("serial={}", serial);    
+    return ldapUtil.searchForCard(serial);
   }
 
 }

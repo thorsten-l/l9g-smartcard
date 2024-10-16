@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: l9g-webapp-smartcard-front
+  profiles:
+    active: default
+  config:
+    import: optional:file:config.yaml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwks-uri: https://id.dev.sonia.de/realms/dev/protocol/openid-connect/certs
+
+logging:
+  pattern:
+    console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
+  level:
+    root: INFO
+
+server:
+  port: 8081
+
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: info,health,metrics
+
+springdoc:
+  api-docs:
+    path: "/api-docs"
+  show-actuator: true
+
+ldap:
+  host:
+    ssl-enabled: false
+    name: localhost
+    port: 3389
+  bind:
+    dn: "cn=Directory Manager"
+    password: "*** unset ***"
+  base-dn: dc=example,dc=de
+  search:
+    scope: sub
+    filter: "(objectclass=person,cardserial={0})"
+    attributes: cn, sn, givenname, mail
+
+app:
+  resource-access-roles: kasse
