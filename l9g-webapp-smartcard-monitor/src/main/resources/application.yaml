@@ -23,3 +23,6 @@ scheduler:
 smartcard:
   terminal:
     timeout: 5000
+
+app:
+  pos-name: "*** unset ***"
