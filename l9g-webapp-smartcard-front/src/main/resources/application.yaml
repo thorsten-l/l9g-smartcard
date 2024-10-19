@@ -19,6 +19,16 @@ spring:
             issuer-uri: https://id.dev.sonia.de/realms/dev
             user-name-attribute: preferred_username
 
+  datasource:
+    url: "jdbc:postgresql://localhost:15432/soniapos?currentSchema=public&serverTimezone=UTC"
+    username: soniapos
+    password: "*** unset ***"
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
 logging:
   pattern:
     console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
