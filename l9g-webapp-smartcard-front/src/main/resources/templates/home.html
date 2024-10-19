@@ -2,8 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>L9G Smartcard Front</title>
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" ></link>
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}" ></link>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"></link>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}"></link>
+    <style>
+      .jpegPhoto {
+        float: right;
+        margin-left: 1em;
+        max-width: 150px;
+        border-radius: 5px;
+      }
+    </style>
   </head>
 
   <body>
@@ -23,6 +31,8 @@
     </nav>
 
     <div style="margin-top: 2em" class="container">
+      <!-- jpegPhoto -->
+      <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
 
       <!-- Input group for Timestamp -->
       <div class="mb-3">
@@ -67,7 +77,6 @@
           <input id="mail" type="text" class="form-control">
         </div>
       </div>
-
     </div>
 
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
@@ -81,13 +90,11 @@
           var dtoEvent = JSON.parse(event.data);
           console.log("Received event: ", dtoEvent);
 
-          // Handle heartbeat event
           if (dtoEvent.event === "heartbeat") {
             document.getElementById("timestamp").value
                     = new Date(dtoEvent.timestamp).toLocaleString();
           }
 
-          // Handle cardInserted event
           if (dtoEvent.event === "cardInserted" && dtoEvent.card) {
             document.getElementById("cardAtr").value = dtoEvent.card.atr;
 
@@ -98,9 +105,15 @@
                     .then(response => response.json())
                     .then(userinfo => {
                       if (userinfo.mail) {
-                        document.getElementById("userinfo").value 
-                          = userinfo.givenName + " " + userinfo.sn;
+                        document.getElementById("userinfo").value
+                                = userinfo.givenName + " " + userinfo.sn;
                         document.getElementById("mail").value = userinfo.mail;
+
+                        if (userinfo.jpegPhoto) {
+                          var jpegPhotoElement = document.getElementById("jpegPhoto");
+                          jpegPhotoElement.src = "data:image/jpeg;base64," + userinfo.jpegPhoto;
+                          jpegPhotoElement.style.display = "block";
+                        }
                       }
                     })
                     .catch(error => {
@@ -108,12 +121,14 @@
                     });
           }
 
-          // Handle cardRemoved event
           if (dtoEvent.event === "cardRemoved") {
             document.getElementById("cardSerial").value = '';
             document.getElementById("cardAtr").value = '';
             document.getElementById("userinfo").value = '';
             document.getElementById("mail").value = '';
+            var jpegPhotoElement = document.getElementById("jpegPhoto");
+            jpegPhotoElement.style.display = "none";
+            jpegPhotoElement.src = '';
           }
         };
 
