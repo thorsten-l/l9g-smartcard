@@ -18,6 +18,9 @@ spring:
           app:
             issuer-uri: https://id.dev.sonia.de/realms/dev
             user-name-attribute: preferred_username
+  sql:
+    init:
+      mode: never
 
   datasource:
     url: "jdbc:postgresql://localhost:15432/soniapos?currentSchema=public&serverTimezone=UTC"
