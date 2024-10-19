@@ -70,8 +70,8 @@ public class DbService
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DEFAULT_TAX, "1.0"));
-      posTransactionsRepository.save(
-        new PosTransaction(KEY_SYSTEM_TENANT, systemTenant));
+      //posTransactionsRepository.save(
+      //  new PosTransaction(KEY_SYSTEM_TENANT, systemTenant));
     }
     else
     {
