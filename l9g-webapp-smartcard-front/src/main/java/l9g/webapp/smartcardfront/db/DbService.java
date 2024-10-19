@@ -18,6 +18,7 @@ package l9g.webapp.smartcardfront.db;
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.db.model.PosTransaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -36,9 +37,11 @@ import org.springframework.stereotype.Service;
 public class DbService
 {
   public static final String KEY_SYSTEM_TENANT = "*SYSTEM*";
-  
+
   public static final String KEY_DB_INITIALIZED = "database.initialized";
+
   public static final String KEY_DEFAULT_CURRENCY = "default.currency";
+
   public static final String KEY_DEFAULT_TAX = "default.tax";
 
   /**
@@ -61,12 +64,14 @@ public class DbService
 
     if( ! dbInitialized.isPresent())
     {
-      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT, 
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DB_INITIALIZED, "true"));
-      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT, 
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
-      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT, 
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DEFAULT_TAX, "1.0"));
+      posTransactionsRepository.save(
+        new PosTransaction(KEY_SYSTEM_TENANT, systemTenant));
     }
     else
     {
@@ -77,5 +82,7 @@ public class DbService
   private final PosTenantsRepository posTenantsRepository;
 
   private final PosPropertiesRepository posPropertiesRepository;
+
+  private final PosTransactionsRepository posTransactionsRepository;
 
 }
