@@ -24,6 +24,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,28 +39,42 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tenants")
+@Table(name = "products", uniqueConstraints =
+     {
+       @UniqueConstraint(columnNames =
+       {
+         "category_id", "name"
+       })
+})
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosTenant extends PosUuidObject
+public class PosProduct extends PosUuidObject
 {
-  private static final long serialVersionUID = 8748451088430252946L;
+  private static final long serialVersionUID = 7718553203197438944L;
 
-  public PosTenant(String createdBy, String name)
+  public PosProduct(String createdBy, PosCategory category, String name)
   {
     super(createdBy);
+    this.category = category;
     this.name = name;
   }
 
-  @Column(name = "name", nullable = false, unique = true)
+  @ManyToOne
+  @JoinColumn(name = "category_id", nullable = false)
+  private PosCategory category;
+
+  @Column(nullable = false)
   private String name;
 
-  @ManyToOne
-  @JoinColumn(name = "address_id")
-  private PosAddress address;
+  @Column(length = 2048)
+  private String description;
 
-  @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
+  private double tax = 1.0;
+
+  private double price;
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE,
              fetch = FetchType.EAGER)
-  private List<PosProperty> properties;
+  private List<PosVarriation> varriations;
 
 }

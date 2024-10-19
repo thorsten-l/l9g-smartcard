@@ -16,15 +16,9 @@
 package l9g.webapp.smartcardfront.db.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,28 +32,33 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tenants")
+@Table(name = "addresses")
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosTenant extends PosUuidObject
+public class PosAddress extends PosUuidObject
 {
-  private static final long serialVersionUID = 8748451088430252946L;
+  private static final long serialVersionUID = 1200101847693707621L;
 
-  public PosTenant(String createdBy, String name)
-  {
-    super(createdBy);
-    this.name = name;
-  }
-
-  @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @ManyToOne
-  @JoinColumn(name = "address_id")
-  private PosAddress address;
+  @Column(length = 2048)
+  private String description;
 
-  @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
-             fetch = FetchType.EAGER)
-  private List<PosProperty> properties;
+  private String addressLine1;
 
+  private String addressLine2;
+
+  private String postalCode;
+
+  private String city;
+
+  private String state;
+
+  private String country;
+
+  private String telephonenumber;
+
+  private String email;
+
+  private String taxnumber;
 }

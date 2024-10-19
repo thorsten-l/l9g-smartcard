@@ -16,15 +16,12 @@
 package l9g.webapp.smartcardfront.db.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,28 +35,58 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tenants")
+@Table(name = "transactions")
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosTenant extends PosUuidObject
+public class PosTransaction extends PosUuidObject
 {
-  private static final long serialVersionUID = 8748451088430252946L;
+  private static final long serialVersionUID = -3887176763514856101L;
 
-  public PosTenant(String createdBy, String name)
+  public PosTransaction(String createdBy, PosTenant tenant)
   {
     super(createdBy);
-    this.name = name;
+    this.tenant = tenant;
   }
 
-  @Column(name = "name", nullable = false, unique = true)
-  private String name;
-
   @ManyToOne
-  @JoinColumn(name = "address_id")
-  private PosAddress address;
+  @JoinColumn(name = "tenant_id", nullable = false)
+  private PosTenant tenant;
 
-  @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
-             fetch = FetchType.EAGER)
-  private List<PosProperty> properties;
+  private String cashier;
+
+  private double amount;
+
+  @Column(name = "refundet_amount")
+  private double refundetAmount;
+
+  private String currency;
+
+  @Column(name = "customer_name")
+  private String customerName;
+
+  @Column(name = "customer_email")
+  private String customerEmail;
+
+  @Column(name = "customer_email_sent")
+  private boolean customerEmailSent;
+
+  @Column(name = "customer_number")
+  private String customerNumber;
+
+  @Column(name = "customer_card_serial")
+  private String customerCardSerial;
+
+  @Column(name = "payment_type")
+  private String paymentType;
+
+  private String purpose;
+
+  private String status;
+
+  @Column(name = "sumup_user")
+  private String sumupUser;
+
+  @Column(name = "sumup_transaction_id")
+  private String sumupTransactionId;
 
 }

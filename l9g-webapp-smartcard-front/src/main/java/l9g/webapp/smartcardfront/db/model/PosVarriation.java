@@ -16,15 +16,12 @@
 package l9g.webapp.smartcardfront.db.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,28 +35,35 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tenants")
+@Table(name = "varriations", uniqueConstraints =
+     {
+       @UniqueConstraint(columnNames =
+       {
+         "product_id", "name"
+       })
+})
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosTenant extends PosUuidObject
+public class PosVarriation extends PosUuidObject
 {
-  private static final long serialVersionUID = 8748451088430252946L;
+  private static final long serialVersionUID = -8043510890118920536L;
 
-  public PosTenant(String createdBy, String name)
+  public PosVarriation(String createdBy, PosProduct product, String name)
   {
     super(createdBy);
+    this.product = product;
     this.name = name;
   }
 
-  @Column(name = "name", nullable = false, unique = true)
+  @ManyToOne
+  @JoinColumn(name = "product_id", nullable = false)
+  private PosProduct product;
+
+  @Column(nullable = false)
   private String name;
 
-  @ManyToOne
-  @JoinColumn(name = "address_id")
-  private PosAddress address;
+  private double tax = 1.0;
 
-  @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
-             fetch = FetchType.EAGER)
-  private List<PosProperty> properties;
+  private double price;
 
 }

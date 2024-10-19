@@ -1,6 +1,7 @@
 package l9g.webapp.smartcardfront.db.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.Getter;
 
@@ -110,5 +111,6 @@ public class PosUuidObject implements Serializable
   protected Date modifyTimestamp;
 
   @Id
+  @Column(length = 40)
   private String id;
 }

@@ -59,7 +59,7 @@ public class PosProperty extends PosUuidObject
   @Column(name = "p_key", nullable = false)
   private String key;
 
-  @Column(name = "p_value")
+  @Column(name = "p_value", length = 2048)
   private String value;
 
 }

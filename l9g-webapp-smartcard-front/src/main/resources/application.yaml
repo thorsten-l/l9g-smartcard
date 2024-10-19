@@ -34,6 +34,7 @@ logging:
     console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
   level:
     root: INFO
+    com.zaxxer.hikari.pool.HikariPool: ERROR
 
 server:
   port: 8080
