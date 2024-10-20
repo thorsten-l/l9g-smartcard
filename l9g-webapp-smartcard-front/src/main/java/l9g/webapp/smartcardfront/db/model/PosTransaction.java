@@ -47,25 +47,15 @@ public class PosTransaction extends PosUuidObject
   {
     super(createdBy);
     this.tenant = tenant;
-    this.tenantName = tenant.getName();
     this.pointOfSales = pointOfSales;
-    this.pointOfSalesName = pointOfSales.getName();
   }
 
-  @Column(name = "tenant_name", nullable = false)
-  private String tenantName;
-
   @ManyToOne
-  @JoinColumn(name = "tenant_name", referencedColumnName = "name", insertable = false, updatable = false)
-  @MapsId("tenantName")
+  @JoinColumn(name = "tenant_id", nullable = false, updatable = false)
   private PosTenant tenant;
 
-  @Column(name = "point_of_sales_name")
-  private String pointOfSalesName;
-
   @ManyToOne
-  @JoinColumn(name = "point_of_sales_name", referencedColumnName = "name", insertable = false, updatable = false)
-  @MapsId("pointOfSalesName")
+  @JoinColumn(name = "point_of_sales_id")
   private PosPointOfSales pointOfSales;
 
   private String cashier;
