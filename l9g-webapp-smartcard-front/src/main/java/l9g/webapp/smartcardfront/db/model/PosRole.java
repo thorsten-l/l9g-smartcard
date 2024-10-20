@@ -21,7 +21,7 @@ package l9g.webapp.smartcardfront.db.model;
  */
 public enum PosRole
 {
-  NONE,
+  LOCKED,
   ADMINISTRATOR,
   OWNER,
   ACCOUNTANT,
