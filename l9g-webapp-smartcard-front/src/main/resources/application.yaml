@@ -18,6 +18,7 @@ spring:
           app:
             issuer-uri: https://id.dev.sonia.de/realms/dev
             user-name-attribute: preferred_username
+
   sql:
     init:
       mode: never
@@ -60,3 +61,5 @@ app:
   debug-oidc: true
   account-cache:
     expire-after-write: 15
+  administrator:
+    usernames: "*** unset ***"

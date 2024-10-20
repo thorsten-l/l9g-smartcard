@@ -16,11 +16,13 @@
 package l9g.webapp.smartcardfront.db;
 
 import java.util.Optional;
+import l9g.webapp.smartcardfront.db.model.PosPerson;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
+import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import l9g.webapp.smartcardfront.db.model.PosTransaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -64,14 +66,31 @@ public class DbService
 
     if( ! dbInitialized.isPresent())
     {
+      log.info("\n\n*** INITIALIZE DATABASE ***\n");
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DB_INITIALIZED, "true"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
         systemTenant, KEY_DEFAULT_TAX, "1.0"));
-      //posTransactionsRepository.save(
-      //  new PosTransaction(KEY_SYSTEM_TENANT, systemTenant));
+
+      if(adminUsernames != null && adminUsernames.length > 0
+        &&  ! "*** unset ***".equals(adminUsernames[0]))
+      {
+        for(String username : adminUsernames)
+        {
+          log.debug("Create/update '{}' as administrator", username);
+          PosPerson person = posPersonsRepository.findByUsername(username)
+            .orElseGet(() -> posPersonsRepository.save(
+            new PosPerson(KEY_SYSTEM_TENANT, systemTenant, username, PosRole.ADMINISTRATOR)));
+          person.setTenant(systemTenant);
+          posPersonsRepository.save(person);
+        }
+      }
+      else
+      {
+        log.warn("No administrator usernames specified in config.yaml");
+      }
     }
     else
     {
@@ -79,10 +98,12 @@ public class DbService
     }
   }
 
+  @Value("${app.administrator.usernames}")
+  private String[] adminUsernames;
+
+  private final PosPersonsRepository posPersonsRepository;
+
   private final PosTenantsRepository posTenantsRepository;
 
   private final PosPropertiesRepository posPropertiesRepository;
-
-  private final PosTransactionsRepository posTransactionsRepository;
-
 }

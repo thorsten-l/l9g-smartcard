@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2024 Thorsten Ludewig (t.ludewig@gmail.com).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package l9g.webapp.smartcardfront.db.model;
+
 /**
- * Author:  Thorsten Ludewig (t.ludewig@gmail.com)
- * Created: 19.10.2024
+ *
+ * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
-drop table if exists persons;
-drop table if exists receipts;
-drop table if exists transaction_products;
-drop table if exists transactions;
-drop table if exists point_of_sales;
-drop table if exists varriations;
-drop table if exists products;
-drop table if exists categories;
-drop table if exists properties;
-drop table if exists tenants;
-drop table if exists addresses;
+public enum PosRole
+{
+  NONE,
+  ADMINISTRATOR,
+  OWNER,
+  ACCOUNTANT,
+  CASHIER
+}

@@ -18,6 +18,8 @@ package l9g.webapp.smartcardfront.db.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -34,64 +36,31 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "transactions")
+@Table(name = "persons")
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosTransaction extends PosUuidObject
+public class PosPerson extends PosUuidObject
 {
-  private static final long serialVersionUID = -3887176763514856101L;
+  private static final long serialVersionUID = -2875364432403999861L;
 
-  public PosTransaction(String createdBy, PosTenant tenant, 
-    PosPointOfSales pointOfSales)
+  public PosPerson(String createdBy, PosTenant tenant,
+    String username, PosRole role)
   {
     super(createdBy);
     this.tenant = tenant;
-    this.pointOfSales = pointOfSales;
+    this.username = username;
+    this.role = role;
   }
 
   @ManyToOne
   @JoinColumn(name = "tenant_id", nullable = false)
   private PosTenant tenant;
 
-  @ManyToOne
-  @JoinColumn(name = "point_of_sales_id", nullable = false)
-  private PosPointOfSales pointOfSales;
+  @Column(nullable = false)
+  private String username;
 
-  private String cashier;
-
-  private double amount;
-
-  @Column(name = "refundet_amount")
-  private double refundetAmount;
-
-  private String currency;
-
-  @Column(name = "customer_name")
-  private String customerName;
-
-  @Column(name = "customer_email")
-  private String customerEmail;
-
-  @Column(name = "customer_email_sent")
-  private boolean customerEmailSent;
-
-  @Column(name = "customer_number")
-  private String customerNumber;
-
-  @Column(name = "customer_card_serial")
-  private String customerCardSerial;
-
-  @Column(name = "payment_type")
-  private String paymentType;
-
-  private String purpose;
-
-  private String status;
-
-  @Column(name = "sumup_user")
-  private String sumupUser;
-
-  @Column(name = "sumup_transaction_id")
-  private String sumupTransactionId;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private PosRole role;
 
 }
