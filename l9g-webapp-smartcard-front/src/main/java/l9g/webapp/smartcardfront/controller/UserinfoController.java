@@ -44,7 +44,7 @@ public class UserinfoController
 
   @Value("${app.account-cache.expire-after-write}")
   private int accountCacheExpireAfterWrite;
-  
+
   public UserinfoController(ApiClientService apiClientService)
   {
     this.apiClientService = apiClientService;
