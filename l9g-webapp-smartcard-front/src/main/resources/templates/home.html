@@ -3,7 +3,7 @@
   <head>
     <title>L9G Smartcard Front</title>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"></link>
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}"></link>
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}" ></link>
     <style>
       .jpegPhoto {
         float: right;
@@ -31,14 +31,20 @@
     </nav>
 
     <div style="margin-top: 2em" class="container">
-      <!-- jpegPhoto -->
-      <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
+      <!-- Input group for POS -->
+      <div class="mb-3">
+        <label for="timestamp" class="form-label">Point of sales name</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa-solid fa-cash-register"></i></span> 
+          <input id="posname" readonly="true" th:value="${pointOfSalesName}" type="text" class="form-control"> 
+        </div>
+      </div>
 
       <!-- Input group for Timestamp -->
       <div class="mb-3">
         <label for="timestamp" class="form-label">Smartcard monitor heartbeat</label>
         <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-clock"></i></span> 
+          <span class="input-group-text"><i class="fa-regular fa-clock"></i></span> 
           <input id="timestamp" type="text" class="form-control"> 
         </div>
       </div>
@@ -47,7 +53,7 @@
       <div class="mb-3">
         <label for="cardAtr" class="form-label">ATR (Hex)</label>
         <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-card-heading"></i></span> 
+          <span class="input-group-text"><i class="fa-regular fa-credit-card"></i></span> 
           <input id="cardAtr" type="text" class="form-control">
         </div>
       </div>
@@ -56,7 +62,7 @@
       <div class="mb-3">
         <label for="cardSerial" class="form-label">Serial</label>
         <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-person-vcard"></i></span> 
+          <span class="input-group-text"><i class="fa-regular fa-id-card"></i></span> 
           <input id="cardSerial" type="text" class="form-control">
         </div>
       </div>
@@ -65,7 +71,7 @@
       <div class="mb-3">
         <label for="userinfo" class="form-label">User Info</label>
         <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-person"></i></span> 
+          <span class="input-group-text"><i class="fa-regular fa-user"></i></span> 
           <input id="userinfo" type="text" class="form-control">
         </div>
       </div>
@@ -73,10 +79,13 @@
       <div class="mb-3">
         <label for="mail" class="form-label">E-Mail</label>
         <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-envelope-at"></i></span> 
+          <span class="input-group-text"><i class="fa-solid fa-at"></i></span> 
           <input id="mail" type="text" class="form-control">
         </div>
       </div>
+
+      <!-- jpegPhoto -->
+      <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
     </div>
 
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>

@@ -21,6 +21,7 @@ import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 import java.text.MessageFormat;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,21 +39,22 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LdapUtil
 {
+  private final static String ATTRIBUTE_JPEGPHOTO = "jpegPhoto";
 
   private final LdapConnectionFactory ldapConnectionFactory;
 
-  public Map<String,String> searchForCard(long serialNumber)
+  public Map<String, String> searchForCard(long serialNumber)
   {
-    Map<String,String> account = new LinkedHashMap<>();
+    Map<String, String> account = new LinkedHashMap<>();
     LDAPConnection connection = null;
 
     log.debug("LDAP search for card = " + serialNumber);
-    
+
     if(serialNumber > 0)
     {
       try
       {
-        connection = ldapConnectionFactory.getConnection();        
+        connection = ldapConnectionFactory.getConnection();
         MessageFormat searchFormat = new MessageFormat(searchFilter);
 
         String _searchFilter = searchFormat.format(new Object[]
@@ -61,18 +63,30 @@ public class LdapUtil
         });
 
         log.debug(_searchFilter);
-        
+
         SearchResult searchResult = connection.search(baseDn,
           getSearchScope(searchScope), _searchFilter, searchAttributes);
-        
+
         List<SearchResultEntry> searchResultEntry = searchResult.
           getSearchEntries();
 
         if(searchResultEntry.size() == 1)
         {
-          log.debug( "Account for smartcard serial number '{}' found.", serialNumber);
-          searchResultEntry.get(0).getAttributes().forEach( 
-            attribute -> account.put(attribute.getName(), attribute.getValue()));
+          log.debug("Account for smartcard serial number '{}' found.", serialNumber);
+          searchResultEntry.get(0).getAttributes().forEach(
+            attribute ->
+          {
+            String attributeName = attribute.getName();
+            if(ATTRIBUTE_JPEGPHOTO.equals(attributeName))
+            {
+              account.put(attributeName, Base64.getEncoder()
+                .encodeToString(attribute.getValueByteArray()));
+            }
+            else
+            {
+              account.put(attributeName, attribute.getValue());
+            }
+          });
         }
         else
         {
@@ -91,7 +105,7 @@ public class LdapUtil
         }
       }
     }
-    
+
     return account;
   }
 
@@ -101,9 +115,12 @@ public class LdapUtil
 
     scope = switch(name.toUpperCase())
     {
-      case "ONE" -> SearchScope.ONE;
-      case "SUB" -> SearchScope.SUB;
-      default -> SearchScope.BASE;
+      case "ONE" ->
+        SearchScope.ONE;
+      case "SUB" ->
+        SearchScope.SUB;
+      default ->
+        SearchScope.BASE;
     };
 
     return scope;
@@ -117,7 +134,8 @@ public class LdapUtil
 
   @Value("${ldap.search.scope}")
   private String searchScope;
-  
+
   @Value("${ldap.search.attributes}")
   private String[] searchAttributes;
+
 }

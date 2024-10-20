@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.home;
+package l9g.webapp.smartcardfront.controller;
 
+import l9g.webapp.smartcardfront.client.ApiMonitorService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
@@ -26,12 +29,19 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
 @Controller
+@Slf4j
+@RequiredArgsConstructor
 public class HomeController
 {
+  private final ApiMonitorService monitorService;
+  
   @GetMapping("/")
   public String home(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model)
   {
+    String pointOfSalesName = monitorService.pointOfSalesName();
+    log.debug("pointOfSalesName={}",pointOfSalesName);
+    model.addAttribute("pointOfSalesName", pointOfSalesName);
     model.addAttribute("fullname", principal.getFullName());
     return "home";
   }
