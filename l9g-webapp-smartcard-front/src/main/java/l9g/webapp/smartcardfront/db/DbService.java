@@ -41,8 +41,12 @@ import org.springframework.stereotype.Service;
 public class DbService
 {
   public static final String KEY_SYSTEM_USER = "*SYSTEM USER*";
+
   public static final String KEY_SYSTEM_TENANT = "*SYSTEM TENANT*";
+
   public static final String KEY_SYSTEM_POS = "*SYSTEM POS*";
+
+  public static final String KEY_UNSET = "*** unset ***";
 
   public static final String KEY_DB_INITIALIZED = "database.initialized";
 
@@ -77,11 +81,11 @@ public class DbService
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_TAX, "1.0"));
-      
+
       PosPointOfSales systemPos = posPointsOfSalesRepository.save(
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
       );
-      
+
       postTransactionsRepository.save(
         new PosTransaction(KEY_SYSTEM_USER, systemTenant, systemPos)
       );
@@ -92,7 +96,7 @@ public class DbService
     }
 
     if(adminUsernames != null && adminUsernames.length > 0
-      &&  ! "*** unset ***".equals(adminUsernames[0]))
+      &&  ! KEY_UNSET.equals(adminUsernames[0]))
     {
       for(String username : adminUsernames)
       {
@@ -120,7 +124,7 @@ public class DbService
   private final PosPropertiesRepository posPropertiesRepository;
 
   private final PosPointsOfSalesRepository posPointsOfSalesRepository;
-  
+
   private final PosTransactionsRepository postTransactionsRepository;
 
 }
