@@ -20,6 +20,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,28 +42,41 @@ public class PosTransaction extends PosUuidObject
 {
   private static final long serialVersionUID = -3887176763514856101L;
 
-  public PosTransaction(String createdBy, PosTenant tenant, 
+  public PosTransaction(String createdBy, PosTenant tenant,
     PosPointOfSales pointOfSales)
   {
     super(createdBy);
     this.tenant = tenant;
+    this.tenantName = tenant.getName();
     this.pointOfSales = pointOfSales;
+    this.pointOfSalesName = pointOfSales.getName();
   }
 
-  @ManyToOne
-  @JoinColumn(name = "tenant_id", nullable = false)
-  private PosTenant tenant;
+  @Column(name = "tenant_name", nullable = false)
+  private String tenantName;
 
   @ManyToOne
-  @JoinColumn(name = "point_of_sales_id", nullable = false)
+  @JoinColumn(name = "tenant_name", referencedColumnName = "name", insertable = false, updatable = false)
+  @MapsId("tenantName")
+  private PosTenant tenant;
+
+  @Column(name = "point_of_sales_name")
+  private String pointOfSalesName;
+
+  @ManyToOne
+  @JoinColumn(name = "point_of_sales_name", referencedColumnName = "name", insertable = false, updatable = false)
+  @MapsId("pointOfSalesName")
   private PosPointOfSales pointOfSales;
 
   private String cashier;
 
   private double amount;
 
-  @Column(name = "refundet_amount")
-  private double refundetAmount;
+  @Column(name = "amount_received")
+  private double amountReceived;
+  
+  @Column(name = "amount_refundet")
+  private double amountRefundet;
 
   private String currency;
 

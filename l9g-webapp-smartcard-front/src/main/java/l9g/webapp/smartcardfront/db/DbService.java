@@ -17,9 +17,11 @@ package l9g.webapp.smartcardfront.db;
 
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosPerson;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.db.model.PosTransaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +40,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DbService
 {
-  public static final String KEY_SYSTEM_TENANT = "*SYSTEM*";
+  public static final String KEY_SYSTEM_USER = "*SYSTEM USER*";
+  public static final String KEY_SYSTEM_TENANT = "*SYSTEM TENANT*";
+  public static final String KEY_SYSTEM_POS = "*SYSTEM POS*";
 
   public static final String KEY_DB_INITIALIZED = "database.initialized";
 
@@ -59,7 +63,7 @@ public class DbService
 
     PosTenant systemTenant = posTenantsRepository.findByName(KEY_SYSTEM_TENANT)
       .orElseGet(() -> posTenantsRepository.save(
-      new PosTenant(KEY_SYSTEM_TENANT, KEY_SYSTEM_TENANT)));
+      new PosTenant(KEY_SYSTEM_USER, KEY_SYSTEM_TENANT)));
 
     Optional<PosProperty> dbInitialized = posPropertiesRepository
       .findByTenantAndKey(systemTenant, KEY_DB_INITIALIZED);
@@ -67,34 +71,42 @@ public class DbService
     if( ! dbInitialized.isPresent())
     {
       log.info("\n\n*** INITIALIZE DATABASE ***\n");
-      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DB_INITIALIZED, "true"));
-      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
-      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_TENANT,
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_TAX, "1.0"));
-
-      if(adminUsernames != null && adminUsernames.length > 0
-        &&  ! "*** unset ***".equals(adminUsernames[0]))
-      {
-        for(String username : adminUsernames)
-        {
-          log.debug("Create/update '{}' as administrator", username);
-          PosPerson person = posPersonsRepository.findByUsername(username)
-            .orElseGet(() -> posPersonsRepository.save(
-            new PosPerson(KEY_SYSTEM_TENANT, systemTenant, username, PosRole.ADMINISTRATOR)));
-          person.setTenant(systemTenant);
-          posPersonsRepository.save(person);
-        }
-      }
-      else
-      {
-        log.warn("No administrator usernames specified in config.yaml");
-      }
+      
+      PosPointOfSales systemPos = posPointsOfSalesRepository.save(
+        new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
+      );
+      
+      postTransactionsRepository.save(
+        new PosTransaction(KEY_SYSTEM_USER, systemTenant, systemPos)
+      );
     }
     else
     {
       log.info("Database already initialized.");
+    }
+
+    if(adminUsernames != null && adminUsernames.length > 0
+      &&  ! "*** unset ***".equals(adminUsernames[0]))
+    {
+      for(String username : adminUsernames)
+      {
+        log.debug("Create/update '{}' as administrator", username);
+        PosPerson person = posPersonsRepository.findByUsername(username)
+          .orElseGet(() -> posPersonsRepository.save(
+          new PosPerson(KEY_SYSTEM_USER, systemTenant, username, PosRole.ADMINISTRATOR)));
+        person.setTenant(systemTenant);
+        posPersonsRepository.save(person);
+      }
+    }
+    else
+    {
+      log.warn("No administrator usernames specified in config.yaml");
     }
   }
 
@@ -106,4 +118,9 @@ public class DbService
   private final PosTenantsRepository posTenantsRepository;
 
   private final PosPropertiesRepository posPropertiesRepository;
+
+  private final PosPointsOfSalesRepository posPointsOfSalesRepository;
+  
+  private final PosTransactionsRepository postTransactionsRepository;
+
 }

@@ -56,8 +56,8 @@ public class PosPointOfSales extends PosUuidObject
   @Column(unique = true, nullable = false)
   private String name;
 
-  @Column(name = "cash_amount", nullable = false)
-  private double cashAmount;
+  @Column(name = "amount_cash", nullable = false)
+  private double amountCash;
 
   @ManyToOne
   @JoinColumn(name = "address_id")
