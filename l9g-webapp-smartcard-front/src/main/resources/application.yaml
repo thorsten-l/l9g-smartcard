@@ -13,7 +13,7 @@ spring:
           app:
             client-id: kasse
             client-secret: "*** not set ***"
-            scope: openid,profile,email
+            scope: openid,profile,email,roles
         provider:
           app:
             issuer-uri: https://id.dev.sonia.de/realms/dev
@@ -63,3 +63,6 @@ app:
     expire-after-write: 15
   administrator:
     usernames: "*** unset ***"
+  login-access-role: PointOfSalesUser
+  resource-access-roles: kasse
+  
