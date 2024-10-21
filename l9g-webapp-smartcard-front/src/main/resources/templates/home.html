@@ -8,7 +8,7 @@
       .jpegPhoto {
         float: right;
         margin-left: 1em;
-        max-width: 150px;
+        max-width: 200px;
         border-radius: 5px;
       }
     </style>
@@ -36,7 +36,7 @@
         <label for="timestamp" class="form-label">Point of sales name</label>
         <div class="input-group">
           <span class="input-group-text"><i class="fa-solid fa-cash-register"></i></span> 
-          <input id="posname" readonly="true" th:value="${pointOfSalesName}" type="text" class="form-control"> 
+          <input id="posname" readonly="true" type="text" class="form-control"> 
         </div>
       </div>
 
@@ -93,6 +93,21 @@
       var ws;
 
       function connect() {
+
+        fetch("http://localhost:38080/api/v1/posname", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          referrerPolicy: 'no-referrer' // Setzt die Referrer-Policy
+        }).then(response => response.json())
+                .then(data => {
+                  if (data.posname)
+                  {
+                    document.getElementById("posname").value = data.posname;
+                  }
+                });
+
         ws = new WebSocket("ws://localhost:38080/scmon");
 
         ws.onmessage = function (event) {

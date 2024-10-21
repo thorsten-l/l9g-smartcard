@@ -117,7 +117,7 @@ public class ClientSecurityConfig
         );
 
         Collection<GrantedAuthority> authorities =
-          appAuthoritiesConverter.convert(accessToken);
+          appAuthoritiesConverter.convert(oidcUser, accessToken);
 
         if(log.isDebugEnabled())
         {
@@ -126,10 +126,6 @@ public class ClientSecurityConfig
             .forEach(System.out :: println);
         }
 
-        /*
-        TODO: Get APPLICATION ROLES FROM DATABASE!
-        */
-        
         return new DefaultOidcUser(
           authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
       }

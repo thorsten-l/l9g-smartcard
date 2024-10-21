@@ -33,6 +33,18 @@ spring:
       ddl-auto: update
     open-in-view: false
 
+  ssl:
+    bundle:
+      jks:
+        web-server:
+          key:
+            alias: "server"
+            password: "*** unset ***"
+          keystore:
+            location: "file:server.p12"
+            password: "*** unset ***"
+            type: "PKCS12"
+
 logging:
   pattern:
     console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
@@ -42,8 +54,15 @@ logging:
     org.hibernate.engine.jdbc.spi.SqlExceptionHelper: ERROR
 
 server:
-  port: 8080
+  port: 8443
+  servlet:
+    context-path: /
+    session:
+      timeout: 9h
+  ssl:
+    bundle: "web-server"
 
+      
 management:
   server:
     port: 9091

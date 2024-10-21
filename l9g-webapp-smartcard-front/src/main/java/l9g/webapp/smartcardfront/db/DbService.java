@@ -103,7 +103,8 @@ public class DbService
         log.debug("Create/update '{}' as administrator", username);
         PosPerson person = posPersonsRepository.findByUsername(username)
           .orElseGet(() -> posPersonsRepository.save(
-          new PosPerson(KEY_SYSTEM_USER, systemTenant, username, PosRole.ADMINISTRATOR)));
+          new PosPerson(KEY_SYSTEM_USER, systemTenant, username, 
+            PosRole.POS_ADMINISTRATOR)));
         person.setTenant(systemTenant);
         posPersonsRepository.save(person);
       }

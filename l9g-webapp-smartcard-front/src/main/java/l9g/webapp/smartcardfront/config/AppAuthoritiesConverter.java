@@ -15,15 +15,20 @@
  */
 package l9g.webapp.smartcardfront.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import l9g.webapp.smartcardfront.db.PosPersonsRepository;
+import l9g.webapp.smartcardfront.db.model.PosPerson;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
@@ -32,36 +37,61 @@ import org.springframework.stereotype.Component;
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @Component
-public class AppAuthoritiesConverter implements
-  Converter<Jwt, Collection<GrantedAuthority>>
+@RequiredArgsConstructor
+public class AppAuthoritiesConverter
 {
+  private final PosPersonsRepository posPersonsRepository;
+
   @Value("${app.resource-access-roles}")
   private String resourceAccessRoles;
-  
-  @Override
-  public Collection<GrantedAuthority> convert(Jwt jwt)
+
+  public Collection<GrantedAuthority> convert(OidcUser oidcUser, Jwt jwt)
   {
-    List<String> realmRoles
-      = (jwt.getClaimAsMap("realm_access") != null
+    List<String> realmRoles =
+      (jwt.getClaimAsMap("realm_access") != null
       && jwt.getClaimAsMap("realm_access").get("roles") != null)
-      ? (List<String>) jwt.getClaimAsMap("realm_access").get("roles")
+      ? (List<String>)jwt.getClaimAsMap("realm_access").get("roles")
       : List.of();
 
-    List<String> resourceRoles
-      = (jwt.getClaimAsMap("resource_access") != null
-      && jwt.getClaimAsMap("resource_access").get(resourceAccessRoles) != null
-      && ((Map) jwt.getClaimAsMap("resource_access").get(resourceAccessRoles)).get("roles")
-      != null)
-        ? ((Map<String, List<String>>) jwt
-          .getClaimAsMap("resource_access").get(resourceAccessRoles)).get("roles")
-        : List.of();
+    List<String> resourceRoles =
+      (jwt.getClaimAsMap("resource_access") != null
+      && jwt.getClaimAsMap("resource_access")
+        .get(resourceAccessRoles) != null
+      && ((Map)jwt.getClaimAsMap("resource_access")
+        .get(resourceAccessRoles)).get("roles") != null)
+      ? ((Map<String, List<String>>)jwt
+        .getClaimAsMap("resource_access")
+        .get(resourceAccessRoles)).get("roles")
+      : List.of();
+
+    /*
+    if(oidcUser != null && oidcUser.getPreferredUsername() != null)
+    {
+      Optional<PosPerson> optional =
+        posPersonsRepository.findByUsername(oidcUser.getPreferredUsername());
+
+      if(optional.isPresent())
+      {
+        PosPerson person = optional.get();
+        resourceRoles.add(person.getRole().toString());
+      }
+    }
+    */
+    
+    Optional.ofNullable(oidcUser)
+      .map(user -> user.getPreferredUsername())
+      .flatMap(posPersonsRepository :: findByUsername)
+      .map(PosPerson :: getRole)
+      .map(Enum :: toString)
+      .ifPresent(resourceRoles :: add);
 
     List<GrantedAuthority> authorities = Stream.concat(realmRoles.stream(),
       resourceRoles.stream())
       .map(role -> "ROLE_" + role)
-      .map(SimpleGrantedAuthority::new)
+      .map(SimpleGrantedAuthority :: new)
       .collect(Collectors.toList());
 
     return authorities;
   }
+
 }

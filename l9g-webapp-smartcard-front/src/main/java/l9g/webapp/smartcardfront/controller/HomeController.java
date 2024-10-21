@@ -15,7 +15,6 @@
  */
 package l9g.webapp.smartcardfront.controller;
 
-import l9g.webapp.smartcardfront.client.ApiMonitorService;
 import l9g.webapp.smartcardfront.config.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,18 +33,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class HomeController
 {
-  private final ApiMonitorService monitorService;
-  private final UserRoleService userRoleService;
-  
   @GetMapping("/")
   public String home(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model)
   {
-    // userRoleService.printUserRoles();
-    String pointOfSalesName = monitorService.pointOfSalesName();
-    log.debug("pointOfSalesName={}",pointOfSalesName);
-    model.addAttribute("pointOfSalesName", pointOfSalesName);
+    log.debug("home preferred_username={}", principal.getPreferredUsername());
     model.addAttribute("fullname", principal.getFullName());
     return "home";
   }
+
 }
