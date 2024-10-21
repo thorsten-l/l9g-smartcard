@@ -32,11 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/v1/pos-name",
+@RequestMapping(path = "/api/v1/posname",
                 produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiPosNameController
 {
-  @Value("${app.pos-name}")
+  @Value("${app.posname}")
   private String appPosName;
   
   /**
@@ -53,7 +53,7 @@ public class ApiPosNameController
     log.debug("posName");
     
     LinkedHashMap<String, String> properties = new LinkedHashMap<>();
-    properties.put("pos-name", appPosName);
+    properties.put("posname", appPosName);
 
     return properties;
   }

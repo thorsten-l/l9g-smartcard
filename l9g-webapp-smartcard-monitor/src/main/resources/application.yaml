@@ -25,4 +25,4 @@ smartcard:
     timeout: 5000
 
 app:
-  pos-name: "*** unset ***"
+  posname: "*** unset ***"
