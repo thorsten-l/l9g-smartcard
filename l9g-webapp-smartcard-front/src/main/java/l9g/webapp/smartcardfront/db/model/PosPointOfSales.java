@@ -21,7 +21,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,8 +55,17 @@ public class PosPointOfSales extends PosUuidObject
   @Column(unique = true, nullable = false)
   private String name;
 
+  @Column(name = "sumup_reader_id", unique = true)
+  private String sumupReaderId;
+
   @Column(name = "amount_cash", nullable = false)
   private double amountCash;
+
+  @Column(name = "card_issuing")
+  private boolean cardIssuing;
+  
+  @Column(name = "card_payment")
+  private boolean cardPayment;
 
   @ManyToOne
   @JoinColumn(name = "address_id")
