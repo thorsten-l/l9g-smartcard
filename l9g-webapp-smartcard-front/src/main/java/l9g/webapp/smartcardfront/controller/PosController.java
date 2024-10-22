@@ -19,6 +19,7 @@ import java.util.Locale;
 import l9g.webapp.smartcardfront.config.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -35,6 +36,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class PosController
 {
+  @Value("${app.barcode.enabled}")
+  private boolean barcodeEnabled;
+
+  @Value("${app.customer-number.enabled}")
+  private boolean customerNumberEnabled;
+
   @GetMapping("/pos")
   public String pos(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model)
@@ -43,6 +50,8 @@ public class PosController
     Locale locale = LocaleContextHolder.getLocale();
     model.addAttribute("principal", principal);
     model.addAttribute("locale", locale.toString());
+    model.addAttribute("barcodeEnabled", Boolean.toString(barcodeEnabled));
+    model.addAttribute("customerNumberEnabled", customerNumberEnabled);
     return "pos";
   }
 

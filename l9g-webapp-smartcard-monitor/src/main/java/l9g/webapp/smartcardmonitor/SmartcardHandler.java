@@ -79,17 +79,30 @@ public class SmartcardHandler implements ApplicationRunner
               (byte)0xFF, (byte)0xCA, (byte)0x00, (byte)0x00, (byte)0x00
             };
             CommandAPDU commandAPDU = new CommandAPDU(command);
+
+            long startTime = System.currentTimeMillis();
             ResponseAPDU response = card.getBasicChannel().transmit(commandAPDU);
+            long endTime = System.currentTimeMillis();
+            log.debug("transmit command APDU in {}ms", endTime - startTime);
+
+            startTime = System.currentTimeMillis();
             byte[] uidBytes = response.getData();
+            endTime = System.currentTimeMillis();
+            log.debug("reading card uid in {}ms", endTime - startTime);
             log.trace("Card UID: {}", bytesToHex(uidBytes));
 
-            // In this format the card uid/serial is stored in our directory service
             long serial = bytesToLongLittleEndian(uidBytes);
             log.trace("Card Serial: {}", serial);
 
-            webSockerHandler.fireEvent(new DtoEvent(
-              new DtoCard(card.getProtocol(), bytesToHex(cardAtr), 
-                bytesToHex(uidBytes), Long.toString(serial))));
+            DtoEvent event = new DtoEvent(
+              new DtoCard(card.getProtocol(), bytesToHex(cardAtr),
+                bytesToHex(uidBytes), Long.toString(serial)));
+
+            log.debug("fire event");
+            startTime = System.currentTimeMillis();
+            webSockerHandler.fireEvent(event);
+            endTime = System.currentTimeMillis();
+            log.debug("event fired in {}ms", endTime - startTime);
 
             // remove active sessions on card
             card.disconnect(true);

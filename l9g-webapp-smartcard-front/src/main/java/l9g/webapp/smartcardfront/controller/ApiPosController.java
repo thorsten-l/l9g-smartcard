@@ -15,13 +15,14 @@
  */
 package l9g.webapp.smartcardfront.controller;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import l9g.webapp.smartcardfront.client.ApiClientService;
+import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
+import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
+import l9g.webapp.smartcardfront.json.View;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,31 +34,33 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
 @RestController
-@RequestMapping(path = "/api/v1/userinfo",
+@RequestMapping(path = "/api/v1/pos",
                 produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class UserinfoController
+@RequiredArgsConstructor
+public class ApiPosController
 {
-  private final ApiClientService apiClientService;
+  private final PosPointsOfSalesRepository posPointsOfSalesRepository;
 
-  private final Cache<Long, Map<String, String>> accountCache;
-
-  @Value("${app.account-cache.expire-after-write}")
-  private int accountCacheExpireAfterWrite;
-
-  public UserinfoController(ApiClientService apiClientService)
+  @JsonView(View.PointsOfSales.class)
+  @GetMapping("/{name}")
+  public PosPointOfSales findByName(@PathVariable String name,
+    HttpSession session)
   {
-    this.apiClientService = apiClientService;
-    this.accountCache = Caffeine.newBuilder()
-      .expireAfterWrite(accountCacheExpireAfterWrite, TimeUnit.MINUTES)
-      .build();
-  }
+    PosPointOfSales result = null;
+    log.debug("name = {}", name);
 
-  @GetMapping("/{serial}")
-  public Map<String, String> findBySerial(@PathVariable long serial)
-  {
-    log.debug("serial = {}", serial);
-    return accountCache.get(serial, apiClientService :: findBySerial);
+    session.setAttribute("POINT_OF_SALES_NAME", name);
+    
+    Optional<PosPointOfSales> optional =
+      posPointsOfSalesRepository.findByName(name);
+
+    if(optional.isPresent())
+    {
+      result = optional.get();
+    }
+
+    return result;
   }
 
 }

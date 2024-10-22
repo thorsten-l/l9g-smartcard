@@ -68,7 +68,7 @@ public class MonitorWebSocketHandler implements WebSocketHandler
   public void fireEvent(DtoEvent event)
     throws IOException
   {
-    log.trace("{} sessions", sessions.size());
+    log.trace("fireEvent to {} sessions", sessions.size());
 
     sessions.forEach((id, session) ->
     {

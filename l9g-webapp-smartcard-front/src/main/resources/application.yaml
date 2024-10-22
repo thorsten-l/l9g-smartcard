@@ -81,11 +81,19 @@ app:
   oauth2:
     registration-id: app
     client-id: kasse
-  debug-oidc: true
+  resource-access-roles: kasse
   account-cache:
     expire-after-write: 15
   administrator:
     usernames: "*** unset ***"
-  resource-access-roles: kasse
   default:
     locale: en
+  barcode:
+    enabled: true
+    attribute-name: soniaChipcardBarcode
+    image-type: png
+    width: 500
+    height: 80
+  customer-number:
+    enabled: true
+    attribute-name: soniaCustomerNumber

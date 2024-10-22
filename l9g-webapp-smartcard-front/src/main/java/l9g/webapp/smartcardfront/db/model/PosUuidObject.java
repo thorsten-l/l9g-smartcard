@@ -1,6 +1,7 @@
 package l9g.webapp.smartcardfront.db.model;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.util.Objects;
 import java.util.UUID;
+import l9g.webapp.smartcardfront.json.View;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -104,13 +106,16 @@ public class PosUuidObject implements Serializable
 
   private String modifiedBy;
 
+  @JsonView(View.Base.class)
   @Temporal(TemporalType.TIMESTAMP)
   protected Date createTimestamp;
 
+  @JsonView(View.Base.class)
   @Temporal(TemporalType.TIMESTAMP)
   protected Date modifyTimestamp;
 
   @Id
   @Column(length = 40)
+  @JsonView(View.Base.class)
   private String id;
 }

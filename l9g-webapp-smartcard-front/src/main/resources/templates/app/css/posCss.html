@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Fragments</title>
+  </head>
+  <body>
+    <div th:fragment="posCss" th:remove="tag">
+      <style th:inline="css">
+        .jpegPhoto {
+          max-width: 200px;
+          border-radius: 5px;
+        }
+
+        .barcodePNG {
+          border-radius: 5px;
+          margin-top: 2em;
+        }
+
+        .flag-selected {
+          padding: 1px;
+          border: 2px solid grey;
+          border-radius: 4px;
+        }
+
+        .card {
+          margin-bottom: 1em;
+        }
+        
+        .app-main {
+          margin-top: 1em;
+        }
+      </style>
+    </div>
+  </body>
+</html>

@@ -51,6 +51,13 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- Barcode generator -->
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>3.5.3</version>
+    </dependency>
+
     <!-- caffeine cache -->
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
@@ -67,6 +74,26 @@
       <groupId>org.webjars</groupId>
       <artifactId>bootstrap</artifactId>
       <version>5.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>jquery</artifactId>
+      <version>3.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>popper.js</artifactId>
+      <version>2.11.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bowergithub.select2</groupId>
+      <artifactId>select2</artifactId>
+      <version>4.1.0-rc.0</version>
+    </dependency>    
+    <dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>select2-bootstrap-5-theme</artifactId>
+      <version>1.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.webjars.npm</groupId>

@@ -82,12 +82,24 @@ public class DbService
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_TAX, "1.0"));
 
-      PosPointOfSales systemPos = posPointsOfSalesRepository.save(
+      PosPointOfSales pos = posPointsOfSalesRepository.save(
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
       );
-
       postTransactionsRepository.save(
-        new PosTransaction(KEY_SYSTEM_USER, systemTenant, systemPos)
+        new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
+      );
+      
+      pos = posPointsOfSalesRepository.save(
+        new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, "rz-dev1")
+      );
+      pos.setAmountCash(123.89);
+      pos.setSumupReaderId("-reader id-");
+      pos.setCardIssuing(false);
+      pos.setCardPayment(false);
+      posPointsOfSalesRepository.save(pos);
+      
+      postTransactionsRepository.save(
+        new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
       );
     }
     else

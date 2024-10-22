@@ -16,6 +16,7 @@
 package l9g.webapp.smartcardfront.db.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +26,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import l9g.webapp.smartcardfront.json.View;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -51,15 +53,17 @@ public class PosTenant extends PosUuidObject
     this.name = name;
   }
 
+  @JsonView(View.Base.class)
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
+  @JsonView(View.Tenant.class)
   @ManyToOne
   @JoinColumn(name = "address_id")
   private PosAddress address;
 
+  @JsonView(View.Tenant.class)
   @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
              fetch = FetchType.EAGER)
   private List<PosProperty> properties;
-
 }

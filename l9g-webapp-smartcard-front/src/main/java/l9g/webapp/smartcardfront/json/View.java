@@ -13,21 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
-
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.stereotype.Repository;
+package l9g.webapp.smartcardfront.json;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosPointsOfSalesRepository extends
-  ListCrudRepository<PosPointOfSales, String>
+public interface View
 {
-  Optional<PosPointOfSales> findByName(String name);
+  static final String JSON_STATUS_OK = "{\"status\": \"OK\"}";
+
+  public static class None
+  {
+  };
+
+  public static class Base
+  {
+  };
+
+  public static class Tenant extends Base
+  {
+  };
+
+  public static class PointsOfSales extends Base
+  {
+  };
 
 }
