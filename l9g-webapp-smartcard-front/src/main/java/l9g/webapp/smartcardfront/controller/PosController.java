@@ -16,6 +16,7 @@
 package l9g.webapp.smartcardfront.controller;
 
 import java.util.Locale;
+import l9g.webapp.smartcardfront.config.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -32,19 +33,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class HomeController
+public class PosController
 {
-  @GetMapping("/")
-  public String home(
-    Model model,
-    @AuthenticationPrincipal DefaultOidcUser principal)
+  @GetMapping("/pos")
+  public String pos(
+    @AuthenticationPrincipal DefaultOidcUser principal, Model model)
   {
-    log.debug("home principal={}", principal);
+    log.debug("pos preferred_username={}", principal.getPreferredUsername());
     Locale locale = LocaleContextHolder.getLocale();
-    log.debug("locale={}", locale);
     model.addAttribute("principal", principal);
     model.addAttribute("locale", locale.toString());
-    return "home";
+    return "pos";
   }
 
 }

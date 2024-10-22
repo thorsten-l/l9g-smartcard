@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>L9G Smartcard Front</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"></link>
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}" ></link>
+    <link th:rel="stylesheet" th:href="@{/css/flag-icons.min.css}" ></link>
+    <style>
+      .jpegPhoto {
+        float: right;
+        margin-left: 1em;
+        max-width: 200px;
+        border-radius: 5px;
+      }
+
+      .flag-selected {
+        padding: 1px;
+        border: 2px solid grey;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}"><i class="fa-solid fa-house-chimney"></i></a>
+        <div class="d-flex">
+          <span class="navbar-text" style="margin-right: 1em">
+            <a href="?lang=en"><span class="fi fi-gb" th:classappend="${locale == 'en'} ? 'flag-selected' : ''"></span></a> |
+            <a href="?lang=de"><span class="fi fi-de" th:classappend="${locale == 'de'} ? 'flag-selected' : ''"></span></a> 
+          </span>
+          <span class="navbar-text">
+            Hi, <span style="margin-right: 1em" th:text="${principal.fullName}">fullname</span>
+          </span>
+          <form style="margin-left: 1em" method="post" action="/logout">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"></input>
+            <input class="btn btn-outline-secondary" type="submit" th:value="#{logout}"></input>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div style="margin-top: 2em" class="container">
+
+      <div class="row">
+        <div class="col-md-8">
+          <!-- Input group for POS -->
+          <div class="mb-3">
+            <label for="timestamp" class="form-label" th:text="#{label_pos_name}">P</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-solid fa-cash-register"></i></span> 
+              <input id="posname" readonly="true" type="text" class="form-control"> 
+            </div>
+          </div>
+
+          <!-- Input group for Timestamp -->
+          <div class="mb-3">
+            <label for="timestamp" class="form-label" th:text="#{label_smartcard_monitor_heartbeat}">S</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-regular fa-clock"></i></span> 
+              <input id="timestamp" type="text" class="form-control"> 
+            </div>
+          </div>
+
+          <!-- Input group for ATR -->
+          <div class="mb-3">
+            <label for="cardAtr" class="form-label">ATR (Hex)</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-regular fa-credit-card"></i></span> 
+              <input id="cardAtr" type="text" class="form-control">
+            </div>
+          </div>
+
+          <!-- Input group for Serial -->
+          <div class="mb-3">
+            <label for="cardSerial" class="form-label" th:text="#{serial}">S</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-regular fa-id-card"></i></span> 
+              <input id="cardSerial" type="text" class="form-control">
+            </div>
+          </div>
+
+          <!-- Input group for User Info -->
+          <div class="mb-3">
+            <label for="userinfo" class="form-label" th:text="#{label_smartcard_owner}">U</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-regular fa-user"></i></span> 
+              <input id="userinfo" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="mail" class="form-label">E-Mail</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-solid fa-at"></i></span> 
+              <input id="mail" type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-center align-items-start">
+          <!-- jpegPhoto -->
+          <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
+        </div>
+      </div>
+    </div>
+
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript">
+      var ws;
+
+      function connect() {
+
+        fetch("http://localhost:38080/api/v1/posname", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          referrerPolicy: 'no-referrer' // Setzt die Referrer-Policy
+        }).then(response => response.json())
+                .then(data => {
+                  if (data.posname)
+                  {
+                    document.getElementById("posname").value = data.posname;
+                  }
+                });
+
+        ws = new WebSocket("ws://localhost:38080/scmon");
+
+        ws.onmessage = function (event) {
+          var dtoEvent = JSON.parse(event.data);
+          console.log("Received event: ", dtoEvent);
+
+          if (dtoEvent.event === "heartbeat") {
+            document.getElementById("timestamp").value
+                    = new Date(dtoEvent.timestamp).toLocaleString();
+          }
+
+          if (dtoEvent.event === "cardInserted" && dtoEvent.card) {
+            document.getElementById("cardAtr").value = dtoEvent.card.atr;
+
+            var serial = dtoEvent.card.serial;
+            document.getElementById("cardSerial").value = serial;
+
+            fetch("/api/v1/userinfo/" + serial)
+                    .then(response => response.json())
+                    .then(userinfo => {
+                      if (userinfo.mail) {
+                        document.getElementById("userinfo").value
+                                = userinfo.givenName + " " + userinfo.sn;
+                        document.getElementById("mail").value = userinfo.mail;
+
+                        if (userinfo.jpegPhoto) {
+                          var jpegPhotoElement = document.getElementById("jpegPhoto");
+                          jpegPhotoElement.src = "data:image/jpeg;base64," + userinfo.jpegPhoto;
+                          jpegPhotoElement.style.display = "block";
+                        }
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error fetching user info:', error);
+                    });
+          }
+
+          if (dtoEvent.event === "cardRemoved") {
+            document.getElementById("cardSerial").value = '';
+            document.getElementById("cardAtr").value = '';
+            document.getElementById("userinfo").value = '';
+            document.getElementById("mail").value = '';
+            var jpegPhotoElement = document.getElementById("jpegPhoto");
+            jpegPhotoElement.style.display = "none";
+            jpegPhotoElement.src = '';
+          }
+        };
+
+        ws.onopen = function () {
+          console.log("WebSocket connection opened.");
+        };
+
+        ws.onclose = function () {
+          console.log("WebSocket connection closed.");
+        };
+
+        ws.onerror = function (error) {
+          console.log("WebSocket error: ", error);
+        };
+      }
+
+      window.onload = function () {
+        connect();
+      };
+    </script>
+  </body>
+</html>

@@ -16,9 +16,9 @@
 package l9g.webapp.smartcardfront.config;
 
 import java.util.Collection;
+import l9g.webapp.smartcardfront.db.model.PosRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -48,9 +48,6 @@ public class ClientSecurityConfig
 {
   private final AppAuthoritiesConverter appAuthoritiesConverter;
 
-  @Value("${app.login-access-role}")
-  private String loginAccessRole;
-
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http,
     ClientRegistrationRepository clientRegistrationRepository)
@@ -68,9 +65,33 @@ public class ClientSecurityConfig
       OAuth2AuthorizationRequestCustomizers.withPkce());
 
     http.authorizeHttpRequests(
-      authorize -> authorize.requestMatchers("/error/**", "/api/v1/buildinfo",
-        "/webjars/**", "/icons/**", "/css/**", "/images/**", "/actuator/**", "/logout").
-        permitAll().anyRequest().hasRole(loginAccessRole))
+      authorize -> authorize
+        .requestMatchers("/", "/error/**", "/api/v1/buildinfo",
+          "/webjars/**", "/icons/**", "/css/**", "/images/**",
+          "/actuator/**", "/flags/**", "/logout").permitAll()
+        .requestMatchers("/system/admin/**")
+        .hasRole(
+          PosRole.POS_ADMINISTRATOR.toString()
+        )
+        .requestMatchers("/system/owner/**")
+        .hasAnyRole(
+          PosRole.POS_OWNER.toString(),
+          PosRole.POS_ADMINISTRATOR.toString()
+        )
+        .requestMatchers("/system/**")
+        .hasAnyRole(
+          PosRole.POS_ACCOUNTANT.toString(),
+          PosRole.POS_OWNER.toString(),
+          PosRole.POS_ADMINISTRATOR.toString()
+        )
+        .anyRequest()
+        .hasAnyRole(
+          PosRole.POS_CASHIER.toString(),
+          PosRole.POS_ACCOUNTANT.toString(),
+          PosRole.POS_OWNER.toString(),
+          PosRole.POS_ADMINISTRATOR.toString()
+        )
+    )
       .oauth2Login(
         login -> login
           .authorizationEndpoint(
@@ -135,7 +156,6 @@ public class ClientSecurityConfig
 
   private Jwt decodeAccessToken(String token, String issuerUri)
   {
-    // Verwende einen JwtDecoder, um das Access-Token zu dekodieren
     JwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(issuerUri);
     return jwtDecoder.decode(token);
   }
