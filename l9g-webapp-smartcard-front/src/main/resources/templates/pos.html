@@ -7,8 +7,6 @@
     <link th:rel="stylesheet" th:href="@{/css/flag-icons.min.css}" ></link>
     <style>
       .jpegPhoto {
-        float: right;
-        margin-left: 1em;
         max-width: 200px;
         border-radius: 5px;
       }
@@ -17,6 +15,10 @@
         padding: 1px;
         border: 2px solid grey;
         border-radius: 4px;
+      }
+
+      .card {
+        margin-bottom: 1em;
       }
     </style>
   </head>
@@ -42,66 +44,89 @@
     </nav>
 
     <div style="margin-top: 2em" class="container">
-
       <div class="row">
         <div class="col-md-8">
-          <!-- Input group for POS -->
-          <div class="mb-3">
-            <label for="timestamp" class="form-label" th:text="#{label_pos_name}">P</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fa-solid fa-cash-register"></i></span> 
-              <input id="posname" readonly="true" type="text" class="form-control"> 
+
+          <div class="card">
+            <div class="card-header"  th:text="#{label_smartcard}">Card title</div>
+            <div class="card-body">
+              <!-- Input group for smartcard owner -->
+              <div class="mb-3">
+                <label for="userinfo" class="form-label" th:text="#{label_smartcard_owner}">U</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-regular fa-user"></i></span> 
+                  <input id="userinfo" type="text" class="form-control">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="mail" class="form-label">E-Mail</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-at"></i></span> 
+                  <input id="mail" type="text" class="form-control">
+                </div>
+              </div>
+
+              <!-- Input group for Serial -->
+              <div class="mb-3">
+                <label for="cardSerial" class="form-label" th:text="#{serial}">S</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-regular fa-id-card"></i></span> 
+                  <input id="cardSerial" type="text" class="form-control">
+                </div>
+              </div>
+
+              <!-- Input group for ATR -->
+              <div class="mb-3">
+                <label for="cardAtr" class="form-label">ATR (Hex)</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-regular fa-credit-card"></i></span> 
+                  <input id="cardAtr" type="text" class="form-control">
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Input group for Timestamp -->
-          <div class="mb-3">
-            <label for="timestamp" class="form-label" th:text="#{label_smartcard_monitor_heartbeat}">S</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fa-regular fa-clock"></i></span> 
-              <input id="timestamp" type="text" class="form-control"> 
-            </div>
-          </div>
+          <div class="card">
+            <div class="card-header" th:text="#{label_point_of_sales}">Card title</div>
+            <div class="card-body">
+              <!-- Input group for POS -->
+              <div class="mb-3">
+                <label for="timestamp" class="form-label" th:text="#{name}">P</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-cash-register"></i></span> 
+                  <input id="posname" readonly="true" type="text" class="form-control"> 
+                </div>
+              </div>
 
-          <!-- Input group for ATR -->
-          <div class="mb-3">
-            <label for="cardAtr" class="form-label">ATR (Hex)</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fa-regular fa-credit-card"></i></span> 
-              <input id="cardAtr" type="text" class="form-control">
-            </div>
-          </div>
-
-          <!-- Input group for Serial -->
-          <div class="mb-3">
-            <label for="cardSerial" class="form-label" th:text="#{serial}">S</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fa-regular fa-id-card"></i></span> 
-              <input id="cardSerial" type="text" class="form-control">
-            </div>
-          </div>
-
-          <!-- Input group for User Info -->
-          <div class="mb-3">
-            <label for="userinfo" class="form-label" th:text="#{label_smartcard_owner}">U</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fa-regular fa-user"></i></span> 
-              <input id="userinfo" type="text" class="form-control">
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="mail" class="form-label">E-Mail</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fa-solid fa-at"></i></span> 
-              <input id="mail" type="text" class="form-control">
+              <!-- Input group for Timestamp -->
+              <div class="mb-3">
+                <label for="timestamp" class="form-label" th:text="#{label_smartcard_monitor_heartbeat}">S</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-regular fa-clock"></i></span> 
+                  <input id="timestamp" type="text" class="form-control"> 
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="col-md-4 d-flex justify-content-center align-items-start">
-          <!-- jpegPhoto -->
-          <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
+        <div class="col-md-4">
+          
+          <div class="card" style="width: 232px; height: 342px">
+            <div class="card-header" th:text="#{label_photo}">Card title</div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+              <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
+            </div>
+          </div>
+
+          <div class="card" style="width: 232px;">
+            <div class="card-header" th:text="#{label_actions}">Card title</div>
+            <div class="card-body">
+              <p><a style="width: 100%" class="btn btn-primary">Zahlung</a></p>
+              <p><a style="width: 100%" class="btn btn-primary">Kartenausgabe</a><p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
