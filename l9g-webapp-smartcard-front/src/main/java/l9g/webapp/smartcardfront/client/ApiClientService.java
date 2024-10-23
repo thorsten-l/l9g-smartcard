@@ -17,6 +17,7 @@ package l9g.webapp.smartcardfront.client;
 
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -81,16 +82,34 @@ public class ApiClientService
       });
   }
 
-  public Map<String,String> findBySerial(long serial)
+  public Map<String, String> findBySerial(long serial)
   {
     log.debug("findBySerial");
 
     return restClient
       .get()
-      .uri("/api/v1/userinfo/{serial}", serial )
+      .uri("/api/v1/userinfo/serial/{serial}", serial)
       .header("Authorization", "Bearer " + getBearer())
       .retrieve()
       .body(new ParameterizedTypeReference<Map<String, String>>()
+      {
+      });
+  }
+
+  public List<Map<String, String>> findByTerm(String term)
+  {
+    log.debug("findBySerial");
+
+    return restClient
+      .get()
+      .uri(uriBuilder -> uriBuilder
+      .path("/api/v1/userinfo/term")
+      .queryParam("term", term)
+      .build()
+      )
+      .header("Authorization", "Bearer " + getBearer())
+      .retrieve()
+      .body(new ParameterizedTypeReference<List<Map<String, String>>>()
       {
       });
   }
@@ -274,18 +293,18 @@ public class ApiClientService
       {
       });
   }
-*/
+   */
   public OAuth2AccessToken getAccessToken()
   {
     log.debug("getAccessToken={}", appOAuth2RegistrationId);
 
-    Authentication authentication
-      = SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication =
+      SecurityContextHolder.getContext().getAuthentication();
 
     OAuth2AuthorizedClient authorizedClient = authorizedClientService
       .loadAuthorizedClient(appOAuth2RegistrationId, authentication.getName());
 
-    if (authorizedClient == null || authorizedClient.getAccessToken() == null
+    if(authorizedClient == null || authorizedClient.getAccessToken() == null
       || Instant.now().isAfter(authorizedClient.getAccessToken().getExpiresAt()))
     {
       OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.

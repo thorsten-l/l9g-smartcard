@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardapi.controller;
 
+import java.util.List;
 import java.util.Map;
 import l9g.webapp.smartcardapi.crypto.CryptoHandler;
 import l9g.webapp.smartcardapi.ldap.LdapUtil;
@@ -24,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,13 +40,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserinfoController
 {
   private final CryptoHandler cryptoHandler;
+
   private final LdapUtil ldapUtil;
-  
-  @GetMapping("/{serial}")
-  public Map<String,String> findBySerial(@PathVariable long serial)
+
+  @GetMapping("/serial/{serial}")
+  public Map<String, String> findBySerial(@PathVariable long serial)
   {
-    log.debug("serial={}", serial);    
+    log.debug("serial={}", serial);
     return ldapUtil.searchForCard(serial);
+  }
+
+  @GetMapping("/term")
+  public List<Map<String, String>> findByTerm(
+    @RequestParam(required = false, defaultValue = "") String term
+  )
+  {
+    log.debug("findByTerm term='{}'", term);
+    return ldapUtil.searchForTerm(term);
   }
 
 }

@@ -21,6 +21,7 @@ import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,9 +56,9 @@ public class LdapUtil
       try
       {
         connection = ldapConnectionFactory.getConnection();
-        MessageFormat searchFormat = new MessageFormat(searchFilter);
+        MessageFormat searchCardFormat = new MessageFormat(searchCardFilter);
 
-        String _searchFilter = searchFormat.format(new Object[]
+        String _searchFilter = searchCardFormat.format(new Object[]
         {
           Long.toString(serialNumber)
         });
@@ -109,6 +110,110 @@ public class LdapUtil
     return account;
   }
 
+  public List<Map<String, String>> searchForTerm(String term)
+  {
+    List<Map<String, String>> accounts = new ArrayList<Map<String, String>>();
+    LDAPConnection connection = null;
+
+    String[] tokens = term.split("\\s+");
+
+    if (tokens.length == 0 )
+    {
+      return accounts;
+    }
+    
+    for(String token : tokens)
+    {
+      if( token.length() < 2 )
+      {
+        return accounts;
+      }
+    }
+    
+    log.debug("LDAP search for term = '{}' {}", term, tokens);
+
+    StringBuffer subFilter = new StringBuffer();
+    subFilter.append("(|");
+    for(String token : tokens)
+    {
+      subFilter.append("(sn=");
+      subFilter.append(token);
+      subFilter.append("*)");
+    }
+    subFilter.append(")(|");
+    for(String token : tokens)
+    {
+      subFilter.append("(givenName=");
+      subFilter.append(token);
+      subFilter.append("*)");
+    }
+    subFilter.append(")");
+
+    MessageFormat searchTermFormat = new MessageFormat(searchTermFilter);
+
+    String _searchTermFilter = searchTermFormat.format(new Object[]
+    {
+      subFilter.toString()
+    });
+
+    log.debug(_searchTermFilter);
+
+    try
+    {
+      connection = ldapConnectionFactory.getConnection();
+
+      SearchResult searchResult = connection.search(baseDn,
+        getSearchScope(searchScope), _searchTermFilter, searchAttributes);
+
+      List<SearchResultEntry> searchResultEntry = searchResult.
+        getSearchEntries();
+
+      //////
+      if(searchResultEntry.size() > 0)
+      {
+        log.debug("{} entries found.", Integer.toString(searchResultEntry.size()));
+        searchResultEntry.forEach(entry ->
+        {
+          Map<String, String> account = new LinkedHashMap<>();
+
+          entry.getAttributes().forEach(attribute ->
+          {
+            String attributeName = attribute.getName();
+            if(ATTRIBUTE_JPEGPHOTO.equals(attributeName))
+            {
+              account.put(attributeName, Base64.getEncoder()
+                .encodeToString(attribute.getValueByteArray()));
+            }
+            else
+            {
+              account.put(attributeName, attribute.getValue());
+            }
+          });
+          accounts.add(account);
+        });
+
+        ////////
+      }
+      else
+      {
+        log.warn("no entries for term '{}' found.", term);
+      }
+    }
+    catch(LDAPException ex)
+    {
+      log.error("searchForTerm ", ex);
+    }
+    finally
+    {
+      if(connection != null)
+      {
+        connection.close();
+      }
+    }
+
+    return accounts;
+  }
+
   private static SearchScope getSearchScope(String name)
   {
     SearchScope scope;
@@ -129,8 +234,11 @@ public class LdapUtil
   @Value("${ldap.base-dn}")
   private String baseDn;
 
-  @Value("${ldap.search.filter}")
-  private String searchFilter;
+  @Value("${ldap.search.filter.card}")
+  private String searchCardFilter;
+
+  @Value("${ldap.search.filter.term}")
+  private String searchTermFilter;
 
   @Value("${ldap.search.scope}")
   private String searchScope;

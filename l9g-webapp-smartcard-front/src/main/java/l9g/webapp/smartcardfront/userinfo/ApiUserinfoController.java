@@ -26,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
@@ -53,11 +55,16 @@ public class ApiUserinfoController
 
   private final Cache<Long, Map<String, String>> accountCache;
 
+  private final Cache<String, List<Map<String, String>>> searchCache;
+
   public ApiUserinfoController(ApiClientService apiClientService)
   {
     this.apiClientService = apiClientService;
     this.accountCache = Caffeine.newBuilder()
       .expireAfterWrite(accountCacheExpireAfterWrite, TimeUnit.MINUTES)
+      .build();
+    this.searchCache = Caffeine.newBuilder()
+      .expireAfterWrite(5, TimeUnit.MINUTES)
       .build();
   }
 
@@ -72,10 +79,56 @@ public class ApiUserinfoController
 
     ArrayList<DtoUserinfoEntry> entries = new ArrayList<>();
 
-    if( ! term.isBlank() && term.length() > 4)
+    term = term.replace('*', ' ');
+    term = term.replace('?', ' ');
+    term = term.replace('%', ' ');
+    term = term.replace('(', ' ');
+    term = term.replace(')', ' ');
+    term = term.replace('{', ' ');
+    term = term.replace('}', ' ');
+    term = term.replace('[', ' ');
+    term = term.replace(']', ' ');
+    term = term.replace('&', ' ');
+    term = term.replace('|', ' ');
+    term = term.replace('.', ' ');
+    term = term.replace('+', ' ');
+    term = term.replace('#', ' ');
+    term = term.trim();
+
+    if( ! term.isBlank() && term.length() > 4 && term.split("\\s+").length > 0)
     {
-      entries.add(new DtoUserinfoEntry("123", "Tanja Test", false));
+      String[] tokens = term.split("\\s+");
+      for(String token : tokens)
+      {
+        if(token.length() < 2)
+        {
+          log.debug("to short token");
+          break;
+        }
+      }
+
+      log.debug("search term = '{}'", term );
+      
+      
+      List<Map<String, String>> clientResult = searchCache.get(term, apiClientService :: findByTerm);
+
+      log.debug("clientResult.size = {}", clientResult.size());
+
+      page -= 1;
+      for(int i = 0; i < 10 && (i + (page * 10)) < clientResult.size(); i ++)
+      {
+        Map<String, String> entry = clientResult.get((i + (page * 10)));
+        entries.add(new DtoUserinfoEntry(
+          entry.get(userIdAttributeName),
+          entry.get("sn") + " " + entry.get("givenName")
+          + ", (" + entry.get("employeeType") + ", " + entry.get("ou")
+          + ", " + entry.get("mail") + ")",
+          false));
+      }
     }
+
+    Collections.sort(entries);
+    log.debug("page={} entries.size={}", page, entries.size());
 
     DtoUserinfoPagination pagination =
       new DtoUserinfoPagination(entries.size() == 10);

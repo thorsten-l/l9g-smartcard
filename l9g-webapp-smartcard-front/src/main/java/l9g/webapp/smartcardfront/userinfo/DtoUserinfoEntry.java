@@ -16,16 +16,30 @@
 package l9g.webapp.smartcardfront.userinfo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public record DtoUserinfoEntry( 
-  String id, 
-  String text, 
-  boolean selected )
+@Slf4j
+@Getter
+@RequiredArgsConstructor
+public class DtoUserinfoEntry implements Comparable<DtoUserinfoEntry>
 {
+  @Override
+  public int compareTo(DtoUserinfoEntry o)
+  {
+    return this.text.compareTo(o.text);
+  }
   
+  private final String id;
+
+  private final String text;
+
+  private final boolean selected;
+
 }
