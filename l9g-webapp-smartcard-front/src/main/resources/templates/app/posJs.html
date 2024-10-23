@@ -61,7 +61,7 @@
             var serial = dtoEvent.card.serial;
             document.getElementById("cardSerial").value = serial;
 
-            fetch("/api/v1/userinfo/" + serial)
+            fetch("/api/v1/userinfo/serial/" + serial)
                     .then(response => response.json())
                     .then(userinfo => {
                       if (userinfo.mail) {
@@ -153,10 +153,13 @@
 
 // ------------------------------------------
 
-      const apiUrl = /*[[@{/api/v1/userinfo}]]*/ '';
+      const apiUrl = /*[[@{/api/v1/userinfo/term}]]*/ '';
 
       $('.select2ajax').select2({
         theme: 'bootstrap-5',
+        minimumInputLength: 5,
+        language: 'de',
+        placeholder: 'Personensuche z.B. "VV NN"',
         ajax: {
           url: apiUrl,
           dataType: 'json'

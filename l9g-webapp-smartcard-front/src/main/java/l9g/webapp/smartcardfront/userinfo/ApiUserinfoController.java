@@ -61,7 +61,28 @@ public class ApiUserinfoController
       .build();
   }
 
-  @GetMapping("/{serial}")
+  @GetMapping("/term")
+  public DtoUserinfoResult findByTerm(
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "") String term,
+    @RequestParam(name = "_type", required = false, defaultValue = "") String type
+  )
+  {
+    log.debug("findByTerm page={} term='{}' type='{}'", page, term, type);
+
+    ArrayList<DtoUserinfoEntry> entries = new ArrayList<>();
+
+    if( ! term.isBlank() && term.length() > 4)
+    {
+      entries.add(new DtoUserinfoEntry("123", "Tanja Test", false));
+    }
+
+    DtoUserinfoPagination pagination =
+      new DtoUserinfoPagination(entries.size() == 10);
+    return new DtoUserinfoResult(entries, pagination);
+  }
+
+  @GetMapping("/serial/{serial}")
   public Map<String, String> findBySerial(@PathVariable long serial)
   {
     log.debug("serial = {}", serial);
@@ -85,24 +106,6 @@ public class ApiUserinfoController
 
     result.put("userId", result.get(userIdAttributeName));
     return result;
-  }
-
-  @GetMapping()
-  public DtoUserinfoResult findByTerm(
-    @RequestParam(required = false, defaultValue = "1") int page,
-    @RequestParam(required = false, defaultValue = "") String term,
-    @RequestParam(name = "_type", required = false, defaultValue = "") String type
-  )
-  {
-    log.debug("findByTerm page={} term='{}' type='{}'", page, term, type);
-
-    DtoUserinfoEntry entry = new DtoUserinfoEntry("123", "Tanja Test", false);
-    ArrayList<DtoUserinfoEntry> entries = new ArrayList<>();
-    entries.add(entry);
-
-    DtoUserinfoPagination pagination =
-      new DtoUserinfoPagination(entries.size() == 10);
-    return new DtoUserinfoResult(entries, pagination);
   }
 
   private String generateBarcodeBase64(String barcodeText)
@@ -154,4 +157,5 @@ public class ApiUserinfoController
 
   @Value("${app.user-id.attribute-name}")
   private String userIdAttributeName;
+
 }
