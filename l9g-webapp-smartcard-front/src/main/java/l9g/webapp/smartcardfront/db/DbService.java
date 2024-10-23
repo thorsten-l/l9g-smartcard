@@ -94,8 +94,8 @@ public class DbService
       );
       pos.setAmountCash(123.89);
       pos.setSumupReaderId("-reader id-");
-      pos.setCardIssuing(false);
-      pos.setCardPayment(false);
+      pos.setCardIssuing(true);
+      pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
       
       postTransactionsRepository.save(

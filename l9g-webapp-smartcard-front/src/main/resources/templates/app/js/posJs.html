@@ -64,8 +64,14 @@
                     .then(response => response.json())
                     .then(userinfo => {
                       if (userinfo.mail) {
+
                         document.getElementById("userinfo").value
                                 = userinfo.givenName + " " + userinfo.sn;
+                        document.getElementById("select2-userinfo-container").title
+                                = userinfo.givenName + " " + userinfo.sn;
+                        document.getElementById("select2-userinfo-container").innerHTML
+                                = userinfo.givenName + " " + userinfo.sn;
+
                         document.getElementById("mail").value = userinfo.mail;
 
                         if (userinfo.jpegPhoto) {
@@ -102,6 +108,8 @@
             document.getElementById("cardSerial").value = '';
             document.getElementById("cardAtr").value = '';
             document.getElementById("userinfo").value = '';
+            document.getElementById("select2-userinfo-container").title = '';
+            document.getElementById("select2-userinfo-container").innerHTML = '';
             document.getElementById("mail").value = '';
 
             var jpegPhotoElement = document.getElementById("jpegPhoto");
@@ -138,6 +146,18 @@
         connect();
       };
 
+// ------------------------------------------
+
+      const apiUrl = /*[[@{/api/v1/userinfo}]]*/ '';
+
+      $('.select2ajax').select2({
+        theme: 'bootstrap-5',
+        ajax: {
+          url: apiUrl,
+          dataType: 'json'
+        }
+      });
+      
     </script>
   </div>
 </html>

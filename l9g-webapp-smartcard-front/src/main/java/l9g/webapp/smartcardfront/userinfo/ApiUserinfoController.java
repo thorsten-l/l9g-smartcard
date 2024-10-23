@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.controller;
+package l9g.webapp.smartcardfront.userinfo;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -24,6 +24,7 @@ import com.google.zxing.oned.Code39Writer;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -97,7 +99,7 @@ public class ApiUserinfoController
       result.put("barcodeNumber", barcodeNumber);
       result.put("barcodePNG", generateBarcodeBase64(barcodeNumber));
     }
-    
+
     if(customerNumberEnabled && result.containsKey(customerNumberAttributeName))
     {
       String customerNumber = result.get(customerNumberAttributeName);
@@ -106,6 +108,24 @@ public class ApiUserinfoController
     }
 
     return result;
+  }
+
+  @GetMapping()
+  public DtoUserinfoResult findByTerm(
+    @RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false, defaultValue = "") String term,
+    @RequestParam(name = "_type", required = false, defaultValue = "") String type
+  )
+  {
+    log.debug("findByTerm page={} term='{}' type='{}'", page, term, type);
+
+    DtoUserinfoEntry entry = new DtoUserinfoEntry("123", "Tanja Test", false);
+    ArrayList<DtoUserinfoEntry> entries = new ArrayList<>();
+    entries.add(entry);
+
+    DtoUserinfoPagination pagination =
+      new DtoUserinfoPagination(entries.size() == 10);
+    return new DtoUserinfoResult(entries, pagination);
   }
 
   private String generateBarcodeBase64(String barcodeText)
