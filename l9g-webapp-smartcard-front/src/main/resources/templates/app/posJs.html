@@ -55,6 +55,7 @@
           }
 
           if (dtoEvent.event === "cardInserted" && dtoEvent.card) {
+            document.getElementById("action_issuing_button").disabled = false;
             document.getElementById("cardAtr").value = dtoEvent.card.atr;
 
             var serial = dtoEvent.card.serial;
@@ -65,6 +66,8 @@
                     .then(userinfo => {
                       if (userinfo.mail) {
 
+                        document.getElementById("userId").value
+                                = userinfo.userId;
                         document.getElementById("userinfo").value
                                 = userinfo.givenName + " " + userinfo.sn;
                         document.getElementById("select2-userinfo-container").title
@@ -105,8 +108,10 @@
           }
 
           if (dtoEvent.event === "cardRemoved") {
+            document.getElementById("action_issuing_button").disabled = true;
             document.getElementById("cardSerial").value = '';
             document.getElementById("cardAtr").value = '';
+            document.getElementById("userId").value = '';
             document.getElementById("userinfo").value = '';
             document.getElementById("select2-userinfo-container").title = '';
             document.getElementById("select2-userinfo-container").innerHTML = '';
@@ -157,7 +162,7 @@
           dataType: 'json'
         }
       });
-      
+
     </script>
   </div>
 </html>

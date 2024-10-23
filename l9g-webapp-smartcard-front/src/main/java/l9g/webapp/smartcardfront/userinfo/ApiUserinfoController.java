@@ -53,30 +53,6 @@ public class ApiUserinfoController
 
   private final Cache<Long, Map<String, String>> accountCache;
 
-  @Value("${app.account-cache.expire-after-write}")
-  private int accountCacheExpireAfterWrite;
-
-  @Value("${app.barcode.attribute-name}")
-  private String barcodeAttributeName;
-
-  @Value("${app.barcode.image-type}")
-  private String barcodeImageType;
-
-  @Value("${app.barcode.enabled}")
-  private boolean barcodeEnabled;
-
-  @Value("${app.barcode.width}")
-  private int barcodeWidth;
-
-  @Value("${app.barcode.height}")
-  private int barcodeHeight;
-
-  @Value("${app.customer-number.enabled}")
-  private boolean customerNumberEnabled;
-
-  @Value("${app.customer-number.attribute-name}")
-  private String customerNumberAttributeName;
-
   public ApiUserinfoController(ApiClientService apiClientService)
   {
     this.apiClientService = apiClientService;
@@ -107,6 +83,7 @@ public class ApiUserinfoController
       result.put("customerNumber", customerNumber);
     }
 
+    result.put("userId", result.get(userIdAttributeName));
     return result;
   }
 
@@ -151,4 +128,30 @@ public class ApiUserinfoController
     return base64Encoded;
   }
 
+  @Value("${app.account-cache.expire-after-write}")
+  private int accountCacheExpireAfterWrite;
+
+  @Value("${app.barcode.attribute-name}")
+  private String barcodeAttributeName;
+
+  @Value("${app.barcode.image-type}")
+  private String barcodeImageType;
+
+  @Value("${app.barcode.enabled}")
+  private boolean barcodeEnabled;
+
+  @Value("${app.barcode.width}")
+  private int barcodeWidth;
+
+  @Value("${app.barcode.height}")
+  private int barcodeHeight;
+
+  @Value("${app.customer-number.enabled}")
+  private boolean customerNumberEnabled;
+
+  @Value("${app.customer-number.attribute-name}")
+  private String customerNumberAttributeName;
+
+  @Value("${app.user-id.attribute-name}")
+  private String userIdAttributeName;
 }

@@ -2,24 +2,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>L9G Smartcard Front</title>
-    <div th:replace="~{app/css/header::head}"></div>
+    <div th:replace="~{app/header::head}"></div>
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
-      <div th:replace="~{app/css/header::header}"></div>
+      <div th:replace="~{app/header::header}"></div>
       <!--begin::App Main-->
       <main class="app-main">
         <div style="margin-top: 3em" class="container">
           <div class="d-flex justify-content-center">
-            <a class="btn btn-primary" th:href="@{/pos}">
-              <span sec:authorize="isAuthenticated()" th:text="#{point_of_sales}" th:remove="tag">pos</span>
-              <span sec:authorize="!isAuthenticated()" th:text="#{login}" th:remove="tag">login</span>
-            </a>
+            <p>
+              <a class="btn btn-primary" th:href="@{/pos}">
+                <span sec:authorize="isAuthenticated()" th:text="#{point_of_sales}" th:remove="tag">pos</span>
+                <span sec:authorize="!isAuthenticated()" th:text="#{login}" th:remove="tag">login</span>
+              </a>
+            </p>
+          </div>   
+          <div class="d-flex justify-content-center">
+            <p sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','POS_OWNER')">
+              <a class="btn btn-danger" th:href="@{/}">Administration</a>
+            </p>
           </div>      
         </div>      
       </main> 
       <!--end::App Main-->
     </div>
-    <script th:replace="~{app/js/scripts::scripts}" th:remove="tag" />
+    <script th:replace="~{app/scripts::scripts}" th:remove="tag" />
   </body>
 </html>

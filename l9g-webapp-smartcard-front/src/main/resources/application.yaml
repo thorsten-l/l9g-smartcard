@@ -97,3 +97,5 @@ app:
   customer-number:
     enabled: true
     attribute-name: soniaCustomerNumber
+  userid:
+    attribute-name: soniaExternalUid
