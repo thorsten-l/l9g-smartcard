@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -78,6 +78,7 @@ public class ApiUserinfoController
     log.debug("findByTerm page={} term='{}' type='{}'", page, term, type);
 
     ArrayList<DtoUserinfoEntry> entries = new ArrayList<>();
+    int clientResultSize = 0;
 
     term = term.replace('*', ' ');
     term = term.replace('?', ' ');
@@ -107,31 +108,23 @@ public class ApiUserinfoController
         }
       }
 
-      log.debug("search term = '{}'", term );
-      
-      
+      log.debug("search term = '{}'", term);
+
       List<Map<String, String>> clientResult = searchCache.get(term, apiClientService :: findByTerm);
+      clientResultSize = clientResult.size();
 
-      log.debug("clientResult.size = {}", clientResult.size());
-
-      page -= 1;
-      for(int i = 0; i < 10 && (i + (page * 10)) < clientResult.size(); i ++)
+      int _page = page - 1;
+      for(int i = 0; i < 10 && (i + (_page * 10)) < clientResult.size(); i ++)
       {
-        Map<String, String> entry = clientResult.get((i + (page * 10)));
-        entries.add(new DtoUserinfoEntry(
-          entry.get(userIdAttributeName),
-          entry.get("sn") + " " + entry.get("givenName")
-          + ", (" + entry.get("employeeType") + ", " + entry.get("ou")
-          + ", " + entry.get("mail") + ")",
-          false));
+        entries.add(buildDtoUserinfoEntry(clientResult.get((i + (_page * 10)))));
       }
     }
 
-    Collections.sort(entries);
-    log.debug("page={} entries.size={}", page, entries.size());
+    boolean morePages = clientResultSize > page * 10;
+    log.debug("page={} entries.size={} clientResultSize = {} morePages = {}",
+      page, entries.size(), clientResultSize, morePages);
 
-    DtoUserinfoPagination pagination =
-      new DtoUserinfoPagination(entries.size() == 10);
+    DtoUserinfoPagination pagination = new DtoUserinfoPagination(morePages);
     return new DtoUserinfoResult(entries, pagination);
   }
 
@@ -159,6 +152,44 @@ public class ApiUserinfoController
 
     result.put("userId", result.get(userIdAttributeName));
     return result;
+  }
+
+  private static final HashMap<String, String> EMPLOYEE_TYPES_MAP =
+    new HashMap<String, String>()
+  {
+    {
+      put("m", "Mitarb.");
+      put("p", "Prof.");
+      put("s", "Stud.");
+      put("az", "Azubi");
+      put("lb", "Lerhb.");
+    }
+  };
+ 
+  private DtoUserinfoEntry buildDtoUserinfoEntry(Map<String, String> entry)
+  {
+    StringBuilder text = new StringBuilder();
+
+    text.append(entry.get("sn"));
+    text.append(" ");
+    text.append(entry.get("givenName"));
+    text.append(" (");
+    text.append(entry.get("mail"));
+    text.append("), ");
+
+    String value = entry.get("employeeType");
+    if ( EMPLOYEE_TYPES_MAP.containsKey(value))
+    {
+      value = EMPLOYEE_TYPES_MAP.get(value);
+    }
+    text.append(value);
+    text.append(", ");
+    text.append(entry.get("ou"));
+    text.append(", ");
+    text.append(entry.get("l"));
+    
+    return new DtoUserinfoEntry(
+      entry.get(userIdAttributeName), text.toString(), false);
   }
 
   private String generateBarcodeBase64(String barcodeText)

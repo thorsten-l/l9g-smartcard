@@ -23,6 +23,7 @@ import com.unboundid.ldap.sdk.SearchScope;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,19 +118,19 @@ public class LdapUtil
 
     String[] tokens = term.split("\\s+");
 
-    if (tokens.length == 0 )
+    if(tokens.length == 0)
     {
       return accounts;
     }
-    
+
     for(String token : tokens)
     {
-      if( token.length() < 2 )
+      if(token.length() < 2)
       {
         return accounts;
       }
     }
-    
+
     log.debug("LDAP search for term = '{}' {}", term, tokens);
 
     StringBuffer subFilter = new StringBuffer();
@@ -172,9 +173,17 @@ public class LdapUtil
       if(searchResultEntry.size() > 0)
       {
         log.debug("{} entries found.", Integer.toString(searchResultEntry.size()));
-        searchResultEntry.forEach(entry ->
+
+        List<SearchResultEntry> entries = new ArrayList<>(searchResult.getSearchEntries());
+
+        entries.sort(Comparator.comparing((SearchResultEntry entry) -> entry.getAttributeValue("sn"),
+          Comparator.nullsLast(String :: compareToIgnoreCase))
+          .thenComparing(entry -> entry.getAttributeValue("givenName"),
+            Comparator.nullsLast(String :: compareToIgnoreCase)));
+
+        for(SearchResultEntry entry : entries)
         {
-          Map<String, String> account = new LinkedHashMap<>();
+           Map<String, String> account = new LinkedHashMap<>();
 
           entry.getAttributes().forEach(attribute ->
           {
@@ -189,9 +198,9 @@ public class LdapUtil
               account.put(attributeName, attribute.getValue());
             }
           });
-          accounts.add(account);
-        });
 
+          accounts.add(account);
+        }
         ////////
       }
       else

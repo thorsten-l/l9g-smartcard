@@ -28,14 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public class DtoUserinfoEntry implements Comparable<DtoUserinfoEntry>
+public class DtoUserinfoEntry
 {
-  @Override
-  public int compareTo(DtoUserinfoEntry o)
-  {
-    return this.text.compareTo(o.text);
-  }
-  
   private final String id;
 
   private final String text;

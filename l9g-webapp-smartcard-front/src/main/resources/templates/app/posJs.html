@@ -152,16 +152,22 @@
       };
 
 // ------------------------------------------
+      const apiUserInfoUrl = /*[[@{/api/v1/userinfo}]]*/ '';
+      const apiUserInfoTermUrl = apiUserInfoUrl + "/term";
 
-      const apiUrl = /*[[@{/api/v1/userinfo/term}]]*/ '';
+      $('#userinfo').on('select2:select', function (e) {
+        var selectedOption = e.params.data;
+        console.log("ID: " + selectedOption.id);
+        console.log("Value: " + selectedOption.text);
+      });
 
-      $('.select2ajax').select2({
+      $('#userinfo').select2({
         theme: 'bootstrap-5',
         minimumInputLength: 5,
         language: 'de',
         placeholder: 'Personensuche z.B. "VV NN"',
         ajax: {
-          url: apiUrl,
+          url: apiUserInfoTermUrl,
           dataType: 'json'
         }
       });
