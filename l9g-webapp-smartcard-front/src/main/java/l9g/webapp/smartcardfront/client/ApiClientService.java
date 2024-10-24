@@ -82,6 +82,20 @@ public class ApiClientService
       });
   }
 
+  public Map<String, String> findByUserId(String userId)
+  {
+    log.debug("findBySerial");
+
+    return restClient
+      .get()
+      .uri("/api/v1/userinfo/userid/{userId}", userId)
+      .header("Authorization", "Bearer " + getBearer())
+      .retrieve()
+      .body(new ParameterizedTypeReference<Map<String, String>>()
+      {
+      });
+  }
+
   public Map<String, String> findBySerial(long serial)
   {
     log.debug("findBySerial");

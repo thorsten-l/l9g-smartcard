@@ -43,6 +43,13 @@ public class UserinfoController
 
   private final LdapUtil ldapUtil;
 
+  @GetMapping("/userid/{userId}")
+  public Map<String, String> findBySerial(@PathVariable String userId)
+  {
+    log.debug("userId={}", userId);
+    return ldapUtil.searchForUserId(userId);
+  }
+
   @GetMapping("/serial/{serial}")
   public Map<String, String> findBySerial(@PathVariable long serial)
   {

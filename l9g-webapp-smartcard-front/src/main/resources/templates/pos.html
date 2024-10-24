@@ -20,7 +20,10 @@
 
                 <div class="card card-primary card-outline">
                   <div class="card-header bg-primary bg-opacity-10">
-                    <div class="card-title" th:text="#{label_smartcard_owner}">Card title</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="card-title" th:text="#{label_smartcard_owner}">Card title</div>
+                      <button type="button" class="btn btn-sm btn-primary" onclick="cleanForm()"><i class="fa-solid fa-broom"></i></button>
+                    </div>
                   </div>
                   <div class="card-body">
                     <!-- Input group for smartcard owner -->

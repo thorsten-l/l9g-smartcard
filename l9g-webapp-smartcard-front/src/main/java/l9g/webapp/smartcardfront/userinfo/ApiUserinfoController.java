@@ -26,7 +26,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -51,20 +50,30 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ApiUserinfoController
 {
+  private final AttributesMapService attributesMapService;
+
   private final ApiClientService apiClientService;
 
-  private final Cache<Long, Map<String, String>> accountCache;
+  private final Cache<String, Map<String, String>> byUserIdCache;
+
+  private final Cache<Long, Map<String, String>> byCardCache;
 
   private final Cache<String, List<Map<String, String>>> searchCache;
 
-  public ApiUserinfoController(ApiClientService apiClientService)
+  public ApiUserinfoController(ApiClientService apiClientService,
+    AttributesMapService attributesMapService)
   {
+    this.attributesMapService = attributesMapService;
     this.apiClientService = apiClientService;
-    this.accountCache = Caffeine.newBuilder()
-      .expireAfterWrite(accountCacheExpireAfterWrite, TimeUnit.MINUTES)
+    log.debug("cacheExpireAfterWrite={}m", cacheExpireAfterWrite);
+    this.byUserIdCache = Caffeine.newBuilder()
+      .expireAfterWrite(cacheExpireAfterWrite, TimeUnit.MINUTES)
+      .build();
+    this.byCardCache = Caffeine.newBuilder()
+      .expireAfterWrite(cacheExpireAfterWrite, TimeUnit.MINUTES)
       .build();
     this.searchCache = Caffeine.newBuilder()
-      .expireAfterWrite(5, TimeUnit.MINUTES)
+      .expireAfterWrite(cacheExpireAfterWrite, TimeUnit.MINUTES)
       .build();
   }
 
@@ -132,8 +141,22 @@ public class ApiUserinfoController
   public Map<String, String> findBySerial(@PathVariable long serial)
   {
     log.debug("serial = {}", serial);
+    Map<String, String> result = byCardCache.get(serial, apiClientService :: findBySerial);
+    editResult(result);
+    return result;
+  }
 
-    Map<String, String> result = accountCache.get(serial, apiClientService :: findBySerial);
+  @GetMapping("/userid/{userId}")
+  public Map<String, String> findBySerial(@PathVariable String userId)
+  {
+    log.debug("userId = {}", userId);
+    Map<String, String> result = byUserIdCache.get(userId, apiClientService :: findByUserId);
+    editResult(result);
+    return result;
+  }
+
+  private void editResult(Map<String, String> result)
+  {
 
     if(barcodeEnabled && result.containsKey(barcodeAttributeName))
     {
@@ -141,6 +164,12 @@ public class ApiUserinfoController
       result.put("barcodeEnabled", Boolean.toString(barcodeEnabled));
       result.put("barcodeNumber", barcodeNumber);
       result.put("barcodePNG", generateBarcodeBase64(barcodeNumber));
+    }
+
+    if(smartcardEnabled && result.containsKey(smartcardAttributeName))
+    {
+      String smartcardNumber = result.get(smartcardAttributeName);
+      result.put("smartcardNumber", smartcardNumber);
     }
 
     if(customerNumberEnabled && result.containsKey(customerNumberAttributeName))
@@ -151,21 +180,8 @@ public class ApiUserinfoController
     }
 
     result.put("userId", result.get(userIdAttributeName));
-    return result;
   }
 
-  private static final HashMap<String, String> EMPLOYEE_TYPES_MAP =
-    new HashMap<String, String>()
-  {
-    {
-      put("m", "Mitarb.");
-      put("p", "Prof.");
-      put("s", "Stud.");
-      put("az", "Azubi");
-      put("lb", "Lerhb.");
-    }
-  };
- 
   private DtoUserinfoEntry buildDtoUserinfoEntry(Map<String, String> entry)
   {
     StringBuilder text = new StringBuilder();
@@ -177,17 +193,24 @@ public class ApiUserinfoController
     text.append(entry.get("mail"));
     text.append("), ");
 
-    String value = entry.get("employeeType");
-    if ( EMPLOYEE_TYPES_MAP.containsKey(value))
+    String value = entry.get(attributesMapService.getEmployeeTypeAttributeName());
+    if(attributesMapService.getEmployeeTypesMap().containsKey(value))
     {
-      value = EMPLOYEE_TYPES_MAP.get(value);
+      value = attributesMapService.getEmployeeTypesMap().get(value);
     }
     text.append(value);
     text.append(", ");
-    text.append(entry.get("ou"));
+
+    value = entry.get(attributesMapService.getDepartmentAttributeName());
+    if(attributesMapService.getDepartmentsTypesMap().containsKey(value))
+    {
+      value = attributesMapService.getDepartmentsTypesMap().get(value);
+    }
+
+    text.append(value);
     text.append(", ");
     text.append(entry.get("l"));
-    
+
     return new DtoUserinfoEntry(
       entry.get(userIdAttributeName), text.toString(), false);
   }
@@ -215,8 +238,8 @@ public class ApiUserinfoController
     return base64Encoded;
   }
 
-  @Value("${app.account-cache.expire-after-write}")
-  private int accountCacheExpireAfterWrite;
+  @Value("${app.cache.expire-after-write}")
+  private int cacheExpireAfterWrite;
 
   @Value("${app.barcode.attribute-name}")
   private String barcodeAttributeName;
@@ -238,6 +261,12 @@ public class ApiUserinfoController
 
   @Value("${app.customer-number.attribute-name}")
   private String customerNumberAttributeName;
+
+  @Value("${app.smartcard.enabled}")
+  private boolean smartcardEnabled;
+
+  @Value("${app.smartcard.attribute-name}")
+  private String smartcardAttributeName;
 
   @Value("${app.user-id.attribute-name}")
   private String userIdAttributeName;

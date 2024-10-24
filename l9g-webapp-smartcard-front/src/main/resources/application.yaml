@@ -99,3 +99,37 @@ app:
     attribute-name: soniaCustomerNumber
   userid:
     attribute-name: soniaExternalUid
+
+attributes-map:
+  employeeType:
+    ldap-attribute-name: employeeType
+    mappingList:
+      - m,Mitarb.
+      - p,Prof.
+      - s,Stud.
+      - lb,Lehrb.
+      - az,Azubi
+      - em,ExtMitarb.
+  department:
+    ldap-attribute-name: ou
+    mappingList:
+      - ze,Zentrale Einrichtung
+      - zs,Zentrale Serviceeinrichtung
+      - rz,Rechenzentrum
+      - bibl,Bibliothek
+      - e,Elektrotechnik
+      - i,Informatik
+      - m,Maschinenbau
+      - s,Soziale-Arbeit
+      - h,Handel- und Sozialearbeit
+      - elektrotechnik,Elektro- und Informationstechnik
+      - informatik,Informatik
+      - soziale-arbeit,Soziale Arbeit
+      - maschinenbau,Maschinenbau
+      - fahrzeugtechnik,Fahrzeugtechnik
+      - gesundheitswesen,Gesundheitswesen
+      - wirtschaft,Wirtschaft
+      - versorgungstechnik,Versorgungstechnik
+      - karl-scharfenberg,Verkehr-Sport-Tourismus-Medien
+      - handel-und-soziale-arbeit,Handel und Soziale Arbeit
+      - recht,Recht

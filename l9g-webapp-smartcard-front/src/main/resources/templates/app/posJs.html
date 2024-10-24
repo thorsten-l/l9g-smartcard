@@ -4,6 +4,77 @@
     <script th:inline="javascript">
       var ws;
 
+      function cleanForm()
+      {
+        document.getElementById("action_issuing_button").disabled = true;
+        document.getElementById("cardSerial").value = '';
+        document.getElementById("cardAtr").value = '';
+        document.getElementById("userId").value = '';
+        document.getElementById("userinfo").value = '';
+        document.getElementById("select2-userinfo-container").title = '';
+        document.getElementById("select2-userinfo-container").innerHTML = '';
+        document.getElementById("mail").value = '';
+
+        var jpegPhotoElement = document.getElementById("jpegPhoto");
+        jpegPhotoElement.style.display = "none";
+        jpegPhotoElement.src = '';
+
+        /*[# th:if="${customerNumberEnabled}"]*/
+        document.getElementById("customerNumber").value = '';
+        /*[/]*/
+
+        /*[# th:if="${barcodeEnabled}"]*/
+        document.getElementById("barcodeNumber").value = '';
+        var barcodePNGElement = document.getElementById("barcodePNG");
+        barcodePNGElement.style.display = "none";
+        barcodePNGElement.src = '';
+        /*[/]*/
+      }
+
+      function showUserinfo(userinfo, serial)
+      {
+        document.getElementById("cardSerial").value = serial;
+
+        if (userinfo.userId) {
+
+          document.getElementById("userId").value
+                  = userinfo.userId;
+          document.getElementById("userinfo").value
+                  = userinfo.givenName + " " + userinfo.sn;
+          document.getElementById("select2-userinfo-container").title
+                  = userinfo.givenName + " " + userinfo.sn;
+          document.getElementById("select2-userinfo-container").innerHTML
+                  = userinfo.givenName + " " + userinfo.sn;
+
+          document.getElementById("mail").value = userinfo.mail;
+
+          if (userinfo.jpegPhoto) {
+            var jpegPhotoElement = document.getElementById("jpegPhoto");
+            jpegPhotoElement.src = "data:image/jpeg;base64," + userinfo.jpegPhoto;
+            jpegPhotoElement.style.display = "block";
+          }
+        }
+
+        if (userinfo.barcodeNumber)
+        {
+          document.getElementById("barcodeNumber").value
+                  = userinfo.barcodeNumber;
+
+          if (userinfo.barcodePNG) {
+            var barcodePNGElement = document.getElementById("barcodePNG");
+            barcodePNGElement.src = "data:image/png;base64," + userinfo.barcodePNG;
+            barcodePNGElement.style.display = "block";
+          }
+        }
+
+        if (userinfo.customerNumber)
+        {
+          document.getElementById("customerNumber").value
+                  = userinfo.customerNumber;
+        }
+      }
+
+
       function connect() {
 
         fetch("http://localhost:38080/api/v1/posname", {
@@ -59,48 +130,11 @@
             document.getElementById("cardAtr").value = dtoEvent.card.atr;
 
             var serial = dtoEvent.card.serial;
-            document.getElementById("cardSerial").value = serial;
 
             fetch("/api/v1/userinfo/serial/" + serial)
                     .then(response => response.json())
                     .then(userinfo => {
-                      if (userinfo.mail) {
-
-                        document.getElementById("userId").value
-                                = userinfo.userId;
-                        document.getElementById("userinfo").value
-                                = userinfo.givenName + " " + userinfo.sn;
-                        document.getElementById("select2-userinfo-container").title
-                                = userinfo.givenName + " " + userinfo.sn;
-                        document.getElementById("select2-userinfo-container").innerHTML
-                                = userinfo.givenName + " " + userinfo.sn;
-
-                        document.getElementById("mail").value = userinfo.mail;
-
-                        if (userinfo.jpegPhoto) {
-                          var jpegPhotoElement = document.getElementById("jpegPhoto");
-                          jpegPhotoElement.src = "data:image/jpeg;base64," + userinfo.jpegPhoto;
-                          jpegPhotoElement.style.display = "block";
-                        }
-                      }
-
-                      if (userinfo.barcodeNumber)
-                      {
-                        document.getElementById("barcodeNumber").value
-                                = userinfo.barcodeNumber;
-
-                        if (userinfo.barcodePNG) {
-                          var barcodePNGElement = document.getElementById("barcodePNG");
-                          barcodePNGElement.src = "data:image/png;base64," + userinfo.barcodePNG;
-                          barcodePNGElement.style.display = "block";
-                        }
-                      }
-
-                      if (userinfo.customerNumber)
-                      {
-                        document.getElementById("customerNumber").value
-                                = userinfo.customerNumber;
-                      }
+                      showUserinfo(userinfo, serial);
                     })
                     .catch(error => {
                       console.error('Error fetching user info:', error);
@@ -108,29 +142,7 @@
           }
 
           if (dtoEvent.event === "cardRemoved") {
-            document.getElementById("action_issuing_button").disabled = true;
-            document.getElementById("cardSerial").value = '';
-            document.getElementById("cardAtr").value = '';
-            document.getElementById("userId").value = '';
-            document.getElementById("userinfo").value = '';
-            document.getElementById("select2-userinfo-container").title = '';
-            document.getElementById("select2-userinfo-container").innerHTML = '';
-            document.getElementById("mail").value = '';
-
-            var jpegPhotoElement = document.getElementById("jpegPhoto");
-            jpegPhotoElement.style.display = "none";
-            jpegPhotoElement.src = '';
-
-            /*[# th:if="${customerNumberEnabled}"]*/
-            document.getElementById("customerNumber").value = '';
-            /*[/]*/
-
-            /*[# th:if="${barcodeEnabled}"]*/
-            document.getElementById("barcodeNumber").value = '';
-            var barcodePNGElement = document.getElementById("barcodePNG");
-            barcodePNGElement.style.display = "none";
-            barcodePNGElement.src = '';
-            /*[/]*/
+            cleanForm();
           }
         };
 
@@ -159,6 +171,19 @@
         var selectedOption = e.params.data;
         console.log("ID: " + selectedOption.id);
         console.log("Value: " + selectedOption.text);
+
+        fetch("/api/v1/userinfo/userid/" + selectedOption.id)
+                .then(response => response.json())
+                .then(userinfo => {
+                  if (userinfo.userId)
+                  {
+                    showUserinfo(userinfo, userinfo.smartcardNumber);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error fetching user info:', error);
+                });
+
       });
 
       $('#userinfo').select2({
