@@ -12,7 +12,7 @@
         <div style="margin-top: 3em" class="container">
           <div class="d-flex justify-content-center">
             <p>
-              <a class="btn btn-primary" th:href="@{/pos}">
+              <a class="btn btn-primary" th:href="@{/posx/home}">
                 <span sec:authorize="isAuthenticated()" th:text="#{point_of_sales}" th:remove="tag">pos</span>
                 <span sec:authorize="!isAuthenticated()" th:text="#{login}" th:remove="tag">login</span>
               </a>

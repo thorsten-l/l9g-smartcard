@@ -16,7 +16,6 @@
 package l9g.webapp.smartcardfront.controller;
 
 import java.util.Locale;
-import l9g.webapp.smartcardfront.config.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +25,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class PosController
+public class PosXController
 {
   @Value("${app.barcode.enabled}")
   private boolean barcodeEnabled;
@@ -42,17 +42,21 @@ public class PosController
   @Value("${app.customer-number.enabled}")
   private boolean customerNumberEnabled;
 
-  @GetMapping("/pos")
-  public String pos(
-    @AuthenticationPrincipal DefaultOidcUser principal, Model model)
+  private void generalModel(DefaultOidcUser principal, Model model)
   {
-    log.debug("pos preferred_username={}", principal.getPreferredUsername());
+    log.debug("preferred_username={}", principal.getPreferredUsername());
     Locale locale = LocaleContextHolder.getLocale();
     model.addAttribute("principal", principal);
     model.addAttribute("locale", locale.toString());
     model.addAttribute("barcodeEnabled", Boolean.toString(barcodeEnabled));
     model.addAttribute("customerNumberEnabled", customerNumberEnabled);
-    return "pos";
   }
 
+  @GetMapping("/posx/{page}")
+  public String pos( @PathVariable String page,
+    @AuthenticationPrincipal DefaultOidcUser principal, Model model)
+  {
+    generalModel(principal, model);
+    return "posx/" + page;
+  }
 }

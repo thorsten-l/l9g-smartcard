@@ -10,8 +10,22 @@
     <link th:rel="stylesheet" th:href="@{/webjars/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css}" ></link>
     <link th:rel="stylesheet" th:href="@{/css/flag-icons.min.css}" ></link>
     <link th:rel="stylesheet" th:href="@{/css/adminlte.min.css}"></link>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css" />
     <script th:src="@{/js/sweetalert2.all.min.js}"></script>
+    <script>
+      var AppPos = {
+        id: null,
+        name: null,
+        tenantName: null,
+        tenantId: null
+      };
+
+      var AppCustomer = {
+        userId: null,
+        name: null,
+        mail: null,
+        number: null
+      };
+    </script>
     <link th:replace="~{app/posCss::posCss}" th:remove="tags" />
   </div>
 
