@@ -169,8 +169,8 @@
 
       $('#userinfo').on('select2:select', function (e) {
         var selectedOption = e.params.data;
-        console.log("ID: " + selectedOption.id);
-        console.log("Value: " + selectedOption.text);
+        // console.log("ID: " + selectedOption.id);
+        // console.log("Value: " + selectedOption.text);
 
         fetch("/api/v1/userinfo/userid/" + selectedOption.id)
                 .then(response => response.json())
