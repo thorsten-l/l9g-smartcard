@@ -66,6 +66,7 @@ public class ClientSecurityConfig
 
     http.authorizeHttpRequests(
       authorize -> authorize
+        .requestMatchers("/system/test/error403").denyAll()
         .requestMatchers("/", "/error/**", "/api/v1/buildinfo",
           "/webjars/**", "/icons/**", "/css/**", "/images/**",
           "/actuator/**", "/flags/**", "/logout").permitAll()
