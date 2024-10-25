@@ -1,0 +1,20 @@
+<service>
+  <id>smartcardservice</id>
+  <name>Smart Card Service</name>
+  <description>Dieser Service startet die Smart Card Anwendung.</description>
+  
+  <!-- Pfad zu Java -->
+  <executable>C:\Program Files\BellSoft\LibericaJDK-21\bin\java.exe</executable>
+  
+  <!-- Argumente für die Java-Anwendung -->
+  <arguments>-jar smartcardreader.jar</arguments>
+
+  <!-- Optional: Arbeitsverzeichnis, nur den Pfad ohne die JAR-Datei -->
+  <workingdirectory>C:\Users\%USERNAME%\Desktop\Projekte\Java\Smartcard_Webservice\smartcardreader\target</workingdirectory>
+ 
+  <!-- Optional: Starttyp des Dienstes -->
+  <startmode>Automatic</startmode>
+
+  <!-- Optional: Einstellungen für den Neustart -->
+  <onfailure action="restart" delay="5sec"/>
+</service>
