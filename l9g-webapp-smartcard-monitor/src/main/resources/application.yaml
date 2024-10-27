@@ -35,6 +35,8 @@ spring:
       on-profile: debug
 
 logging:
+  pattern:
+    console: null
   level:
     root: INFO
     l9g: TRACE
