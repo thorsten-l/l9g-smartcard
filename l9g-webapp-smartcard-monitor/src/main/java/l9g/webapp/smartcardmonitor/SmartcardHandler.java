@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,6 +42,10 @@ import org.springframework.stereotype.Component;
 public class SmartcardHandler implements ApplicationRunner
 {
   private final MonitorWebSocketHandler webSockerHandler;
+  private final BuildProperties buildProperties;
+  
+  @Value("${app.posname}")
+  private String appPosName;
 
   @Override
   public void run(ApplicationArguments args)
@@ -49,6 +54,21 @@ public class SmartcardHandler implements ApplicationRunner
     TerminalFactory factory = TerminalFactory.getDefault();
     CardTerminals terminals = factory.terminals();
 
+    System.out.println("\n\n**********************************************");
+    System.out.println( "Point of sales name = " + appPosName );
+    System.out.println( "\nApplication:");
+    System.out.println( "  - name: " + buildProperties.get("name") );
+    System.out.println( "  - description: " + buildProperties.get("description") );
+    System.out.println( "  - version: " + buildProperties.get("version") );
+    System.out.println( "  - build time: " + buildProperties.getTime().toString() );
+    System.out.println("**********************************************\n\n");
+
+    
+    log.info("appPosName={}",appPosName);
+    log.info("appName={}",buildProperties.get("name"));
+    log.info("appVersion={}",buildProperties.get("version"));
+    log.info("appBuildDate={}",buildProperties.getTime().toString());
+      
     while(true)
     {
       try

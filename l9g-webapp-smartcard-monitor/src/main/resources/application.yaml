@@ -18,7 +18,7 @@ server:
 
 scheduler:
   heartbeat:
-    rate: 5000
+    rate: 15000
 
 smartcard:
   terminal:
@@ -26,3 +26,17 @@ smartcard:
 
 app:
   posname: "*** unset ***"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: debug
+
+logging:
+  level:
+    root: INFO
+    l9g: TRACE
+  file:
+    name: /tmp/smartcard-monitor.log

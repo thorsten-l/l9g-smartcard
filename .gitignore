@@ -3,6 +3,7 @@ build/
 private/
 
 nb-configuration.xml
+nbactions.xml
 config.yaml
 secret.bin
 
