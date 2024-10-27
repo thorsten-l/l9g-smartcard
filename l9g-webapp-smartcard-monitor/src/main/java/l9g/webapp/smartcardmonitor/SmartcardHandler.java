@@ -47,6 +47,29 @@ public class SmartcardHandler implements ApplicationRunner
   @Value("${app.posname}")
   private String appPosName;
 
+  /**
+   * This method is the entry point for the application when it is run.
+   * It initializes the terminal factory and card terminals, and continuously
+   * monitors for card presence in the card reader. When a card is detected,
+   * it reads the card's UID and fires events accordingly.
+   *
+   * @param args Application arguments passed to the run method.
+   * @throws Exception if an error occurs during the execution.
+   *
+   * The method performs the following steps:
+   * 1. Initializes the terminal factory and card terminals.
+   * 2. Logs application details such as name, description, version, and build time.
+   * 3. Enters an infinite loop to monitor card presence.
+   * 4. If card terminals are available, it logs the available card readers.
+   * 5. Uses the first available card reader to wait for a card to be present.
+   * 6. When a card is detected, it connects to the card and logs card details.
+   * 7. Sends a command APDU to the card to retrieve the card's UID.
+   * 8. Logs the card UID and serial number.
+   * 9. Fires an event with the card details.
+   * 10. Waits for the card to be removed and fires a card removal event.
+   * 11. If no card reader is found, logs an error and fires an error event.
+   * 12. Catches any exceptions, logs the error, and fires an error event.
+   */
   @Override
   public void run(ApplicationArguments args)
     throws Exception
@@ -62,7 +85,6 @@ public class SmartcardHandler implements ApplicationRunner
     System.out.println( "  - version: " + buildProperties.get("version") );
     System.out.println( "  - build time: " + buildProperties.getTime().toString() );
     System.out.println("**********************************************\n\n");
-
     
     log.info("appPosName={}",appPosName);
     log.info("appName={}",buildProperties.get("name"));

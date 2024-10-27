@@ -35,6 +35,41 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientSecurityConfig
 {
 
+  /**
+   * Configures the security filter chain for the application.
+   * 
+   * <p>This method sets up the security filter chain by configuring CORS and CSRF settings.
+   * It uses a custom CORS configuration source and disables CSRF protection for all requests.
+   * 
+   * Cross-Origin Resource Sharing (CORS)
+   * CORS is a security feature implemented by web browsers to control how resources 
+   * on a web page can be requested from another domain outside the domain from which 
+   * the resource originated. It is a way to allow or restrict requested resources on 
+   * a web server depending on where the HTTP request was initiated.
+   *
+   * Purpose: To prevent unauthorized access to resources on a server from a different origin.
+   * Configuration: In the provided code, CORS is configured using a custom CORS configuration 
+   * source, which is likely defined elsewhere in the application. This configuration source 
+   * specifies which origins are allowed to access the resources, what HTTP methods are 
+   * permitted, and other settings.
+   *
+   * Cross-Site Request Forgery (CSRF)
+   * CSRF is a type of attack that tricks the victim into submitting a malicious request. 
+   * It exploits the trust that a web application has in the user's browser. For example, 
+   * if a user is logged into a banking site, an attacker could trick the user into submitting 
+   * a request to transfer money without the user's knowledge.
+   *
+   * Purpose: To prevent unauthorized commands from being transmitted from a user that the 
+   * web application trusts.
+   * Configuration: In the provided code, CSRF protection is disabled for all requests using 
+   * csrf.ignoringRequestMatchers("/**"). This means that the application will not enforce CSRF 
+   * protection, which might be suitable for APIs or certain types of applications where CSRF 
+   * protection is not necessary.
+   * 
+   * @param http the {@link HttpSecurity} to modify
+   * @return the configured {@link SecurityFilterChain}
+   * @throws Exception if an error occurs while configuring the security filter chain
+   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http)
     throws Exception
@@ -47,6 +82,14 @@ public class ClientSecurityConfig
     return http.build();
   }
 
+  /**
+   * Configures the CORS (Cross-Origin Resource Sharing) settings for the application.
+   * 
+   * This bean defines the CORS configuration source, which specifies the allowed origins,
+   * methods, headers, and credentials policy for cross-origin requests.
+   * 
+   * @return a {@link CorsConfigurationSource} with the specified CORS settings.
+   */
   @Bean
   public CorsConfigurationSource corsConfigurationSource()
   {

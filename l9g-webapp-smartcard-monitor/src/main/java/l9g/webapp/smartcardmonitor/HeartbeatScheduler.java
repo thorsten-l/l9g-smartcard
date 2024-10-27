@@ -13,6 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * The HeartbeatScheduler class is responsible for scheduling and executing
+ * a heartbeat job at a fixed rate. This class uses Spring's scheduling and
+ * asynchronous capabilities to periodically send a heartbeat event through
+ * a WebSocket handler.
+ * 
+ * <p>The heartbeat job is scheduled with a fixed rate specified by the 
+ * `scheduler.heartbeat.rate` property and is executed asynchronously.
+ * 
+ * <p>Dependencies:
+ * <ul>
+ *   <li>{@link MonitorWebSocketHandler} - The WebSocket handler used to fire the heartbeat event.</li>
+ * </ul>
+ * 
+ * <p>Annotations:
+ * <ul>
+ *   <li>{@link EnableAsync} - Enables Spring's asynchronous method execution capability.</li>
+ *   <li>{@link EnableScheduling} - Enables Spring's scheduled task execution capability.</li>
+ *   <li>{@link Configuration} - Indicates that this class is a Spring configuration class.</li>
+ *   <li>{@link Slf4j} - Lombok annotation to generate a logger field.</li>
+ *   <li>{@link RequiredArgsConstructor} - Lombok annotation to generate a constructor with required arguments.</li>
+ * </ul>
+ * 
+ * <p>Methods:
+ * <ul>
+ *   <li>{@code heartbeatJob()} - The method that gets executed at a fixed rate to send a heartbeat event.</li>
+ * </ul>
+ * 
+ * <p>Exceptions:
+ * <ul>
+ *   <li>{@link IOException} - Thrown if an I/O error occurs during the execution of the heartbeat job.</li>
+ * </ul>
+ * 
+ * <p>Author: Thorsten Ludewig (t.ludewig@gmail.com)
+ */
 package l9g.webapp.smartcardmonitor;
 
 import java.io.IOException;

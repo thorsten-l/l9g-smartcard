@@ -31,6 +31,12 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Slf4j
 public class MonitorWebSocketConfig implements WebSocketConfigurer
 {
+  /**
+   * Registers WebSocket handlers with the specified registry.
+   * This method is called to configure the WebSocket handlers for the application.
+   * 
+   * @param registry the WebSocketHandlerRegistry to register handlers with
+   */
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
   {
@@ -41,6 +47,11 @@ public class MonitorWebSocketConfig implements WebSocketConfigurer
       .setAllowedOrigins("*");
   }
 
+  /**
+   * Creates and configures a {@link MonitorWebSocketHandler} bean.
+   *
+   * @return a new instance of {@link MonitorWebSocketHandler}
+   */
   @Bean
   MonitorWebSocketHandler webSocketHandler()
   {

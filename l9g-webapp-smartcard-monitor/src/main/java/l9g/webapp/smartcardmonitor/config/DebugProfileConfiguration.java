@@ -34,6 +34,21 @@ public class DebugProfileConfiguration
 {
   private String loggingFilename;
 
+  /**
+   * Configuration class for setting up the debug profile.
+   * This class redirects all console output (System.out and System.err) to a specified log file.
+   *
+   * @param environment The environment from which to retrieve the logging file name property.
+   *                    If the property "logging.file.name" is not set, it defaults to "smartcard-monitor.log".
+   *
+   * The constructor performs the following actions:
+   * - Retrieves the logging file name from the environment.
+   * - Logs the initialization of the DebugProfileConfiguration.
+   * - Logs the name of the logging file.
+   * - Redirects all console output to the specified log file.
+   *
+   * If an IOException occurs during the redirection of console output, it logs an error message.
+   */
   public DebugProfileConfiguration(Environment environment)
   {
     this.loggingFilename = environment.getProperty("logging.file.name", "smartcard-monitor.log");

@@ -40,12 +40,9 @@ public class ApiPosNameController
   private String appPosName;
   
   /**
-   * Retrieves the build information of the application.
-   * This method returns a LinkedHashMap containing key-value pairs of build
-   * properties,
-   * such as version, time, and other metadata.
+   * Handles GET requests to retrieve the POS name.
    *
-   * @return a Map with build information.
+   * @return a map containing the POS name with the key "posname"
    */
   @GetMapping()
   public Map<String, String> posName()

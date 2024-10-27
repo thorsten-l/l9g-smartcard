@@ -21,6 +21,12 @@ public class MonitorWebSocketHandler implements WebSocketHandler
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  /**
+   * Invoked after a new WebSocket connection has been established.
+   *
+   * @param session the WebSocket session that has been established
+   * @throws Exception if an error occurs during the establishment of the connection
+   */
   @Override
   public void afterConnectionEstablished(WebSocketSession session)
     throws Exception
@@ -29,6 +35,13 @@ public class MonitorWebSocketHandler implements WebSocketHandler
     this.sessions.put(session.getId(), session);
   }
 
+  /**
+   * Handles incoming WebSocket messages.
+   *
+   * @param session the WebSocket session associated with the message
+   * @param message the WebSocket message received
+   * @throws Exception if an error occurs while handling the message
+   */
   @Override
   public void handleMessage(WebSocketSession session,
     org.springframework.web.socket.WebSocketMessage<?> message)
@@ -38,6 +51,13 @@ public class MonitorWebSocketHandler implements WebSocketHandler
       session.getId(), message.getPayload().toString());
   }
 
+  /**
+   * Handles transport errors that occur during WebSocket communication.
+   *
+   * @param session the WebSocket session where the error occurred
+   * @param exception the exception that was thrown
+   * @throws Exception if an error occurs while handling the transport error
+   */
   @Override
   public void handleTransportError(WebSocketSession session,
     Throwable exception)
@@ -49,6 +69,13 @@ public class MonitorWebSocketHandler implements WebSocketHandler
     sessions.remove(session.getId());
   }
 
+  /**
+   * Invoked after a WebSocket connection has been closed.
+   *
+   * @param session the WebSocket session that was closed
+   * @param closeStatus the status object containing the code and reason for the closure
+   * @throws Exception if any error occurs during the handling of the closed connection
+   */
   @Override
   public void afterConnectionClosed(WebSocketSession session,
     org.springframework.web.socket.CloseStatus closeStatus)
@@ -59,12 +86,23 @@ public class MonitorWebSocketHandler implements WebSocketHandler
     sessions.remove(session.getId());
   }
 
+  /**
+   * Indicates whether this WebSocket handler supports partial messages.
+   * 
+   * @return false, indicating that partial messages are not supported.
+   */
   @Override
   public boolean supportsPartialMessages()
   {
     return false;
   }
 
+  /**
+   * Fires an event to all open WebSocket sessions.
+   * 
+   * @param event the event to be sent to the WebSocket sessions
+   * @throws IOException if an I/O error occurs while sending the message
+   */
   public void fireEvent(DtoEvent event)
     throws IOException
   {
