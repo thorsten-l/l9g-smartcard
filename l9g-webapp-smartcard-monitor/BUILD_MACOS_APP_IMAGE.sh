@@ -20,8 +20,7 @@ jpackage --input . \
   --main-class l9g.webapp.smartcardmonitor.Application \
   --type app-image \
   --vendor "l9g" \
-  --java-options '-jar $APPDIR/l9g-webapp-smartcard-monitor.jar >> /tmp/smartcard-monitor.log 2>&1' \
+  --java-options '-jar $APPDIR/l9g-webapp-smartcard-monitor.jar' \
   --app-version 1.0.0 \
   --mac-package-identifier l9g.webapp.smartcardmonitor \
   --mac-package-name SC-Monitor
-  
