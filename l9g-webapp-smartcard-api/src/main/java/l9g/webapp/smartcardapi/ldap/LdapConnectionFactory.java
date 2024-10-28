@@ -89,7 +89,7 @@ public final class LdapConnectionFactory
   @Value("${ldap.bind.dn}")
   private String bindDn;
 
-  @EncryptedValue("ldap.bind.password")
+  @EncryptedValue("${ldap.bind.password}")
   private String bindPassword;
 
 }

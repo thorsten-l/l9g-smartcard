@@ -49,8 +49,18 @@ public class EncryptedValueProcessor implements BeanPostProcessor
       EncryptedValue annotation = field.getAnnotation(EncryptedValue.class);
       if(annotation != null)
       {
-        String decryptedValue 
-          = cryptoHandler.decrypt(environment.getProperty(annotation.value()));
+        String environmentName = annotation.value()
+          .replaceAll("^\\$\\{", "").replaceAll("}$", "");
+
+        String[] nameAndDefaultValue = environmentName.split("\\:");
+
+        String encryptedValue = (nameAndDefaultValue.length == 1)
+          ? environment.getProperty(environmentName)
+          : environment.getProperty(nameAndDefaultValue[0]);
+
+        String decryptedValue = (encryptedValue != null)
+          ? cryptoHandler.decrypt(encryptedValue)
+          : (nameAndDefaultValue.length == 2) ? nameAndDefaultValue[1] : null;
 
         log.trace("{} = {}", annotation.value(), decryptedValue);
 
@@ -60,4 +70,5 @@ public class EncryptedValueProcessor implements BeanPostProcessor
     }
     return bean;
   }
+
 }
