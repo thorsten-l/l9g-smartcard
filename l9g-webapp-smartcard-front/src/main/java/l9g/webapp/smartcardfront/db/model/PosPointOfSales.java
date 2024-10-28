@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -51,7 +52,7 @@ public class PosPointOfSales extends PosUuidObject
   }
 
   @JsonView(View.PointsOfSales.class)
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "tenant_id", nullable = false)
   private PosTenant tenant;
 
@@ -76,7 +77,7 @@ public class PosPointOfSales extends PosUuidObject
   private boolean cardPayment;
 
   @JsonView(View.PointsOfSales.class)
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "address_id")
   private PosAddress address;
 
