@@ -25,10 +25,41 @@ import org.springframework.stereotype.Service;
  *
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
+/**
+ * Service class for handling user roles.
+ * <p>
+ * This service provides functionality to print the roles assigned to the currently authenticated user.
+ * </p>
+ * 
+ * <h2>Methods:</h2>
+ * <ul>
+ *   <li>{@link #printUserRoles()} - Prints the roles assigned to the currently authenticated user.</li>
+ * </ul>
+ * 
+ * <h2>Usage Example:</h2>
+ * <pre>
+ * {@code
+ * @Autowired
+ * private UserRoleService userRoleService;
+ * 
+ * public void someMethod() {
+ *     userRoleService.printUserRoles();
+ * }
+ * }
+ * </pre>
+ */
 @Service
 public class UserRoleService
 {
 
+  /**
+   * Prints the roles assigned to the currently authenticated user.
+   * <p>
+   * This method retrieves the authentication information from the security context,
+   * extracts the granted authorities (roles) of the authenticated user, and prints
+   * each role to the standard output.
+   * </p>
+   */
   public void printUserRoles()
   {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

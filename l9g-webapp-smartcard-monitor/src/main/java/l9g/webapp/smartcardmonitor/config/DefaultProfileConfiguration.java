@@ -15,9 +15,13 @@
  */
 package l9g.webapp.smartcardmonitor.config;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 
 /**
  *
@@ -27,9 +31,42 @@ import org.springframework.context.annotation.Profile;
 @Profile("default")
 @Slf4j
 public class DefaultProfileConfiguration
-{ 
-  public DefaultProfileConfiguration()
+{
+  private String loggingFilename;
+
+  /**
+   * Configuration class for setting up the debug profile.
+   * This class redirects all console output (System.out and System.err) to a specified log file.
+   *
+   * @param environment The environment from which to retrieve the logging file name property.
+   *                    If the property "logging.file.name" is not set, it defaults to "smartcard-monitor.log".
+   *
+   * The constructor performs the following actions:
+   * - Retrieves the logging file name from the environment.
+   * - Logs the initialization of the DefaultProfileConfiguration.
+   * - Logs the name of the logging file.
+   * - Redirects all console output to the specified log file.
+   *
+   * If an IOException occurs during the redirection of console output, it logs an error message.
+   */
+  public DefaultProfileConfiguration(Environment environment)
   {
+    this.loggingFilename = environment.getProperty("logging.file.name", "smartcard-monitor.log");
     log.info("*** DefaultProfileConfiguration");
+    log.info("  - logging file name : {}", loggingFilename);
+    log.info("  - redirecting all console output to logfile.");
+
+    try
+    {
+      FileOutputStream fileOut = new FileOutputStream(loggingFilename, true);
+      PrintStream printStream = new PrintStream(fileOut, true);
+      System.setOut(printStream);
+      System.setErr(printStream);
+    }
+    catch(IOException e)
+    {
+      log.error("Error when redirecting System.out and System.err to the log file", e);
+    }
   }
+
 }

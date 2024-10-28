@@ -5,5 +5,4 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 mvn clean package
 
-rm -f smartcard-monitor.log
-java -jar target/l9g-webapp-smartcard-monitor.jar
+java -jar target/l9g-webapp-smartcard-monitor.jar --spring.profiles.active=debug
