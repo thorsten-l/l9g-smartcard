@@ -17,34 +17,21 @@ package l9g.webapp.smartcardapi.crypto;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
-@Component
 @Slf4j
 public class CryptoHandler
 {
   public final static String AES256_PREFIX = "{AES256}";
 
-  @Autowired
-  public CryptoHandler(AppSecretKey appSecretKey)
+  public CryptoHandler()
   {
     log.debug("CryptoHandler()");
-    aes256 = new AES256(appSecretKey.getSecretKey());
-  }
-
-  @Bean
-  @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-  public CryptoHandler cryptoHandlerBean()
-  {
-    log.debug("cryptoHandlerBean");
-    return this;
+    aes256 = new AES256(new AppSecretKey().getSecretKey());
   }
 
   public String encrypt(String text)

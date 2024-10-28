@@ -26,7 +26,7 @@ import com.unboundid.util.ssl.TrustAllTrustManager;
 import java.security.GeneralSecurityException;
 
 import javax.net.ssl.SSLSocketFactory;
-import l9g.webapp.smartcardapi.crypto.CryptoHandler;
+import l9g.webapp.smartcardapi.crypto.EncryptedValue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -39,8 +39,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public final class LdapConnectionFactory
 {
-  private final CryptoHandler cryptoHandler;
-  
   public LDAPConnection getConnection()
     throws LDAPException
   {
@@ -50,12 +48,12 @@ public final class LdapConnectionFactory
     if(hostSslEnabled)
     {
       connection = new LDAPConnection(createSSLSocketFactory(), options,
-        hostName, hostPort, bindDn, cryptoHandler.decrypt(bindPassword));
+        hostName, hostPort, bindDn, bindPassword);
     }
     else
     {
       connection = new LDAPConnection(options, hostName,
-        hostPort, bindDn, cryptoHandler.decrypt(bindPassword));
+        hostPort, bindDn, bindPassword);
     }
 
     connection.setConnectionName(hostName);
@@ -91,7 +89,7 @@ public final class LdapConnectionFactory
   @Value("${ldap.bind.dn}")
   private String bindDn;
 
-  @Value("${ldap.bind.password}")
+  @EncryptedValue("ldap.bind.password")
   private String bindPassword;
 
 }

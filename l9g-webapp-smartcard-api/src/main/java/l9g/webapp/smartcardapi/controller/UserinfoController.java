@@ -39,8 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserinfoController
 {
-  private final CryptoHandler cryptoHandler;
-
   private final LdapUtil ldapUtil;
 
   @GetMapping("/userid/{userId}")

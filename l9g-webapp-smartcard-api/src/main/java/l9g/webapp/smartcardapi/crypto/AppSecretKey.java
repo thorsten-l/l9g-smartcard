@@ -22,16 +22,11 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
-@Component
 @Slf4j
 public class AppSecretKey
 {
@@ -75,14 +70,6 @@ public class AppSecretKey
       log.error("ERROR: secret file ", e);
       System.exit(-1);
     }
-  }
-
-  @Bean
-  @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-  public AppSecretKey appSecretKeyBean()
-  {
-    log.debug("appSecretKeyBean");
-    return this;
   }
 
   @Getter
