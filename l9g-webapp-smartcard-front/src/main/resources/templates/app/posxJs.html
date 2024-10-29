@@ -109,13 +109,13 @@ limitations under the License.
         {
           document.getElementById("green-light").style.display = "none";
           document.getElementById("red-light").style.display = "inline-flex";
+          AppPos.readerErrorAcnowledged = true;
           Swal.fire({
             title: "ERROR",
             text: message,
             icon: "error",
             confirmButtonText: "OK"
           });
-          AppPos.readerErrorAcnowledged = true;
         }
       }
 
@@ -124,13 +124,13 @@ limitations under the License.
       {
         document.getElementById("green-light").style.display = "inline-flex";
         document.getElementById("red-light").style.display = "none";
+        AppPos.readerErrorAcnowledged = false;
         Swal.fire({
           title: "Card reader connected.",
           text: message,
           icon: "info",
           confirmButtonText: "OK"
         });
-        AppPos.readerErrorAcnowledged = false;
       }
 
 
@@ -140,13 +140,13 @@ limitations under the License.
         document.getElementById("red-light").style.display = "none";
         if (AppPos.readerErrorAcnowledged)
         {
+          AppPos.readerErrorAcnowledged = false;
           Swal.fire({
             title: "Smartcard monitor connected.",
             icon: "info",
             confirmButtonText: "OK"
           });
         }
-        AppPos.readerErrorAcnowledged = false;
       }
 
 

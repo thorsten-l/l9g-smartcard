@@ -12,18 +12,23 @@
         <div style="margin-top: 3em" class="container">
           <div class="d-flex justify-content-center">
             <p>
-              <a class="btn btn-primary" th:href="@{/posx/home}">
-                <span sec:authorize="isAuthenticated()" th:text="#{point_of_sales}" th:remove="tag">pos</span>
-                <span sec:authorize="!isAuthenticated()" th:text="#{login}" th:remove="tag">login</span>
+              <a sec:authorize="!isAuthenticated()" class="btn btn-primary" th:href="@{/posx/redirect}">
+                <span th:text="#{login}" th:remove="tag">login</span>
+              </a>
+              <a sec:authorize="isAuthenticated()" class="btn btn-primary" th:href="@{/posx/home}">
+                <span th:text="#{point_of_sales}" th:remove="tag">pos</span>
               </a>
             </p>
           </div>   
           <div class="d-flex justify-content-center">
             <p sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','POS_OWNER')">
-              <a class="btn btn-danger" th:href="@{/}">Administration</a>
+              <a class="btn btn-danger" th:href="@{/admin/home}">Administration</a>
             </p>
-          </div>      
-        </div>      
+          </div>
+        </div>
+        
+  <a class="btn btn-primary" th:href="@{/posx/redirect}"> Redirect Test </a>      
+        
       </main> 
       <!--end::App Main-->
     </div>

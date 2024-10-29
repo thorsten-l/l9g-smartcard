@@ -119,7 +119,7 @@
             </button>
           </p>
           <p sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','POS_OWNER')" th:remove="tag">
-            <a style="width: 100%" class="btn btn-danger">Administration</a>
+            <a style="width: 100%" class="btn btn-danger" th:href="@{/admin/home}">Administration</a>
           </p>
         </div>
       </div>

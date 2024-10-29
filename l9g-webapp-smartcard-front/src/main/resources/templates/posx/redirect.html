@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Redirect</title>
+    <div th:replace="~{app/header::head}"></div>
+  </head>
+  <body>
+    redirect:
+    <ul>
+      <li><a th:href="@{/posx/home}">PosX HOME</a></li>
+      <li><a th:href="@{/admin/home}">Admin HOME</a></li>
+    </ul>
+
+    <script th:inline="javascript">
+      window.onload = function () {
+        console.log("window.onload");
+
+        fetch("http://localhost:38080/api/v1/posname", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          referrerPolicy: 'no-referrer' // Setzt die Referrer-Policy
+        }).then(response => response.json()).then(data => {
+
+          if (data.posname) {
+            AppPos.name = data.posname;
+            console.log(AppPos);
+            window.location = "/posx/home";
+          }
+          
+          // failed
+          
+        }).catch(error => {
+          console.error("Connection to smarcard-monitor failed: ", error);
+          window.location = "/admin/home";
+        });
+      };
+    </script>
+  </body>
+</html>

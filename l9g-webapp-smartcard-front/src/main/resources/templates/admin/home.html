@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>POS Admin</title>
+    <div th:replace="~{app/header::head}"></div>
+  </head>
+
+  <body>
+    <div class="app-wrapper">
+      <div th:replace="~{app/header::header}"></div>
+      <!--begin::App Main-->
+      <main class="app-main">
+        <div class="container">
+          <h1>Admin</h1>
+        </div>
+      </main>
+    </div>
+
+    <script th:replace="~{app/scripts::scripts}" th:remove="tag" />
+  </body>
+</html>
