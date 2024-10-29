@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiPosController
 {
   private final PosPointsOfSalesRepository posPointsOfSalesRepository;
-
+  
   @JsonView(View.PointsOfSales.class)
   @GetMapping("/{name}")
   public PosPointOfSales findByName(@PathVariable String name,
@@ -49,18 +49,30 @@ public class ApiPosController
   {
     PosPointOfSales result = null;
     log.debug("name = {}", name);
-
+    
     session.setAttribute("POINT_OF_SALES_NAME", name);
     
     Optional<PosPointOfSales> optional =
       posPointsOfSalesRepository.findByName(name);
-
+    
     if(optional.isPresent())
     {
       result = optional.get();
     }
-
+    
+    if(result != null)
+    {
+      log.info("point of sales = {}", result.getName());
+      if ( result.getTenant() != null )
+      {
+         log.info("  - tenant = {}", result.getTenant().getName());
+      }
+    }
+    else
+    {
+      log.warn("Point of sales '{}' not found.", name);
+    }
     return result;
   }
-
+  
 }

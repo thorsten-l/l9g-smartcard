@@ -38,6 +38,8 @@ public class DtoEvent
 
   public static final String EVENT_CARD_REMOVED = "cardRemoved";
 
+  public static final String EVENT_CARD_READER_CONNECTED = "cardreaderConnected";
+
   public DtoEvent(String event)
   {
     this.timestamp = System.currentTimeMillis();

@@ -91,6 +91,8 @@ public class SmartcardHandler implements ApplicationRunner
     log.info("appVersion={}",buildProperties.get("version"));
     log.info("appBuildDate={}",buildProperties.getTime().toString());
       
+    cardReaderConnectedEventFired = false;
+    
     while(true)
     {
       try
@@ -100,6 +102,13 @@ public class SmartcardHandler implements ApplicationRunner
           log.debug("Available card readers: {}", terminals.list());
 
           CardTerminal terminal = terminals.list().get(0);
+          if( !cardReaderConnectedEventFired )
+          {
+            webSockerHandler
+            .fireEvent(new DtoEvent(DtoEvent.EVENT_CARD_READER_CONNECTED,
+              terminal.getName() ));
+            cardReaderConnectedEventFired = true;
+          }
           log.debug("Using card reader: {}", terminal.getName());
           log.debug("Waiting for a card...");
 
@@ -163,6 +172,7 @@ public class SmartcardHandler implements ApplicationRunner
         else
         {
           log.error("ERROR: No card reader found!");
+          cardReaderConnectedEventFired = false;
           webSockerHandler
             .fireEvent(new DtoEvent(DtoEvent.EVENT_ERROR,
               "No card reader found!"));
@@ -172,6 +182,7 @@ public class SmartcardHandler implements ApplicationRunner
       catch(Throwable t)
       {
         log.error("ERROR: {}", t.getMessage());
+        cardReaderConnectedEventFired = false;
         webSockerHandler
           .fireEvent(new DtoEvent(DtoEvent.EVENT_ERROR,
             t.getMessage()));
@@ -204,4 +215,5 @@ public class SmartcardHandler implements ApplicationRunner
   @Value("${smartcard.terminal.timeout}")
   private long terminalTimeout;
 
+  private boolean cardReaderConnectedEventFired;
 }

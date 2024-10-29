@@ -55,6 +55,13 @@ limitations under the License.
             <a th:href="@{/}" class="nav-link"><i class="fa-solid fa-house-chimney"></i></a> 
           </li>
 
+          <li id="green-light" class="nav-item" style="display: none; align-items: center;">
+            <img th:src="@{/images/green.svg}" class="monitor-status-light" />
+          </li>
+          <li id="red-light" class="nav-item" style="display: none; align-items: center;">
+            <img th:src="@{/images/red.svg}" class="monitor-status-light" />
+          </li>
+
           <li id="posnameMenu" style="display: none" class="nav-item"> 
             <div class="dropdown">
               <a id="posname" 

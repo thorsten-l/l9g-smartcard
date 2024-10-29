@@ -153,18 +153,34 @@ limitations under the License.
               cleanForm();
             }
           }
+          
+          if (dtoEvent.event === "error") {
+            document.getElementById("green-light").style.display = "none";
+            document.getElementById("red-light").style.display = "inline-flex";            
+          } 
+          
+          if (dtoEvent.event === "cardreaderConnected") {
+            document.getElementById("green-light").style.display = "inline-flex";
+            document.getElementById("red-light").style.display = "none";            
+          } 
         };
 
         ws.onopen = function () {
           console.log("WebSocket connection opened.");
+          document.getElementById("green-light").style.display = "inline-flex";
+          document.getElementById("red-light").style.display = "none";
         };
 
         ws.onclose = function () {
           console.log("WebSocket connection closed.");
+          document.getElementById("green-light").style.display = "none";
+          document.getElementById("red-light").style.display = "inline-flex";
         };
 
         ws.onerror = function (error) {
           console.log("WebSocket error: ", error);
+          document.getElementById("green-light").style.display = "none";
+          document.getElementById("red-light").style.display = "inline-flex";
         };
       }
 
