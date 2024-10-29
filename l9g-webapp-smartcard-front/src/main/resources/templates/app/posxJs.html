@@ -18,6 +18,7 @@ limitations under the License.
   <div th:fragment="posJs" th:remove="tag">
     <script th:inline="javascript">
       var ws;
+      var lastHeartbeatTimestamp = null;
 
       function cleanForm()
       {
@@ -133,6 +134,22 @@ limitations under the License.
       }
 
 
+      function showWebsocketConnectedDialog(message)
+      {
+        document.getElementById("green-light").style.display = "inline-flex";
+        document.getElementById("red-light").style.display = "none";
+        if (AppPos.readerErrorAcnowledged)
+        {
+          Swal.fire({
+            title: "Smartcard monitor connected.",
+            icon: "info",
+            confirmButtonText: "OK"
+          });
+        }
+        AppPos.readerErrorAcnowledged = false;
+      }
+
+
       function connect() {
 
         fetch("http://localhost:38080/api/v1/posname", {
@@ -160,6 +177,7 @@ limitations under the License.
           if (dtoEvent.event === "heartbeat") {
             document.getElementById("timestamp").innerHTML
                     = '<i style="margin-right: 1em" class="fa-regular fa-clock"></i>' + new Date(dtoEvent.timestamp).toLocaleString();
+            lastHeartbeatTimestamp = Date.now();
           }
 
           if (dtoEvent.event === "cardInserted" && dtoEvent.card && document.getElementById("cardSerial") !== null) {
@@ -196,25 +214,38 @@ limitations under the License.
 
         ws.onopen = function () {
           console.log("WebSocket connection opened.");
-          document.getElementById("green-light").style.display = "inline-flex";
-          document.getElementById("red-light").style.display = "none";
-          AppPos.readerErrorAcnowledged = false;
+          showWebsocketConnectedDialog("WebSocket connection opened.");
+          lastHeartbeatTimestamp = Date.now();
         };
 
         ws.onclose = function () {
           console.log("WebSocket connection closed.");
           document.getElementById("green-light").style.display = "none";
           document.getElementById("red-light").style.display = "inline-flex";
+          reconnect();
         };
 
         ws.onerror = function (error) {
           console.log("WebSocket error: ", error);
-          showErrorDialog(error);
+          showErrorDialog("WebSocket connection error.");
         };
       }
 
-      function initializeCustomerPage() {
+      function checkHeartbeat() {
+        console.log("checkHeartbeat");
+        if (lastHeartbeatTimestamp && (Date.now() - lastHeartbeatTimestamp > 30000)) {
+          console.log("No heartbeat received for 30 seconds. Reconnecting...");
+          showErrorDialog("Smartcard monitor connection lost!");
+          ws.close();
+        }
+      }
 
+      function reconnect() {
+        console.log("reconnect");
+        setTimeout(connect, 5000);
+      }
+
+      function initializeCustomerPage() {
         console.log("initializeCustomerPage");
 
         AppCustomer.userId = null;
@@ -244,12 +275,6 @@ limitations under the License.
             console.log("AppPos");
             console.log(AppPos);
 
-            /*
-             if (pos.cardIssuing || pos.cardPayment)
-             {
-             document.getElementById("actions_card").style.display = "inherit";
-             }
-             */
             if (pos.cardIssuing)
             {
               document.getElementById("action_issuing").style.display = "inherit";
@@ -309,6 +334,8 @@ limitations under the License.
 
       window.onload = function () {
         connect();
+        console.log("setInterval");
+        setInterval(checkHeartbeat, 15000);
       };
 
       document.addEventListener("htmx:afterSettle", function (event) {
@@ -319,13 +346,16 @@ limitations under the License.
         console.log(event);
         console.log(event.detail.pathInfo.requestPath);
 
-        if (requestPath === "/posx/sales") {
-          console.log("Sales page initialized");
-          initializeSalesPage();
-        } else if (requestPath === "/posx/customer") {
-          console.log("Customer page initialized");
-          initializeCustomerPage();
-        }
+        setTimeout(() => {
+          if (requestPath === "/posx/sales") {
+            console.log("Sales page initialized");
+            initializeSalesPage();
+          } else if (requestPath === "/posx/customer") {
+            console.log("Customer page initialized");
+            initializeCustomerPage();
+          }
+        }, 1000);
+
       });
 
     </script>
