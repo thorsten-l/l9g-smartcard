@@ -102,6 +102,37 @@ limitations under the License.
       }
 
 
+      function showErrorDialog(message)
+      {
+        if (AppPos.readerErrorAcnowledged === false)
+        {
+          document.getElementById("green-light").style.display = "none";
+          document.getElementById("red-light").style.display = "inline-flex";
+          Swal.fire({
+            title: "ERROR",
+            text: message,
+            icon: "error",
+            confirmButtonText: "OK"
+          });
+          AppPos.readerErrorAcnowledged = true;
+        }
+      }
+
+
+      function showCardreaderConnectedDialog(message)
+      {
+        document.getElementById("green-light").style.display = "inline-flex";
+        document.getElementById("red-light").style.display = "none";
+        Swal.fire({
+          title: "Card reader connected.",
+          text: message,
+          icon: "info",
+          confirmButtonText: "OK"
+        });
+        AppPos.readerErrorAcnowledged = false;
+      }
+
+
       function connect() {
 
         fetch("http://localhost:38080/api/v1/posname", {
@@ -153,22 +184,21 @@ limitations under the License.
               cleanForm();
             }
           }
-          
+
           if (dtoEvent.event === "error") {
-            document.getElementById("green-light").style.display = "none";
-            document.getElementById("red-light").style.display = "inline-flex";            
-          } 
-          
+            showErrorDialog(dtoEvent.message);
+          }
+
           if (dtoEvent.event === "cardreaderConnected") {
-            document.getElementById("green-light").style.display = "inline-flex";
-            document.getElementById("red-light").style.display = "none";            
-          } 
+            showCardreaderConnectedDialog(dtoEvent.message);
+          }
         };
 
         ws.onopen = function () {
           console.log("WebSocket connection opened.");
           document.getElementById("green-light").style.display = "inline-flex";
           document.getElementById("red-light").style.display = "none";
+          AppPos.readerErrorAcnowledged = false;
         };
 
         ws.onclose = function () {
@@ -179,40 +209,47 @@ limitations under the License.
 
         ws.onerror = function (error) {
           console.log("WebSocket error: ", error);
-          document.getElementById("green-light").style.display = "none";
-          document.getElementById("red-light").style.display = "inline-flex";
+          showErrorDialog(error);
         };
       }
 
       function initializeCustomerPage() {
 
         console.log("initializeCustomerPage");
-        
+
         AppCustomer.userId = null;
         AppCustomer.name = null;
         AppCustomer.mail = null;
         AppCustomer.number = null;
 
+        console.log("AppPos.name");
+        console.log(AppPos.name);
+
         if (AppPos.name)
         {
           document.getElementById("posnameMenu").style.display = "inherit";
 
+
           fetch("/api/v1/pos/" + AppPos.name)
                   .then(response => response.json()).then(pos => {
+
+            console.log("pos");
             console.log(pos);
 
             AppPos.id = pos.id;
             AppPos.tenantId = pos.tenant.id;
             AppPos.tenantName = pos.tenant.name;
+            AppPos.readerErrorAcnowledged = false;
 
+            console.log("AppPos");
             console.log(AppPos);
 
-/*
-            if (pos.cardIssuing || pos.cardPayment)
-            {
-              document.getElementById("actions_card").style.display = "inherit";
-            }
-*/
+            /*
+             if (pos.cardIssuing || pos.cardPayment)
+             {
+             document.getElementById("actions_card").style.display = "inherit";
+             }
+             */
             if (pos.cardIssuing)
             {
               document.getElementById("action_issuing").style.display = "inherit";
@@ -290,7 +327,7 @@ limitations under the License.
           initializeCustomerPage();
         }
       });
-      
+
     </script>
   </div>
 </html>

@@ -31,14 +31,16 @@ limitations under the License.
         id: null,
         name: null,
         tenantName: null,
-        tenantId: null
+        tenantId: null,
+        readerErrorAcnowledged: false
       };
 
       var AppCustomer = {
         userId: null,
         name: null,
         mail: null,
-        number: null
+        number: null,
+        barcode: null
       };
     </script>
     <link th:replace="~{app/posCss::posCss}" th:remove="tags" />
