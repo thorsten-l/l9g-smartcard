@@ -15,51 +15,24 @@
  */
 package l9g.webapp.smartcardapi.crypto;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
-@Slf4j
-public class CryptoHandler
+@Service
+public class CryptoService
 {
-  public static final String AES256_PREFIX = "{AES256}";
-
-  private static final CryptoHandler SINGLETON = new CryptoHandler();
-
-  private CryptoHandler()
-  {
-    log.debug("CryptoHandler()");
-    aes256 = new AES256(new AppSecretKey().getSecretKey());
-  }
-
-  public static final CryptoHandler getInstance()
-  {
-    return SINGLETON;
-  }
+  private static final CryptoHandler cryptoHandler = CryptoHandler.getInstance();
 
   public String encrypt(String text)
   {
-    return AES256_PREFIX + aes256.encrypt(text);
+    return cryptoHandler.encrypt(text);
   }
 
   public String decrypt(String encryptedText)
   {
-    String text;
-
-    if(encryptedText != null && encryptedText.startsWith(AES256_PREFIX))
-    {
-      text = aes256.decrypt(encryptedText.substring(AES256_PREFIX.length()));
-    }
-    else
-    {
-      text = encryptedText;
-    }
-
-    return text;
+    return cryptoHandler.decrypt(encryptedText);
   }
-
-  private final AES256 aes256;
-
 }

@@ -15,8 +15,6 @@
  */
 package l9g.webapp.smartcardapi;
 
-import l9g.webapp.smartcardapi.crypto.AES256;
-import l9g.webapp.smartcardapi.crypto.AppSecretKey;
 import l9g.webapp.smartcardapi.crypto.CryptoHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,8 +26,8 @@ public class Application
   {
     if(args.length == 2 && args[0].equals("-e"))
     {
-      AES256 aes256 = new AES256(new AppSecretKey().getSecretKey());
-      System.out.println(args[1] + " = " + CryptoHandler.AES256_PREFIX + aes256.encrypt(args[1]));
+      CryptoHandler cryptoHandler = CryptoHandler.getInstance();
+      System.out.println(args[1] + " = " + cryptoHandler.encrypt(args[1]));
       System.exit(0);
     }
 

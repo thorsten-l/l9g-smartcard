@@ -36,7 +36,7 @@ public class EncryptedValueProcessor implements BeanPostProcessor
 {
   private final Environment environment;
 
-  private final CryptoHandler cryptoHandler = new CryptoHandler();
+  private final CryptoHandler cryptoHandler = CryptoHandler.getInstance();
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
