@@ -16,7 +16,7 @@
 package l9g.webapp.smartcardfront.db;
 
 import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosPerson;
+import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
@@ -43,6 +43,8 @@ public class DbService
   public static final String KEY_SYSTEM_USER = "*SYSTEM USER*";
 
   public static final String KEY_SYSTEM_TENANT = "*SYSTEM TENANT*";
+
+  public static final String KEY_TEST_TENANT = "Test";
 
   public static final String KEY_SYSTEM_POS = "*SYSTEM POS*";
 
@@ -88,7 +90,7 @@ public class DbService
       postTransactionsRepository.save(
         new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
       );
-      
+
       pos = posPointsOfSalesRepository.save(
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, "rz-dev1")
       );
@@ -97,10 +99,15 @@ public class DbService
       pos.setCardIssuing(true);
       pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
-      
+
       postTransactionsRepository.save(
         new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
       );
+
+      PosTenant testTenant = posTenantsRepository.findByName(KEY_TEST_TENANT)
+        .orElseGet(() -> posTenantsRepository.save(
+        new PosTenant(KEY_SYSTEM_USER, KEY_TEST_TENANT)));
+
     }
     else
     {
@@ -113,9 +120,8 @@ public class DbService
       for(String username : adminUsernames)
       {
         log.debug("Create/update '{}' as administrator", username);
-        PosPerson person = posPersonsRepository.findByUsername(username)
-          .orElseGet(() -> posPersonsRepository.save(
-          new PosPerson(KEY_SYSTEM_USER, systemTenant, username, 
+        PosUser person = posPersonsRepository.findByUsername(username)
+          .orElseGet(() -> posPersonsRepository.save(new PosUser(KEY_SYSTEM_USER, systemTenant, username,
             PosRole.POS_ADMINISTRATOR)));
         person.setTenant(systemTenant);
         posPersonsRepository.save(person);
@@ -130,7 +136,7 @@ public class DbService
   @Value("${app.administrator.usernames}")
   private String[] adminUsernames;
 
-  private final PosPersonsRepository posPersonsRepository;
+  private final PosUserRepository posPersonsRepository;
 
   private final PosTenantsRepository posTenantsRepository;
 

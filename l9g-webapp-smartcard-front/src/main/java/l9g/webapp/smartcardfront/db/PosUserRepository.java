@@ -16,7 +16,7 @@
 package l9g.webapp.smartcardfront.db;
 
 import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosPerson;
+import l9g.webapp.smartcardfront.db.model.PosUser;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,8 +25,8 @@ import org.springframework.stereotype.Repository;
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @Repository
-public interface PosPersonsRepository extends
-  ListCrudRepository<PosPerson, String>
+public interface PosUserRepository extends
+  ListCrudRepository<PosUser, String>
 {
-  Optional<PosPerson> findByUsername(String username);
+  Optional<PosUser> findByUsername(String username);
 }
