@@ -103,7 +103,9 @@ public class ClientSecurityConfig
           ))
       .oauth2Client(withDefaults())
       .logout(
-        logout -> logout.logoutSuccessHandler(
+        logout -> logout
+          .deleteCookies("JSESSIONID")
+          .logoutSuccessHandler(
           oidcLogoutSuccessHandler(clientRegistrationRepository))
       );
 
