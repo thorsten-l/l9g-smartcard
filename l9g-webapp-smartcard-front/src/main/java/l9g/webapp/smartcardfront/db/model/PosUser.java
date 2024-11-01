@@ -39,11 +39,11 @@ import lombok.ToString;
 @Table(name = "persons")
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosPerson extends PosUuidObject
+public class PosUser extends PosUuidObject
 {
   private static final long serialVersionUID = -2875364432403999861L;
 
-  public PosPerson(String createdBy, PosTenant tenant,
+  public PosUser(String createdBy, PosTenant tenant,
     String username, PosRole role)
   {
     super(createdBy);
