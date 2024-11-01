@@ -22,8 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import l9g.webapp.smartcardfront.db.PosPersonsRepository;
-import l9g.webapp.smartcardfront.db.model.PosPerson;
+import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +30,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
+import l9g.webapp.smartcardfront.db.PosUserRepository;
 
 /**
  *
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AppAuthoritiesConverter
 {
-  private final PosPersonsRepository posPersonsRepository;
+  private final PosUserRepository posPersonsRepository;
 
   @Value("${app.resource-access-roles}")
   private String resourceAccessRoles;
@@ -72,7 +72,7 @@ public class AppAuthoritiesConverter
 
       if(optional.isPresent())
       {
-        PosPerson person = optional.get();
+        PosUser person = optional.get();
         resourceRoles.add(person.getRole().toString());
       }
     }
@@ -81,7 +81,7 @@ public class AppAuthoritiesConverter
     Optional.ofNullable(oidcUser)
       .map(user -> user.getPreferredUsername())
       .flatMap(posPersonsRepository :: findByUsername)
-      .map(PosPerson :: getRole)
+      .map(PosUser :: getRole)
       .map(Enum :: toString)
       .ifPresent(resourceRoles :: add);
 
