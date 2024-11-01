@@ -17,7 +17,6 @@ package l9g.webapp.smartcardapi.controller;
 
 import java.util.List;
 import java.util.Map;
-import l9g.webapp.smartcardapi.crypto.CryptoHandler;
 import l9g.webapp.smartcardapi.ldap.LdapUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,19 +32,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
 @RestController
-@RequestMapping(path = "/api/v1/userinfo",
+@RequestMapping(path = "/api/v1/person",
                 produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @RequiredArgsConstructor
-public class UserinfoController
+public class PersonInfoController
 {
   private final LdapUtil ldapUtil;
 
-  @GetMapping("/userid/{userId}")
-  public Map<String, String> findBySerial(@PathVariable String userId)
+  @GetMapping("/id/{personId}")
+  public Map<String, String> findBySerial(@PathVariable String personId)
   {
-    log.debug("userId={}", userId);
-    return ldapUtil.searchForUserId(userId);
+    log.debug("personId={}", personId);
+    return ldapUtil.searchForUserId(personId);
   }
 
   @GetMapping("/serial/{serial}")
