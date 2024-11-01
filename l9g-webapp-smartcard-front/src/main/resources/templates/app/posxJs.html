@@ -25,10 +25,10 @@ limitations under the License.
         document.getElementById("action_issuing_button").disabled = true;
         document.getElementById("cardSerial").value = '';
         document.getElementById("cardAtr").value = '';
-        document.getElementById("userId").value = '';
-        document.getElementById("userinfo").value = '';
-        document.getElementById("select2-userinfo-container").title = '';
-        document.getElementById("select2-userinfo-container").innerHTML = '';
+        document.getElementById("customerId").value = '';
+        document.getElementById("customerInfo").value = '';
+        document.getElementById("select2-customerInfo-container").title = '';
+        document.getElementById("select2-customerInfo-container").innerHTML = '';
         document.getElementById("mail").value = '';
 
         var jpegPhotoElement = document.getElementById("jpegPhoto");
@@ -50,48 +50,50 @@ limitations under the License.
         /*[/]*/
 
         console.log(AppCustomer);
-        AppCustomer.userId = null;
+        AppCustomer.customerId = null;
         AppCustomer.name = null;
         AppCustomer.mail = null;
         AppCustomer.number = null;
         console.log(AppCustomer);
       }
 
-      function showUserinfo(userinfo, serial)
+      function showCustomerInfo(customerInfo, serial)
       {
         document.getElementById("cardSerial").value = serial;
+        console.log("- customerInfo -");
+        console.log(customerInfo);
 
-        if (userinfo.userId) {
+        if (customerInfo.customerId) {
 
-          AppCustomer.userId = String(userinfo.userId);
-          AppCustomer.name = String(userinfo.givenName) + " " + String(userinfo.sn);
-          AppCustomer.mail = String(userinfo.mail);
-          AppCustomer.number = String(userinfo.customerNumber);
+          AppCustomer.customerId = String(customerInfo.customerId);
+          AppCustomer.name = String(customerInfo.givenName) + " " + String(customerInfo.sn);
+          AppCustomer.mail = String(customerInfo.mail);
+          AppCustomer.number = String(customerInfo.customerNumber);
 
-          document.getElementById("userId").value = AppCustomer.userId;
-          document.getElementById("userinfo").value = AppCustomer.name;
-          document.getElementById("select2-userinfo-container").title
+          document.getElementById("customerId").value = AppCustomer.customerId;
+          document.getElementById("customerInfo").value = AppCustomer.name;
+          document.getElementById("select2-customerInfo-container").title
                   = AppCustomer.name;
-          document.getElementById("select2-userinfo-container").innerHTML
+          document.getElementById("select2-customerInfo-container").innerHTML
                   = AppCustomer.name;
 
           document.getElementById("mail").value = AppCustomer.mail;
 
-          if (userinfo.jpegPhoto) {
+          if (customerInfo.jpegPhoto) {
             var jpegPhotoElement = document.getElementById("jpegPhoto");
-            jpegPhotoElement.src = "data:image/jpeg;base64," + userinfo.jpegPhoto;
+            jpegPhotoElement.src = "data:image/jpeg;base64," + customerInfo.jpegPhoto;
             jpegPhotoElement.style.display = "block";
           }
         }
 
-        if (userinfo.barcodeNumber)
+        if (customerInfo.barcodeNumber)
         {
           document.getElementById("barcodeNumber").value
-                  = userinfo.barcodeNumber;
+                  = customerInfo.barcodeNumber;
 
-          if (userinfo.barcodePNG) {
+          if (customerInfo.barcodePNG) {
             var barcodePNGElement = document.getElementById("barcodePNG");
-            barcodePNGElement.src = "data:image/png;base64," + userinfo.barcodePNG;
+            barcodePNGElement.src = "data:image/png;base64," + customerInfo.barcodePNG;
             barcodePNGElement.style.display = "block";
           }
         }
@@ -186,13 +188,13 @@ limitations under the License.
 
             var serial = dtoEvent.card.serial;
 
-            fetch("/api/v1/userinfo/serial/" + serial)
+            fetch("/api/v1/customer/serial/" + serial)
                     .then(response => response.json())
-                    .then(userinfo => {
-                      showUserinfo(userinfo, serial);
+                    .then(customerinfo => {
+                      showCustomerInfo(customerinfo, serial);
                     })
                     .catch(error => {
-                      console.error('Error fetching user info:', error);
+                      console.error('Error fetching customer info:', error);
                     });
           }
 
@@ -248,7 +250,7 @@ limitations under the License.
       function initializeCustomerPage() {
         console.log("initializeCustomerPage");
 
-        AppCustomer.userId = null;
+        AppCustomer.customerId = null;
         AppCustomer.name = null;
         AppCustomer.mail = null;
         AppCustomer.number = null;
@@ -290,35 +292,33 @@ limitations under the License.
         }
 
 // ------------------------------------------
-        const apiUserInfoUrl = /*[[@{/api/v1/userinfo}]]*/ '';
-        const apiUserInfoTermUrl = apiUserInfoUrl + "/term";
+        const apiCustomerInfoUrl = /*[[@{/api/v1/customer}]]*/ '';
+        const apiCustomerInfoTermUrl = apiCustomerInfoUrl + "/term";
 
-        $('#userinfo').on('select2:select', function (e) {
+        $('#customerInfo').on('select2:select', function (e) {
           var selectedOption = e.params.data;
           // console.log("ID: " + selectedOption.id);
           // console.log("Value: " + selectedOption.text);
 
-          fetch("/api/v1/userinfo/userid/" + selectedOption.id)
+          fetch(apiCustomerInfoUrl + "/id/" + selectedOption.id)
                   .then(response => response.json())
-                  .then(userinfo => {
-                    if (userinfo.userId)
+                  .then(customerinfo => {
+                    if (customerinfo.customerId)
                     {
-                      showUserinfo(userinfo, userinfo.smartcardNumber);
+                      showCustomerInfo(customerinfo, customerinfo.smartcardNumber);
                     }
                   })
                   .catch(error => {
-                    console.error('Error fetching user info:', error);
+                    console.error('Error fetching customer info:', error);
                   });
-
         });
 
-        $('#userinfo').select2({
+        $('#customerInfo').select2({
           theme: 'bootstrap-5',
           minimumInputLength: 5,
           language: 'de',
-          placeholder: 'Personensuche z.B. "VV NN"',
           ajax: {
-            url: apiUserInfoTermUrl,
+            url: apiCustomerInfoTermUrl,
             dataType: 'json'
           }
         }

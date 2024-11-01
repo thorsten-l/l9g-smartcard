@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Fragments</title>
+  </head>
+  <body>
+    <div th:fragment="sidebar" th:remove="tag">
+      <!--begin::Sidebar-->
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark"> 
+
+        <!--begin::Sidebar Brand-->
+        <div class="sidebar-brand"> 
+          <!--begin::Brand Link--> 
+          <a th:href="@{/}" class="brand-link"> 
+            <!--begin::Brand Image--> 
+            <!-- <img th:src="@{/assets/img/AdminLTELogo.png}" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" /> -->
+            <!--end::Brand Image--> 
+            <!--begin::Brand Text--> 
+            <span class="brand-text fw-light">POS Admin</span> 
+            <!--end::Brand Text--> 
+          </a> 
+          <!--end::Brand Link--> 
+        </div> 
+        <!--end::Sidebar Brand--> 
+
+        <!--begin::Sidebar Wrapper-->
+        <div class="sidebar-wrapper">
+          <nav class="mt-2">
+
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+
+              <li class="nav-item"
+                  th:classappend="${layoutCategory == 'dashboard'} ? ' menu-open' : ''">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-speedometer"></i>
+                  <p>
+                    Dashboard
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link" th:classappend="${layoutPage == 'v1'} ? ' active' : ''"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link" th:classappend="${layoutPage == 'v2'} ? ' active' : ''"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link" th:classappend="${layoutPage == 'v3'} ? ' active' : ''"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+
+                  <li class="nav-item">
+                    <a th:href="@{/plain}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Plain Sandbox</p>
+                    </a> 
+                  </li>
+
+                </ul>
+              </li>
+
+              <!-- /////////////////////////////////////////// -->              
+
+              <li class="nav-item"
+                  th:classappend="${layoutCategory == 'forms'} ? ' menu-open' : ''">
+                <a href="#" class="nav-link"> 
+                  <i class="nav-icon bi bi-ui-checks"></i>
+                  <p>
+                    Forms
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a th:href="@{/ui/forms/input1}" class="nav-link"
+                       th:classappend="${layoutPage == 'input1'} ? ' active' : ''">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Input Forms</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/forms/select2}" class="nav-link"
+                       th:classappend="${layoutPage == 'select2'} ? ' active' : ''">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Select 2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/forms/toasts}" class="nav-link"
+                       th:classappend="${layoutPage == 'toasts'} ? ' active' : ''">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Toasts & SweetAlert2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/forms/datepicker}" class="nav-link"
+                       th:classappend="${layoutPage == 'datepicker'} ? ' active' : ''">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Datepicker</p>
+                    </a> 
+                  </li>
+                </ul>
+              </li>
+
+              <!-- /////////////////////////////////////////// -->              
+
+              <li class="nav-item">
+                <a href="#" class="nav-link"> 
+                  <i class="nav-icon bi bi-bug"></i>
+                  <p>
+                    Error Pages
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a th:href="@{/api/v1/fail/400}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>400 Bad Request</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/api/v1/fail/403}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>403 Permission denied</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/api/v1/fail/404}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>404 Page not found</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/api/v1/fail/500}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>500 Internal server error</p>
+                    </a> 
+                  </li>
+                </ul>
+              </li>
+
+              <!-- /////////////////////////////////////////// -->              
+
+              <li class="nav-item">
+                <a href="#" class="nav-link"> 
+                  <i class="nav-icon bi bi-speedometer"></i>
+                  <p>
+                    Large Menu
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v1}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v1</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item"> 
+                    <a th:href="@{/ui/dashboard/v2}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v2</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/dashboard/v3}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                      <p>Dashboard v3</p>
+                    </a> 
+                  </li>
+               
+                </ul>
+              </li>
+
+
+              <!-- /////////////////////////////////////////// -->              
+
+              <li class="nav-item"
+                  th:classappend="${layoutCategory == 'info'} ? ' menu-open' : ''">
+                <a th:href="@{/ui/info/info}" class="nav-link"> 
+                  <i class="nav-icon bi bi-info-circle"></i>
+                  <p>
+                    Info
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a th:href="@{/ui/info/build-properties}" class="nav-link"
+                       th:classappend="${layoutPage == 'build-properties'} ? ' active' : ''">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Build Properties</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a th:href="@{/ui/info/system-properties}" class="nav-link"
+                       th:classappend="${layoutPage == 'system-properties'} ? ' active' : ''">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>System Properties</p>
+                    </a> 
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-cpu"></i>
+                      <p>Actuator
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a th:href="@{/actuator/info}" class="nav-link" target="_blank">
+                          <i class="nav-icon bi bi-circle-fill"></i>
+                          <p>Info</p>
+                        </a> 
+                      </li>
+                      <li class="nav-item">
+                        <a th:href="@{/actuator/health}" class="nav-link" target="_blank">
+                          <i class="nav-icon bi bi-circle-fill"></i>
+                          <p>Health</p>
+                        </a> 
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          <i class="nav-icon bi bi-circle-fill"></i>
+                          <p>Metrics
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                          </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                          <li class="nav-item">
+                            <a th:href="@{/actuator/metrics}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>Overview</p>
+                            </a> 
+                          </li>
+                          <li class="nav-item">
+                            <a th:href="@{/actuator/metrics/disk.free}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>Disk free</p>
+                            </a> 
+                          </li>
+                           <li class="nav-item">
+                            <a th:href="@{/actuator/metrics/jvm.info}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>JVM info</p>
+                            </a> 
+                          </li>
+                           <li class="nav-item">
+                            <a th:href="@{/actuator/metrics/jvm.memory.used}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>JVM memory used</p>
+                            </a> 
+                          </li>
+                           <li class="nav-item">
+                            <a th:href="@{/actuator/metrics/jvm.threads.started}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>JVM threads started</p>
+                            </a> 
+                          </li>
+                           <li class="nav-item">
+                            <a th:href="@{/actuator/metrics/process.uptime}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>Process uptime</p>
+                            </a> 
+                          </li>
+                           <li class="nav-item">
+                            <a th:href="@{/actuator/metrics/system.cpu.count}" class="nav-link" target="_blank">
+                              <i class="nav-icon bi bi-record-circle-fill"></i>
+                              <p>System cpu count</p>
+                            </a> 
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+
+                </ul>
+              </li>
+
+
+
+
+            </ul> 
+            <!--end::Sidebar Menu-->
+          </nav>
+        </div> 
+        <!--end::Sidebar Wrapper-->
+      </aside> 
+      <!--end::Sidebar--> 
+
+    </div>
+  </body>
+</html>

@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-md-8">
 
-      <input id="userId" readonly="true" type="hidden">
+      <input id="customerId" readonly="true" type="hidden">
 
         <div class="card card-primary card-outline">
           <div class="card-header bg-primary bg-opacity-10">
@@ -16,10 +16,10 @@
           <div class="card-body">
             <!-- Input group for smartcard owner -->
             <div class="mb-3">
-              <label for="userinfo" class="form-label" th:text="#{name}">U</label>
+              <label for="customerInfo" class="form-label" th:text="#{name}">U</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="fa-regular fa-user"></i></span> 
-                <select id="userinfo" required="true" name="userinfo" 
+                <select id="customerInfo" required="true" name="customerInfo" 
                         class="form-select"></select>
               </div>
             </div>
@@ -86,7 +86,7 @@
           <div class="card-title" th:text="#{label_photo}">P</div>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center">
-          <img id="jpegPhoto" class="jpegPhoto" alt="User Photo" style="display: none;"/>
+          <img id="jpegPhoto" class="jpegPhoto" alt="Customer Photo" style="display: none;"/>
         </div>
       </div>
 

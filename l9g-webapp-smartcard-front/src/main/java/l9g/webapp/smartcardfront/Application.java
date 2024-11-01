@@ -1,6 +1,6 @@
 package l9g.webapp.smartcardfront;
 
-import l9g.webapp.smartcardfront.userinfo.AttributesMapConfig;
+import l9g.webapp.smartcardfront.customer.AttributesMapConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

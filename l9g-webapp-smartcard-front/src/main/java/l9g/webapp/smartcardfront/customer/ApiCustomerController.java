@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
 @RestController
-@RequestMapping(path = "/api/v1/userinfo",
+@RequestMapping(path = "/api/v1/customer",
                 produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ApiCustomerController
@@ -143,14 +143,16 @@ public class ApiCustomerController
     log.debug("serial = {}", serial);
     Map<String, String> result = byCardCache.get(serial, apiClientService :: findBySerial);
     editResult(result);
+    log.debug("findBySerial result = {}", result);
     return result;
   }
 
-  @GetMapping("/userid/{userId}")
-  public Map<String, String> findBySerial(@PathVariable String userId)
+  @GetMapping("/id/{customerId}")
+  public Map<String, String> findBySerial(@PathVariable String customerId)
   {
-    log.debug("userId = {}", userId);
-    Map<String, String> result = byUserIdCache.get(userId, apiClientService :: findByUserId);
+    log.debug("customerId = {}", customerId);
+    Map<String, String> result = byUserIdCache.get(
+      customerId, apiClientService :: findByPersonId);
     editResult(result);
     return result;
   }
@@ -179,7 +181,7 @@ public class ApiCustomerController
       result.put("customerNumber", customerNumber);
     }
 
-    result.put("userId", result.get(userIdAttributeName));
+    result.put("customerId", result.get(userIdAttributeName));
   }
 
   private DtoCustomerEntry buildDtoUserinfoEntry(Map<String, String> entry)

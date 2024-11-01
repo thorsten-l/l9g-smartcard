@@ -82,13 +82,13 @@ public class ApiClientService
       });
   }
 
-  public Map<String, String> findByUserId(String userId)
+  public Map<String, String> findByPersonId(String personId)
   {
-    log.debug("findBySerial");
+    log.debug("findByPersonId");
 
     return restClient
       .get()
-      .uri("/api/v1/userinfo/userid/{userId}", userId)
+      .uri("/api/v1/person/id/{personId}", personId)
       .header("Authorization", "Bearer " + getBearer())
       .retrieve()
       .body(new ParameterizedTypeReference<Map<String, String>>()
@@ -102,7 +102,7 @@ public class ApiClientService
 
     return restClient
       .get()
-      .uri("/api/v1/userinfo/serial/{serial}", serial)
+      .uri("/api/v1/person/serial/{serial}", serial)
       .header("Authorization", "Bearer " + getBearer())
       .retrieve()
       .body(new ParameterizedTypeReference<Map<String, String>>()
@@ -117,7 +117,7 @@ public class ApiClientService
     return restClient
       .get()
       .uri(uriBuilder -> uriBuilder
-      .path("/api/v1/userinfo/term")
+      .path("/api/v1/person/term")
       .queryParam("term", term)
       .build()
       )
