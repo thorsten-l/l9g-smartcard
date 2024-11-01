@@ -60,10 +60,12 @@ public class PosTenant extends PosUuidObject
   @JsonView(View.Tenant.class)
   @ManyToOne
   @JoinColumn(name = "address_id")
+  @ToString.Exclude
   private PosAddress address;
 
   @JsonView(View.Tenant.class)
   @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
              fetch = FetchType.EAGER)
+  @ToString.Exclude
   private List<PosProperty> properties;
 }
