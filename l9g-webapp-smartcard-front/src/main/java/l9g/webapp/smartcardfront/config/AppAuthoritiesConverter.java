@@ -15,7 +15,6 @@
  */
 package l9g.webapp.smartcardfront.config;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
-import l9g.webapp.smartcardfront.db.PosUserRepository;
 
 /**
  *
@@ -40,7 +38,8 @@ import l9g.webapp.smartcardfront.db.PosUserRepository;
 @RequiredArgsConstructor
 public class AppAuthoritiesConverter
 {
-  private final PosUserRepository posPersonsRepository;
+  // private final PosUserRepository posUserRepository;
+  private final UserService userService;
 
   @Value("${app.resource-access-roles}")
   private String resourceAccessRoles;
@@ -64,27 +63,18 @@ public class AppAuthoritiesConverter
         .get(resourceAccessRoles)).get("roles")
       : List.of();
 
-    /*
     if(oidcUser != null && oidcUser.getPreferredUsername() != null)
     {
-      Optional<PosPerson> optional =
-        posPersonsRepository.findByUsername(oidcUser.getPreferredUsername());
-
+      Optional<PosUser> optional =
+        userService.findUserByPreferredUsername(oidcUser.getPreferredUsername());
+        
       if(optional.isPresent())
       {
-        PosUser person = optional.get();
-        resourceRoles.add(person.getRole().toString());
+        PosUser user = optional.get();
+        resourceRoles.add(user.getRole().toString());
       }
     }
-    */
-    
-    Optional.ofNullable(oidcUser)
-      .map(user -> user.getPreferredUsername())
-      .flatMap(posPersonsRepository :: findByUsername)
-      .map(PosUser :: getRole)
-      .map(Enum :: toString)
-      .ifPresent(resourceRoles :: add);
-
+ 
     List<GrantedAuthority> authorities = Stream.concat(realmRoles.stream(),
       resourceRoles.stream())
       .map(role -> "ROLE_" + role)

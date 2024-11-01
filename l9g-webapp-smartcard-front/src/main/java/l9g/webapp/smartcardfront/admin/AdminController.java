@@ -16,6 +16,7 @@
 package l9g.webapp.smartcardfront.admin;
 
 import java.util.Locale;
+import l9g.webapp.smartcardfront.db.model.PosRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,13 +51,27 @@ public class AdminController
     model.addAttribute("locale", locale.toString());
     model.addAttribute("barcodeEnabled", Boolean.toString(barcodeEnabled));
     model.addAttribute("customerNumberEnabled", customerNumberEnabled);
+
+    boolean isAdmin = principal.getAuthorities().stream()
+      .anyMatch(auth -> auth.getAuthority()
+        .equals("ROLE_" + PosRole.POS_ADMINISTRATOR));
+
+    if(isAdmin)
+    {
+      log.debug("{} is administrator!", principal.getName());
+    }
+    else
+    {
+      log.debug("{} is NOT administrator!", principal.getName());
+    }
   }
 
   @GetMapping("/admin/{page}")
-  public String pos( @PathVariable String page,
+  public String pos(@PathVariable String page,
     @AuthenticationPrincipal DefaultOidcUser principal, Model model)
   {
     generalModel(principal, model);
     return "admin/" + page;
   }
+
 }
