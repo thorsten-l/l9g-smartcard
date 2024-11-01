@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.admin;
 
-import java.util.List;
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.stereotype.Repository;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosTenantsRepository extends
-  ListCrudRepository<PosTenant, String>
+@ToString
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@Slf4j
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class DtoTenantEntry
 {
-  Optional<PosTenant> findByName(String name);
+  private String id;
 
-  List<PosTenant> findAllByOrderByNameAsc();
+  private String text;
+
+  private boolean selected;
 }

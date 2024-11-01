@@ -51,11 +51,15 @@ limitations under the License.
                 <a id="tenantname" 
                    class="btn btn-outline-secondary dropdown-toggle" 
                    href="#" role="button" data-bs-toggle="dropdown" 
-                   aria-expanded="false">Hallo
+                   aria-expanded="false" th:text="${selectedTenant.name}">T
                 </a>
                 <ul class="dropdown-menu">
-                  <li><div id="timestamp" class="dropdown-item"><i class="fa-regular fa-clock"></i>Hallo</div></li>
-                  <li><div id="timestamp" class="dropdown-item"><i class="fa-regular fa-clock"></i></div></li>
+                  <li th:each="tenant : ${tenants}">
+                    <a th:href="@{/admin/select-tenant/{id}(id=${tenant.id})}"
+                       class="dropdown-item" 
+                       th:text="${tenant.name}">
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>

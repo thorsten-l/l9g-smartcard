@@ -40,13 +40,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DbService
 {
-  public static final String KEY_SYSTEM_USER = "*SYSTEM USER*";
+  public static final String KEY_SYSTEM_USER = "SYSTEM USER";
 
-  public static final String KEY_SYSTEM_TENANT = "*SYSTEM TENANT*";
+  public static final String KEY_SYSTEM_TENANT = "SYSTEM TENANT";
 
   public static final String KEY_TEST_TENANT = "Test";
 
-  public static final String KEY_SYSTEM_POS = "*SYSTEM POS*";
+  public static final String KEY_SYSTEM_POS = "SYSTEM POS";
 
   public static final String KEY_UNSET = "*** unset ***";
 
@@ -108,6 +108,13 @@ public class DbService
         .orElseGet(() -> posTenantsRepository.save(
         new PosTenant(KEY_SYSTEM_USER, KEY_TEST_TENANT)));
 
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "NOVEMBER"));
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "DELTA"));
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "FOXTROT"));
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "OSCAR"));
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "WHISKEY"));
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "ZULU"));
+      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "LIMA"));
     }
     else
     {
@@ -122,7 +129,7 @@ public class DbService
         log.debug("Create/update '{}' as administrator", username);
         PosUser person = posPersonsRepository.findByUsername(username)
           .orElseGet(() -> posPersonsRepository.save(new PosUser(KEY_SYSTEM_USER, systemTenant, username,
-            PosRole.POS_ADMINISTRATOR)));
+          PosRole.POS_ADMINISTRATOR)));
         person.setTenant(systemTenant);
         posPersonsRepository.save(person);
       }

@@ -17,15 +17,11 @@ package l9g.webapp.smartcardfront.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -50,11 +46,11 @@ public class UserService
   
   public Optional<PosUser> findUserByPreferredUsername(String preferredUsername)
   {
-    Optional<PosUser> optional 
-      = byPreferredUsernameCache.get(preferredUsername, 
-        posUserRepository::findByUsername);
-     
-    if ( optional.isEmpty())
+    Optional<PosUser> optional =
+      byPreferredUsernameCache.get(preferredUsername,
+        posUserRepository :: findByUsername);
+    
+    if(optional.isEmpty())
     {
       byPreferredUsernameCache.invalidate(preferredUsername);
     }
@@ -63,4 +59,11 @@ public class UserService
     
     return optional;
   }  
+  
+  public void invalidateCache(String preferredUsername)
+  {
+    log.debug("invalidate cache for user = {}", preferredUsername);
+    byPreferredUsernameCache.invalidate(preferredUsername);
+  }
+
 }

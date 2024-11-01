@@ -15,6 +15,8 @@
  */
 package l9g.webapp.smartcardfront.config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import l9g.webapp.smartcardfront.db.model.PosRole;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -38,7 +41,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -47,6 +52,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 public class ClientSecurityConfig
 {
   private final AppAuthoritiesConverter appAuthoritiesConverter;
+
+  private final UserService userService;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http,
@@ -105,11 +112,27 @@ public class ClientSecurityConfig
       .logout(
         logout -> logout
           .deleteCookies("JSESSIONID")
+          .addLogoutHandler(invalidateCacheLogoutHandler())
           .logoutSuccessHandler(
-          oidcLogoutSuccessHandler(clientRegistrationRepository))
+            oidcLogoutSuccessHandler(clientRegistrationRepository))
       );
 
     return http.build();
+  }
+
+  private LogoutHandler invalidateCacheLogoutHandler()
+  {
+    return (HttpServletRequest request, HttpServletResponse response, 
+      Authentication authentication) ->
+    {
+      if(authentication != null && authentication.getPrincipal() 
+        instanceof DefaultOidcUser)
+      {
+        DefaultOidcUser oidcUser = (DefaultOidcUser)authentication.getPrincipal();
+        userService.invalidateCache(oidcUser.getPreferredUsername());
+      }
+      new SecurityContextLogoutHandler().logout(request, response, authentication);
+    };
   }
 
   private LogoutSuccessHandler oidcLogoutSuccessHandler(
