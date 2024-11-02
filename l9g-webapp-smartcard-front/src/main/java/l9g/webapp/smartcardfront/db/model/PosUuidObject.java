@@ -62,7 +62,8 @@ public class PosUuidObject implements Serializable
   @PreRemove
   public void preRemove()
   {
-    log.debug("preRemove " + this.getClass().getCanonicalName());
+    log.debug("preRemove {} {}",
+      this.getClass().getCanonicalName(), id);
     if(immutable)
     {
       log.error("Attempted to remove an immutable object: {} {}",
@@ -78,7 +79,8 @@ public class PosUuidObject implements Serializable
   @PreUpdate
   public void preUpdate()
   {
-    log.debug("preUpdate " + this.getClass().getCanonicalName());
+    log.debug("preUpdate {} {}",
+      this.getClass().getCanonicalName(), id);
     if(immutable)
     {
       log.error("Attempted to update an immutable object: {} {}",
