@@ -55,7 +55,7 @@ limitations under the License.
                 </a>
                 <ul class="dropdown-menu">
                   <li th:each="tenant : ${tenants}">
-                    <a th:href="@{/admin/select-tenant/{id}(id=${tenant.id})}"
+                    <a th:href="@{/admin/tenant/select/{id}(id=${tenant.id})}"
                        class="dropdown-item" 
                        th:text="${tenant.name}">
                     </a>
@@ -69,8 +69,8 @@ limitations under the License.
 
         <div class="d-flex">
           <span class="navbar-text" style="margin-right: 1em">
-            <a href="?lang=en"><span class="fi fi-gb" th:classappend="${locale == 'en'} ? 'flag-selected' : ''"></span></a> |
-            <a href="?lang=de"><span class="fi fi-de" th:classappend="${locale == 'de'} ? 'flag-selected' : ''"></span></a> 
+            <a href="?lang=de"><span class="fi fi-de" th:classappend="${locale == 'de'} ? 'flag-selected' : ''"></span></a> |
+            <a href="?lang=en"><span class="fi fi-gb" th:classappend="${locale == 'en'} ? 'flag-selected' : ''"></span></a>
           </span>
 
           <!--begin::End Navbar Links-->

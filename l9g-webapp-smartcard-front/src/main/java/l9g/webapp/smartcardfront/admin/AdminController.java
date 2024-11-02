@@ -52,49 +52,14 @@ public class AdminController
 
   private final PosTenantsRepository posTenantsRepository;
 
-  private boolean isAdmin(DefaultOidcUser principal)
-  {
-    return principal.getAuthorities().stream()
-      .anyMatch(auth -> auth.getAuthority()
-      .equals("ROLE_" + PosRole.POS_ADMINISTRATOR));
-  }
-
-  private PosTenant getSelectedTenant(HttpSession session, PosUser user)
-  {
-    PosTenant tenant;
-
-    Object object = session.getAttribute(SESSION_POS_SELECTED_TENANT);
-
-    if(object != null && object instanceof PosTenant)
-    {
-      log.debug("selected tenant found in session");
-      tenant = (PosTenant)object;
-    }
-    else
-    {
-      log.debug("create new selected tenant for session");
-      tenant = user.getTenant();
-    }
-
-    session.setAttribute(SESSION_POS_SELECTED_TENANT, tenant);
-
-    return tenant;
-  }
-
   private void generalModel(DefaultOidcUser principal,
     Model model, HttpSession session)
   {
     log.debug("preferred_username={}", principal.getPreferredUsername());
 
-    PosUser user =
-      userService.findUserByPreferredUsername(
-        principal.getPreferredUsername())
-        .orElseThrow(()
-          -> new AccessDeniedException("Access denied! - user not found"));
-
     List<PosTenant> tenants;
 
-    if(isAdmin(principal))
+    if(userService.isAdmin(principal))
     {
       log.debug("{} is administrator!", principal.getName());
       tenants = posTenantsRepository.findAllByOrderByNameAsc();
@@ -108,7 +73,8 @@ public class AdminController
     Locale locale = LocaleContextHolder.getLocale();
     model.addAttribute("principal", principal);
     model.addAttribute("locale", locale.toString());
-    model.addAttribute("selectedTenant", getSelectedTenant(session, user));
+    model.addAttribute("selectedTenant",
+      userService.getSelectedTenant(session, principal));
     model.addAttribute("tenants", tenants);
   }
 
@@ -121,7 +87,7 @@ public class AdminController
     return "admin/" + page;
   }
 
-  @GetMapping("/admin/select-tenant/{id}")
+  @GetMapping("/admin/tenant/select/{id}")
   public String selectTenant(@PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model, HttpSession session)
@@ -129,7 +95,7 @@ public class AdminController
     log.debug("selectedTenant {} for {}", id,
       principal.getPreferredUsername());
 
-    if(isAdmin(principal) && id != null)
+    if(userService.isAdmin(principal) && id != null)
     {
       log.debug("setting tenannt in session.");
       PosTenant posTenant = posTenantsRepository.findById(id).orElseThrow(()

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>POS Admin</title>
+    <div th:replace="~{app/admin::head}"></div>
+  </head>
+
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <div th:replace="~{app/admin::header}"></div>
+      <div th:replace="~{app/sidebar::sidebar}"></div>
+      <!--begin::App Main-->
+      <main class="app-main">
+
+        <div class="app-content-header"> <!--begin::Container-->
+          <div class="container-fluid"> <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h3 class="mb-0" th:text="#{tenants}">Tenants</h3>
+              </div>
+            </div> <!--end::Row-->
+          </div> <!--end::Container-->
+        </div> <!--end::App Content Header--> 
+
+        <!--begin::App Content-->
+        <div class="app-content"> <!--begin::Container-->
+
+          <div class="container">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th><span th:text="#{name}" th:remove="tags">name</span></th>
+                  <th><span th:text="#{actions}" th:remove="tags">actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="align-middle" th:each="entry : ${tenants}">
+                  <td width='25%' th:text="${entry.name}"></td>
+                  <td width='5%' class="text-nowrap">
+                    <span th:unless="${entry.immutable}" th:remove="tag">
+                      <a class="btn btn-primary" 
+                         th:href="@{/admin/tenant/{id}(id=${entry.id})}">
+                        <i class="fa-solid fa-pencil"></i>
+                      </a>
+                      <button class="btn btn-danger" 
+                              onclick="confirmDelete(this)"
+                              th:attr="data-id=${entry.id}, data-name=${entry.name}">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </span>
+                  </td>          
+                </tr>
+              </tbody>
+            </table>
+
+          </div> <!--end::App Content-->
+        </div> <!--end::App Content-->
+
+        <!--end::App Content-->
+      </main>
+    </div>
+
+    <script th:replace="~{app/admin::scripts}" th:remove="tag" />
+
+    <script th:inline="javascript">
+      function confirmDelete(button) {
+        const id = button.getAttribute("data-id");
+        const name = button.getAttribute("data-name");
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: `You are about to delete "${name}". This action cannot be undone.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/api/v1/admin/tenant/${id}`, {
+              method: 'DELETE'
+            }).then(response => {
+              console.log(response)
+              if (response.ok) {
+                Swal.fire(
+                        'Deleted!',
+                        `"${name}" has been deleted.`,
+                        'success'
+                        ).then(() => {
+                  location.reload(); // Optional: Seite aktualisieren, um den gelöschten Eintrag zu entfernen
+                });
+              } else {
+                Swal.fire(
+                        'Error!',
+                        'An error occurred while trying to delete the entry.',
+                        'error'
+                        );
+              }
+            }).catch(error => {
+              Swal.fire(
+                      'Error!',
+                      'An error occurred: ' + error.message,
+                      'error'
+                      );
+            });
+          }
+        });
+      }
+    </script>
+
+
+  </body>
+</html>

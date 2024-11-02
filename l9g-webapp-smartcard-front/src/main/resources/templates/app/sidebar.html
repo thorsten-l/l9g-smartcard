@@ -30,40 +30,17 @@
             <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
 
-              <li class="nav-item"
-                  th:classappend="${layoutCategory == 'dashboard'} ? ' menu-open' : ''">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-speedometer"></i>
-                  <p>
-                    Dashboard
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
+              <li class="nav-item">
+                <a th:href="@{/admin/home}" class="nav-link">
+                  <i class="nav-icon bi bi-speedometer"></i><p>Dashboard</p>
                 </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item"> 
-                    <a th:href="@{/ui/dashboard/v1}" class="nav-link" th:classappend="${layoutPage == 'v1'} ? ' active' : ''"> <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v1</p>
-                    </a> 
-                  </li>
-                  <li class="nav-item"> 
-                    <a th:href="@{/ui/dashboard/v2}" class="nav-link" th:classappend="${layoutPage == 'v2'} ? ' active' : ''"> <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v2</p>
-                    </a> 
-                  </li>
+              </li>
 
-                  <li class="nav-item">
-                    <a th:href="@{/ui/dashboard/v3}" class="nav-link" th:classappend="${layoutPage == 'v3'} ? ' active' : ''"> <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v3</p>
-                    </a> 
-                  </li>
-
-                  <li class="nav-item">
-                    <a th:href="@{/plain}" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                      <p>Plain Sandbox</p>
-                    </a> 
-                  </li>
-
-                </ul>
+              
+              <li sec:authorize="hasRole('ROLE_POS_ADMINISTRATOR')" class="nav-item">
+                <a th:href="@{/admin/tenant}" class="nav-link">
+                  <i class="nav-icon fa fa-building"></i><p th:text="#{tenants}">T</p>
+                </a>
               </li>
 
               <!-- /////////////////////////////////////////// -->              

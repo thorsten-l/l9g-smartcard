@@ -69,7 +69,7 @@ public class DbService
 
     PosTenant systemTenant = posTenantsRepository.findByName(KEY_SYSTEM_TENANT)
       .orElseGet(() -> posTenantsRepository.save(
-      new PosTenant(KEY_SYSTEM_USER, KEY_SYSTEM_TENANT)));
+      new PosTenant(KEY_SYSTEM_USER, KEY_SYSTEM_TENANT, true)));
 
     Optional<PosProperty> dbInitialized = posPropertiesRepository
       .findByTenantAndKey(systemTenant, KEY_DB_INITIALIZED);

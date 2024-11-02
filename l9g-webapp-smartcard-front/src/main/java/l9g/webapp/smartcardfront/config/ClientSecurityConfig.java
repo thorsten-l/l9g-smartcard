@@ -73,25 +73,31 @@ public class ClientSecurityConfig
 
     http.authorizeHttpRequests(
       authorize -> authorize
+        // test deny all
         .requestMatchers("/system/test/error403").denyAll()
+        // allow all
         .requestMatchers("/", "/error/**", "/api/v1/buildinfo",
           "/webjars/**", "/icons/**", "/css/**", "/images/**",
           "/actuator/**", "/flags/**", "/logout").permitAll()
-        .requestMatchers("/system/admin/**")
+        // admins only
+        .requestMatchers("/admin/tenant/**", "/api/v1/admin/tenant/**")
         .hasRole(
           PosRole.POS_ADMINISTRATOR.toString()
         )
-        .requestMatchers("/system/owner/**")
+        // admins and owners
+        .requestMatchers("/admin/user/**")
         .hasAnyRole(
           PosRole.POS_OWNER.toString(),
           PosRole.POS_ADMINISTRATOR.toString()
         )
-        .requestMatchers("/system/**")
+        // admins, owners and accountants
+        .requestMatchers("/admin/**")
         .hasAnyRole(
           PosRole.POS_ACCOUNTANT.toString(),
           PosRole.POS_OWNER.toString(),
           PosRole.POS_ADMINISTRATOR.toString()
         )
+        // any user with a POS role is permitted
         .anyRequest()
         .hasAnyRole(
           PosRole.POS_CASHIER.toString(),
@@ -115,18 +121,19 @@ public class ClientSecurityConfig
           .addLogoutHandler(invalidateCacheLogoutHandler())
           .logoutSuccessHandler(
             oidcLogoutSuccessHandler(clientRegistrationRepository))
-      );
+      )
+      // permit even POST, PUT and DELETE requests
+      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
 
     return http.build();
   }
 
   private LogoutHandler invalidateCacheLogoutHandler()
   {
-    return (HttpServletRequest request, HttpServletResponse response, 
+    return (HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) ->
     {
-      if(authentication != null && authentication.getPrincipal() 
-        instanceof DefaultOidcUser)
+      if(authentication != null && authentication.getPrincipal() instanceof DefaultOidcUser)
       {
         DefaultOidcUser oidcUser = (DefaultOidcUser)authentication.getPrincipal();
         userService.invalidateCache(oidcUser.getPreferredUsername());

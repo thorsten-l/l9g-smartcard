@@ -47,10 +47,15 @@ public class PosTenant extends PosUuidObject
 {
   private static final long serialVersionUID = 8748451088430252946L;
 
+  public PosTenant(String createdBy, String name, boolean immutable)
+  {
+    super(createdBy, immutable);
+    this.name = name;
+  }
+
   public PosTenant(String createdBy, String name)
   {
-    super(createdBy);
-    this.name = name;
+    this(createdBy, name, false);
   }
 
   @JsonView(View.Base.class)
@@ -68,4 +73,5 @@ public class PosTenant extends PosUuidObject
              fetch = FetchType.EAGER)
   @ToString.Exclude
   private List<PosProperty> properties;
+
 }

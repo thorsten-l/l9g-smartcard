@@ -17,11 +17,16 @@ package l9g.webapp.smartcardfront.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
+import l9g.webapp.smartcardfront.db.model.PosRole;
+import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,10 +37,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService
 {
+  private static final String SESSION_POS_SELECTED_TENANT = "POS_SELECTED_TENANT";
+
   private final Cache<String, Optional<PosUser>> byPreferredUsernameCache;
-  
+
   private final PosUserRepository posUserRepository;
-  
+
   public UserService(PosUserRepository posUserRepository)
   {
     this.posUserRepository = posUserRepository;
@@ -43,27 +50,71 @@ public class UserService
       .expireAfterWrite(8, TimeUnit.HOURS)
       .build();
   }
-  
+
   public Optional<PosUser> findUserByPreferredUsername(String preferredUsername)
   {
     Optional<PosUser> optional =
       byPreferredUsernameCache.get(preferredUsername,
         posUserRepository :: findByUsername);
-    
+
     if(optional.isEmpty())
     {
       byPreferredUsernameCache.invalidate(preferredUsername);
     }
-    
+
     log.debug("user = {}", optional);
-    
+
     return optional;
-  }  
-  
+  }
+
   public void invalidateCache(String preferredUsername)
   {
     log.debug("invalidate cache for user = {}", preferredUsername);
     byPreferredUsernameCache.invalidate(preferredUsername);
+  }
+
+  public boolean isAdmin(DefaultOidcUser principal)
+  {
+    return principal.getAuthorities().stream()
+      .anyMatch(auth -> auth.getAuthority()
+      .equals("ROLE_" + PosRole.POS_ADMINISTRATOR));
+  }
+
+  public PosTenant getSelectedTenant(HttpSession session, PosUser user)
+  {
+    PosTenant tenant;
+
+    Object object = session.getAttribute(SESSION_POS_SELECTED_TENANT);
+
+    if(user != null && user.getRole() == PosRole.POS_ADMINISTRATOR
+      && object != null && object instanceof PosTenant)
+    {
+      log.debug("selected tenant found in session");
+      tenant = (PosTenant)object;
+    }
+    else
+    {
+      log.debug("create new selected tenant for session");
+      tenant = user.getTenant();
+    }
+
+    session.setAttribute(SESSION_POS_SELECTED_TENANT, tenant);
+
+    return tenant;
+  }
+
+  public PosTenant getSelectedTenant(
+    HttpSession session, DefaultOidcUser principal)
+  {
+    return getSelectedTenant(session, posUserFromPrincipal(principal));
+  }
+
+  public PosUser posUserFromPrincipal(DefaultOidcUser principal)
+  {
+    return findUserByPreferredUsername(
+      principal.getPreferredUsername())
+      .orElseThrow(()
+        -> new AccessDeniedException("Access denied! - user not found"));
   }
 
 }

@@ -1,6 +1,5 @@
 package l9g.webapp.smartcardfront.db.model;
 
-
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
@@ -37,10 +36,16 @@ public class PosUuidObject implements Serializable
   private static final long serialVersionUID = 1575497541642600225l;
 
   //~--- constructors ---------------------------------------------------------
-  public PosUuidObject(String createdBy)
+  public PosUuidObject(String createdBy, boolean immutable)
   {
     this.createdBy = this.modifiedBy = createdBy;
     this.id = UUID.randomUUID().toString();
+    this.immutable = immutable;
+  }
+
+  public PosUuidObject(String createdBy)
+  {
+    this(createdBy, false);
   }
 
   @PrePersist
@@ -58,6 +63,12 @@ public class PosUuidObject implements Serializable
   public void preRemove()
   {
     log.debug("preRemove " + this.getClass().getCanonicalName());
+    if(immutable)
+    {
+      log.error("Attempted to remove an immutable object: {} {}",
+        this.getClass().getCanonicalName(), id);
+      throw new IllegalStateException("Cannot remove an immutable object.");
+    }
   }
 
   /**
@@ -68,6 +79,12 @@ public class PosUuidObject implements Serializable
   public void preUpdate()
   {
     log.debug("preUpdate " + this.getClass().getCanonicalName());
+    if(immutable)
+    {
+      log.error("Attempted to update an immutable object: {} {}",
+        this.getClass().getCanonicalName(), id);
+      throw new IllegalStateException("Cannot update an immutable object.");
+    }
     this.modifyTimestamp = new Date();
   }
 
@@ -77,14 +94,14 @@ public class PosUuidObject implements Serializable
   {
     boolean same = false;
 
-    if (this == obj)
+    if(this == obj)
     {
       return true;
     }
 
-    if ((obj != null) && (obj instanceof PosUuidObject))
+    if((obj != null) && (obj instanceof PosUuidObject))
     {
-      same = this.getId().equals(((PosUuidObject) obj).getId());
+      same = this.getId().equals(((PosUuidObject)obj).getId());
     }
 
     return same;
@@ -95,8 +112,8 @@ public class PosUuidObject implements Serializable
   {
     return Objects.hashCode(this.id);
   }
-  
-  public void setModifiedBy( String modifiedBy )
+
+  public void setModifiedBy(String modifiedBy)
   {
     this.modifiedBy = modifiedBy;
     this.modifyTimestamp = new Date();
@@ -114,8 +131,12 @@ public class PosUuidObject implements Serializable
   @Temporal(TemporalType.TIMESTAMP)
   protected Date modifyTimestamp;
 
+  @JsonView(View.Base.class)
+  private boolean immutable;
+
   @Id
   @Column(length = 40)
   @JsonView(View.Base.class)
   private String id;
+
 }
