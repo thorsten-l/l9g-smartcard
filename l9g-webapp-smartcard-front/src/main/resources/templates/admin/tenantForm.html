@@ -9,25 +9,49 @@
     <div class="app-wrapper">
       <div th:replace="~{app/admin::header}"></div>
       <div th:replace="~{app/sidebar::sidebar}"></div>
-      <!--begin::App Main-->
+
       <main class="app-main">
 
-        <div class="app-content-header"> <!--begin::Container-->
-          <div class="container-fluid"> <!--begin::Row-->
-            <div class="row">
-              <div class="d-flex align-items-center">
-                <h3 class="mb-0 me-2" th:text="#{tenant}">T</h3>
-                <h3 class="mb-0" th:text="${': ' + tenant.name}">T</h3>
-              </div>
-            </div> <!--end::Row-->
-          </div> <!--end::Container-->
-        </div> <!--end::App Content Header--> 
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="d-flex align-items-center">
+              <h3 class="mb-0 me-2" th:text="#{tenant}">T</h3>
+              <h3 th:unless="${addTenant}" class="mb-0" th:text="${': ' + tenant.name}">T</h3>
+            </div>
+          </div> 
+        </div>
 
         <div class="app-content">
-          <div class="container">
+          <div class="container-fluid">
 
+            <div class="w-100"> 
+              <div class="card card-primary card-outline mb-4">
+                <div class="card-header">
+                  <div class="card-title" th:text="#{settings}">S</div>
+                </div>
+                <form th:action="${addTenant} ? @{/admin/tenant/add} : @{/admin/tenant/{id}(id=${tenant.id})}" 
+                      th:object="${tenant}" th:method="POST"> 
+                  <div class="card-body">
+                    <div class="mb-3"> 
+                      <label for="name" class="form-label" th:text="#{name}">N</label> 
+                      <input type="text" class="form-control" id="name" th:field="*{name}" />
+                    </div>
+                    <div class="mb-3"> 
+                      <label for="shorthand" class="form-label" th:text="#{shorthand}">N</label> 
+                      <input type="text" maxlength="3" class="form-control" id="shorthand" th:field="*{shorthand}" />
+                    </div>
+                  </div>
+                  <div class="card-footer text-end"> 
+                    <button type="submit" class="btn btn-primary" 
+                            th:text="#{save}">S</button> 
+                    <a type="button" class="btn btn-danger" 
+                       th:href="@{/admin/tenant}"
+                       th:text="#{cancel}" >C</a>                  
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
-        </div>
       </main>
     </div>
 
@@ -79,7 +103,6 @@
         });
       }
     </script>
-
 
   </body>
 </html>

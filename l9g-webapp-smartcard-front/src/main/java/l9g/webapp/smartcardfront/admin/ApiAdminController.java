@@ -15,8 +15,8 @@
  */
 package l9g.webapp.smartcardfront.admin;
 
-import l9g.webapp.smartcardfront.config.UserService;
-import l9g.webapp.smartcardfront.db.DbService;
+import l9g.webapp.smartcardfront.db.service.UserService;
+import l9g.webapp.smartcardfront.db.service.DbService;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import lombok.RequiredArgsConstructor;

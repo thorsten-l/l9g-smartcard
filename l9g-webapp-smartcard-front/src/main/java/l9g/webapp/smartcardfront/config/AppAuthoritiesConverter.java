@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.config;
 
+import l9g.webapp.smartcardfront.db.service.UserService;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

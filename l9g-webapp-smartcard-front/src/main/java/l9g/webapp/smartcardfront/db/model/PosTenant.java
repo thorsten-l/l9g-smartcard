@@ -62,6 +62,10 @@ public class PosTenant extends PosUuidObject
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
+  @JsonView(View.Base.class)
+  @Column(name = "shorthand", unique = true)
+  private String shorthand;
+
   @JsonView(View.Tenant.class)
   @ManyToOne
   @JoinColumn(name = "address_id")

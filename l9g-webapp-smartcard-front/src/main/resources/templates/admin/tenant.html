@@ -9,42 +9,41 @@
     <div class="app-wrapper">
       <div th:replace="~{app/admin::header}"></div>
       <div th:replace="~{app/sidebar::sidebar}"></div>
-      <!--begin::App Main-->
+
       <main class="app-main">
 
-        <div class="app-content-header"> <!--begin::Container-->
-          <div class="container-fluid"> <!--begin::Row-->
-            <div class="row">
+        <div class="app-content-header">
+          <div class="container-fluid">
               <div class="col-sm-6">
                 <h3 class="mb-0" th:text="#{tenants}">Tenants</h3>
               </div>
-            </div> <!--end::Row-->
-          </div> <!--end::Container-->
-        </div> <!--end::App Content Header--> 
+          </div>
+        </div>
 
-        <!--begin::App Content-->
         <div class="app-content">
           <div class="container-fluid">
             <div class="card card-primary card-outline mb-4">
               <div style="background-color: #e8f0ff;" class="card-header d-flex align-items-center justify-content-between">
                 <div class="card-title mb-0" th:text="#{overview}">O</div>
                 <div class="ms-auto">
-                  <button class="btn btn-success">
+                  <a class="btn btn-success" th:href="@{/admin/tenant/add}">
                     <i class="fa-solid fa-plus"></i>
-                  </button>
+                  </a>
                 </div>
               </div>
               <div class="card-body p-0">
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th class="w-100"><span th:text="#{name}" th:remove="tags">name</span></th>
-                      <th class="text-nowrap"><span th:text="#{actions}" th:remove="tags">actions</span></th>
+                      <th style="width: 70%"><span th:text="#{name}" th:remove="tags">name</span></th>
+                      <th style="width: 30%"><span th:text="#{shorthand}" th:remove="tags">shorthand</span></th>
+                      <th><span th:text="#{actions}" th:remove="tags">actions</span></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="align-middle" th:each="entry : ${tenants}">
-                      <td class="w-100" th:text="${entry.name}"></td>
+                      <td th:text="${entry.name}"></td>
+                      <td th:text="${entry.shorthand}"></td>
                       <td class="text-nowrap">
                         <span th:unless="${entry.immutable}" th:remove="tag">
                           <a class="btn btn-primary" 
@@ -96,7 +95,7 @@
                         `"${name}" has been deleted.`,
                         'success'
                         ).then(() => {
-                  location.reload(); // Optional: Seite aktualisieren, um den gelöschten Eintrag zu entfernen
+                  location.reload();
                 });
               } else {
                 Swal.fire(

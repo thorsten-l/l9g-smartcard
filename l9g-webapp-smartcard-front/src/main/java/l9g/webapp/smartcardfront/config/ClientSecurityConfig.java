@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.config;
 
+import l9g.webapp.smartcardfront.db.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;

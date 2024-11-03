@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.db.service;
 
 import java.util.Optional;
+import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
+import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
+import l9g.webapp.smartcardfront.db.PosTenantsRepository;
+import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
+import l9g.webapp.smartcardfront.db.PosUserRepository;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
 import l9g.webapp.smartcardfront.db.model.PosProperty;

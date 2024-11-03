@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.config;
+package l9g.webapp.smartcardfront.db.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
 import l9g.webapp.smartcardfront.db.model.PosRole;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,8 +35,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService
 {
-  private static final String SESSION_POS_SELECTED_TENANT = "POS_SELECTED_TENANT";
-
   private final Cache<String, Optional<PosUser>> byPreferredUsernameCache;
 
   private final PosUserRepository posUserRepository;
@@ -80,41 +76,11 @@ public class UserService
       .equals("ROLE_" + PosRole.POS_ADMINISTRATOR));
   }
 
-  public PosTenant getSelectedTenant(HttpSession session, PosUser user)
-  {
-    PosTenant tenant;
-
-    Object object = session.getAttribute(SESSION_POS_SELECTED_TENANT);
-
-    if(user != null && user.getRole() == PosRole.POS_ADMINISTRATOR
-      && object != null && object instanceof PosTenant)
-    {
-      log.debug("selected tenant found in session");
-      tenant = (PosTenant)object;
-    }
-    else
-    {
-      log.debug("create new selected tenant for session");
-      tenant = user.getTenant();
-    }
-
-    session.setAttribute(SESSION_POS_SELECTED_TENANT, tenant);
-
-    return tenant;
-  }
-
-  public PosTenant getSelectedTenant(
-    HttpSession session, DefaultOidcUser principal)
-  {
-    return getSelectedTenant(session, posUserFromPrincipal(principal));
-  }
-
   public PosUser posUserFromPrincipal(DefaultOidcUser principal)
   {
     return findUserByPreferredUsername(
       principal.getPreferredUsername())
       .orElseThrow(()
         -> new AccessDeniedException("Access denied! - user not found"));
-  }
-
+  }    
 }

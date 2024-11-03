@@ -18,9 +18,10 @@ package l9g.webapp.smartcardfront.admin;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Locale;
-import l9g.webapp.smartcardfront.config.UserService;
+import l9g.webapp.smartcardfront.db.service.UserService;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.db.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -46,6 +48,8 @@ public class AdminController
   private static final String SESSION_POS_SELECTED_TENANT = "POS_SELECTED_TENANT";
 
   private final UserService userService;
+
+  private final TenantService tenantService;
 
   private final PosTenantsRepository posTenantsRepository;
 
@@ -71,7 +75,7 @@ public class AdminController
     model.addAttribute("principal", principal);
     model.addAttribute("locale", locale.toString());
     model.addAttribute("selectedTenant",
-      userService.getSelectedTenant(session, principal));
+      tenantService.getSelectedTenant(session, principal));
     model.addAttribute("tenants", tenants);
   }
 
@@ -89,24 +93,31 @@ public class AdminController
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model, HttpSession session)
   {
-    PosTenant posTenant = null;
-    log.debug("tenantForm {} for {}", id,
-      principal.getPreferredUsername());
-
-    if(userService.isAdmin(principal) && id != null)
-    {
-      posTenant = posTenantsRepository.findById(id).orElseThrow(()
-        -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tenant not found"));
-      log.debug("create or update a tenant: {}", posTenant.getName());
+    log.debug("tenantForm {} for {}", id, principal.getPreferredUsername());
+    generalModel(principal, model, session);
+    
+    if ("add".equals(id))
+    {      
+      model.addAttribute("addTenant", true );
+      model.addAttribute("tenant", new PosTenant());
     }
     else
     {
-      throw new AccessDeniedException("You are not allowed to create or update tenants.");
+      model.addAttribute("tenant", tenantService.adminFindTenantById(id, principal));
     }
-
-    generalModel(principal, model, session);
-    model.addAttribute("tenant", posTenant);
     return "admin/tenantForm";
+  }
+
+  @PostMapping("/admin/tenant/{id}")
+  public String tenantFormAction(@PathVariable String id,
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    Model model, HttpSession session, PosTenant tenant)
+  {
+    log.debug("tenantForm action {} for {}", id,
+      principal.getPreferredUsername());
+    tenantService.adminSaveTenant(id, tenant, principal);
+    generalModel(principal, model, session);
+    return "admin/tenant";
   }
 
   @GetMapping("/admin/tenant/select/{id}")
