@@ -18,7 +18,7 @@ package l9g.webapp.smartcardfront.db;
 import java.util.List;
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,10 +26,10 @@ import org.springframework.stereotype.Repository;
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @Repository
-public interface PosTenantsRepository extends
-  ListCrudRepository<PosTenant, String>
+public interface PosTenantsRepository extends JpaRepository<PosTenant, String>
 {
   Optional<PosTenant> findByName(String name);
 
   List<PosTenant> findAllByOrderByNameAsc();
+
 }

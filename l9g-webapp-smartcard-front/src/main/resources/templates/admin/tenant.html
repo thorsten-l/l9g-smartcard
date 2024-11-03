@@ -47,7 +47,8 @@
                       <td class="text-nowrap">
                         <span th:unless="${entry.immutable}" th:remove="tag">
                           <a class="btn btn-primary" 
-                             th:href="@{/admin/tenant/{id}(id=${entry.id})}">
+                             th:href="@{/admin/tenant/{id}(id=${entry.id})}"
+                             th:title="${entry.id}">
                             <i class="fa-solid fa-pencil"></i>
                           </a>
                           <button class="btn btn-danger" 

@@ -62,6 +62,7 @@ public class ApiAdminController
       else
       {
         posTenantsRepository.deleteById(id);
+        posTenantsRepository.flush();
       }
     }
     return ResponseEntity.ok("OK");

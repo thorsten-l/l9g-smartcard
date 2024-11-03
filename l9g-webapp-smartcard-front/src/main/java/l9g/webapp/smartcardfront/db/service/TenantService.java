@@ -93,6 +93,12 @@ public class TenantService
   public PosTenant adminSaveTenant(String id, PosTenant tenant, DefaultOidcUser principal)
   {
     PosTenant posTenant;
+    
+    if ( tenant.getShorthand() != null && tenant.getShorthand().isBlank())
+    {
+      tenant.setShorthand(null);
+    }
+    
     if("add".equals(id))
     {
       log.debug("add new tenant");
@@ -105,7 +111,7 @@ public class TenantService
     tenant.setModifiedBy(principal.getPreferredUsername());
     PosPosMapper.INSTANCE.updatePosTenantFromSource(tenant, posTenant);
     log.debug("posTenant = {}", posTenant);
-    posTenantsRepository.save(posTenant);
+    posTenantsRepository.saveAndFlush(posTenant);
     return posTenant;
   }
 

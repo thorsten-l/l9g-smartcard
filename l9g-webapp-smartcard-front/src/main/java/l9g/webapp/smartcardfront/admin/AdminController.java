@@ -117,7 +117,7 @@ public class AdminController
       principal.getPreferredUsername());
     tenantService.adminSaveTenant(id, tenant, principal);
     generalModel(principal, model, session);
-    return "admin/tenant";
+    return "redirect:/admin/tenant";
   }
 
   @GetMapping("/admin/tenant/select/{id}")

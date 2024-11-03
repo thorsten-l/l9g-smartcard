@@ -70,6 +70,7 @@ public class PosUuidObject implements Serializable
         this.getClass().getCanonicalName(), id);
       throw new IllegalStateException("Cannot remove an immutable object.");
     }
+    log.debug("done");
   }
 
   /**
