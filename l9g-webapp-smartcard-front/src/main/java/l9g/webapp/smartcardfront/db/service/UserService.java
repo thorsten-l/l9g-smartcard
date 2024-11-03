@@ -82,5 +82,13 @@ public class UserService
       principal.getPreferredUsername())
       .orElseThrow(()
         -> new AccessDeniedException("Access denied! - user not found"));
-  }    
+  }
+
+  public String gecosFromPrincipal(DefaultOidcUser principal)
+  {
+    return principal.getFamilyName() + ", " + principal.getGivenName()
+      + ", " + principal.getEmail() + ", "
+      + principal.getPreferredUsername();
+  }
+
 }

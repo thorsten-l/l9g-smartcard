@@ -102,13 +102,13 @@ public class TenantService
     if("add".equals(id))
     {
       log.debug("add new tenant");
-      posTenant = new PosTenant(principal.getPreferredUsername(), tenant.getName());
+      posTenant = new PosTenant(userService.gecosFromPrincipal(principal), tenant.getName());
     }
     else
     {
       posTenant = adminFindTenantById(id, principal);
     }
-    tenant.setModifiedBy(principal.getPreferredUsername());
+    tenant.setModifiedBy(userService.gecosFromPrincipal(principal));
     PosPosMapper.INSTANCE.updatePosTenantFromSource(tenant, posTenant);
     log.debug("posTenant = {}", posTenant);
     posTenantsRepository.saveAndFlush(posTenant);
