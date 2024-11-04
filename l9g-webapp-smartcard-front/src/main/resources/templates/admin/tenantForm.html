@@ -30,7 +30,10 @@
                   <div class="card-title" th:text="#{settings}">S</div>
                 </div>
                 <form th:action="${addTenant} ? @{/admin/tenant/add} : @{/admin/tenant/{id}(id=${formTenant.id})}" 
-                      th:object="${formTenant}" th:method="POST"> 
+                      th:object="${formTenant}" th:method="POST">
+
+                  <input type="hidden" th:field="*{id}"/>
+
                   <div class="card-body">
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{name}">N</label> 
@@ -41,7 +44,10 @@
                     </div>
                     <div class="mb-3"> 
                       <label for="shorthand" class="form-label" th:text="#{shorthand}">N</label> 
-                      <input type="text" maxlength="3" class="form-control" id="shorthand" th:field="*{shorthand}" />
+                      <input type="text" maxlength="3" class="form-control" th:field="*{shorthand}" />
+                      <div th:if="${#fields.hasErrors('shorthand')}" class="text-danger">
+                        <span th:errors="*{shorthand}"></span>
+                      </div>
                     </div>
                   </div>
                   <div class="card-footer text-end"> 

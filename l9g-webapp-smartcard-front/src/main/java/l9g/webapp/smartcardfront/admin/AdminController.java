@@ -140,7 +140,8 @@ public class AdminController
       return "admin/tenantForm";
     }
 
-    tenantService.adminSaveTenant(id, formTenant, principal);
+    redirectAttributes.addFlashAttribute("savedTenant", 
+      tenantService.adminSaveTenant(id, formTenant, principal));
     return "redirect:/admin/tenant";
   }
 

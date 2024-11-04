@@ -111,8 +111,7 @@ public class TenantService
     tenant.setModifiedBy(userService.gecosFromPrincipal(principal));
     PosPosMapper.INSTANCE.updatePosTenantFromSource(tenant, posTenant);
     log.debug("posTenant = {}", posTenant);
-    posTenantsRepository.saveAndFlush(posTenant);
-    return posTenant;
+    return posTenantsRepository.saveAndFlush(posTenant);
   }
 
 }

@@ -14,9 +14,9 @@
 
         <div class="app-content-header">
           <div class="container-fluid">
-              <div class="col-sm-6">
-                <h3 class="mb-0" th:text="#{tenants}">Tenants</h3>
-              </div>
+            <div class="col-sm-6">
+              <h3 class="mb-0" th:text="#{tenants}">Tenants</h3>
+            </div>
           </div>
         </div>
 
@@ -69,6 +69,16 @@
     </div>
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag" />
+
+    <script th:if="${savedTenant!=null}" th:inline="javascript">
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: /*[[${savedTenant.name} + ' ' + #{saved}]]*/ 'Title',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    </script>
 
     <script th:inline="javascript">
       function confirmDelete(button) {

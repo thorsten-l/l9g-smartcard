@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.UUID;
 import l9g.webapp.smartcardfront.json.View;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -140,6 +141,7 @@ public class PosUuidObject implements Serializable
   @Id
   @Column(length = 40)
   @JsonView(View.Base.class)
+  @Setter
   private String id;
 
 }
