@@ -17,7 +17,6 @@ package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import static java.lang.StrictMath.log;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.service.PosPropertyService;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class AdminPropertyController
     HttpSession session)
   {
     adminService.generalModel(principal, model, session);
-    model.addAttribute("properties", propertyService.getPropertiesByTenant(session, principal));
+    model.addAttribute("properties", propertyService.ownerGetPropertiesByTenant(session, principal));
     return "admin/property";
   }
 
@@ -70,7 +69,7 @@ public class AdminPropertyController
     }
     else
     {
-      model.addAttribute("formProperty", propertyService.getPropertyById(id, session, principal));
+      model.addAttribute("formProperty", propertyService.ownerGetPropertyById(id, session, principal));
     }
     return "admin/propertyForm";
   }
@@ -87,7 +86,8 @@ public class AdminPropertyController
       model.addAttribute("formProperty", formProperty);
       return "admin/propertyForm";
     }
-    redirectAttributes.addFlashAttribute("savedProperty", propertyService.saveProperty(formProperty, session, principal));
+    redirectAttributes.addFlashAttribute("savedProperty", 
+      propertyService.ownerSaveProperty(id, formProperty, session, principal));
     return "redirect:/admin/property";
   }
 
@@ -97,7 +97,7 @@ public class AdminPropertyController
   {
     log.debug("property delete {} for {}", id, principal.getPreferredUsername());
     redirectAttributes.addFlashAttribute("deletedProperty",
-      propertyService.deleteProperty(id, session, principal));
+      propertyService.ownerDeleteProperty(id, session, principal));
     return "redirect:/admin/property";
   }
 

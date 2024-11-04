@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.db;
 
+import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,4 +34,9 @@ public interface PosPosMapper
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createTimestamp", ignore = true)
   void updatePosTenantFromSource(PosTenant source, @MappingTarget PosTenant target);
+  
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createTimestamp", ignore = true)
+  @Mapping(target = "tenant", ignore = true)
+  void updatePosPropertyFromSource(PosProperty source, @MappingTarget PosProperty target);
 }

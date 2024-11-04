@@ -80,8 +80,7 @@ public class DbUserService
   {
     return principal.getAuthorities().stream()
       .anyMatch(auth
-        -> auth.getAuthority().equals("ROLE_" + PosRole.POS_ADMINISTRATOR)
-      || auth.getAuthority().equals("ROLE_" + PosRole.POS_OWNER));
+        -> auth.getAuthority().equals("ROLE_" + PosRole.POS_OWNER));
   }
 
   public PosUser posUserFromPrincipal(DefaultOidcUser principal)

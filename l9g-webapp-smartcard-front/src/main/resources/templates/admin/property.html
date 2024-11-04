@@ -39,14 +39,15 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr th:each="property : ${properties}">
-                      <td th:text="${property.key}"></td>
-                      <td th:text="${property.value}"></td>
+                    <tr th:each="entry : ${properties}">
+                      <td th:text="${entry.key}"></td>
+                      <td th:text="${entry.value}"></td>
                       <td class="text-nowrap">
-                        <a class="btn btn-primary" th:href="@{/admin/property/{id}(id=${property.id})}">
+                        <a class="btn btn-primary" th:href="@{/admin/property/{id}(id=${entry.id})}"
+                           th:title="${entry.id}">
                           <i class="fa-solid fa-pencil"></i>
                         </a>
-                        <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${property.id}, data-key=${property.key}">
+                        <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${entry.id}, data-key=${entry.key}">
                           <i class="fa-solid fa-trash"></i>
                         </button>
                       </td>
