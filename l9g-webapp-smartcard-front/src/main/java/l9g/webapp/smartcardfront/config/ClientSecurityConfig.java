@@ -15,7 +15,7 @@
  */
 package l9g.webapp.smartcardfront.config;
 
-import l9g.webapp.smartcardfront.db.service.UserService;
+import l9g.webapp.smartcardfront.db.service.DbUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
@@ -54,7 +54,7 @@ public class ClientSecurityConfig
 {
   private final AppAuthoritiesConverter appAuthoritiesConverter;
 
-  private final UserService userService;
+  private final DbUserService userService;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http,

@@ -17,8 +17,9 @@ package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import l9g.webapp.smartcardfront.admin.AdminService;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import l9g.webapp.smartcardfront.db.service.TenantService;
+import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,7 +44,7 @@ public class AdminTenantController
 {
   private final AdminService adminService;
 
-  private final TenantService tenantService;
+  private final DbTenantService tenantService;
 
   @GetMapping("/admin/tenant/{id}")
   public String tenantForm(@PathVariable String id,

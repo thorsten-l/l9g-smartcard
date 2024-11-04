@@ -15,7 +15,7 @@
  */
 package l9g.webapp.smartcardfront.config;
 
-import l9g.webapp.smartcardfront.db.service.UserService;
+import l9g.webapp.smartcardfront.db.service.DbUserService;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 public class AppAuthoritiesConverter
 {
   // private final PosUserRepository posUserRepository;
-  private final UserService userService;
+  private final DbUserService userService;
 
   @Value("${app.resource-access-roles}")
   private String resourceAccessRoles;

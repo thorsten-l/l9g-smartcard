@@ -27,7 +27,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
-import l9g.webapp.smartcardfront.admin.validation.UniqueTenant;
+import l9g.webapp.smartcardfront.db.validator.UniqueTenant;
 import l9g.webapp.smartcardfront.json.View;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

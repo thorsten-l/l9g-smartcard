@@ -39,11 +39,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TenantService
+public class DbTenantService
 {
   private static final String SESSION_POS_SELECTED_TENANT = "POS_SELECTED_TENANT";
 
-  private final UserService userService;
+  private final DbUserService userService;
 
   private final PosTenantsRepository posTenantsRepository;
 

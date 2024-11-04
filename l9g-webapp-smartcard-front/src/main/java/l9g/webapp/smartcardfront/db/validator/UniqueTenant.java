@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.admin.validation;
+package l9g.webapp.smartcardfront.db.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

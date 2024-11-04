@@ -18,10 +18,10 @@ package l9g.webapp.smartcardfront.admin;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Locale;
-import l9g.webapp.smartcardfront.db.service.UserService;
+import l9g.webapp.smartcardfront.db.service.DbUserService;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import l9g.webapp.smartcardfront.db.service.TenantService;
+import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +39,9 @@ import org.springframework.ui.Model;
 @RequiredArgsConstructor
 public class AdminService
 {
-  private final UserService userService;
+  private final DbUserService userService;
 
-  private final TenantService tenantService;
+  private final DbTenantService tenantService;
 
   private final PosTenantsRepository posTenantsRepository;
 

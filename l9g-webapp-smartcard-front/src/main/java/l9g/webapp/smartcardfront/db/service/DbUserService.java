@@ -33,13 +33,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class UserService
+public class DbUserService
 {
   private final Cache<String, Optional<PosUser>> byPreferredUsernameCache;
 
   private final PosUserRepository posUserRepository;
 
-  public UserService(PosUserRepository posUserRepository)
+  public DbUserService(PosUserRepository posUserRepository)
   {
     this.posUserRepository = posUserRepository;
     this.byPreferredUsernameCache = Caffeine.newBuilder()
