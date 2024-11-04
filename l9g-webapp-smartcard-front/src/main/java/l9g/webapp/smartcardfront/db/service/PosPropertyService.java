@@ -86,7 +86,6 @@ public class PosPropertyService
 
   public PosProperty ownerDeleteProperty(String id, HttpSession session, DefaultOidcUser principal)
   {
-    tenantService.checkTenantOwner(session, principal);
     PosProperty property = ownerGetPropertyById(id, session, principal);
     posPropertiesRepository.delete(property);
     posPropertiesRepository.flush();
