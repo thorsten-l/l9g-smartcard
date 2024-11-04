@@ -112,6 +112,9 @@ public class DbService
       PosTenant testTenant = posTenantsRepository.findByName(KEY_TEST_TENANT)
         .orElseGet(() -> posTenantsRepository.save(
         new PosTenant(KEY_SYSTEM_USER, KEY_TEST_TENANT)));
+      
+      PosUser user = new PosUser(KEY_SYSTEM_USER, testTenant, "eid9573584", PosRole.POS_OWNER);
+      posUserRepository.save(user);
 
       posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "NOVEMBER"));
       posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "DELTA"));
@@ -132,11 +135,11 @@ public class DbService
       for(String username : adminUsernames)
       {
         log.debug("Create/update '{}' as administrator", username);
-        PosUser person = posPersonsRepository.findByUsername(username)
-          .orElseGet(() -> posPersonsRepository.save(new PosUser(KEY_SYSTEM_USER, systemTenant, username,
+        PosUser person = posUserRepository.findByUsername(username)
+          .orElseGet(() -> posUserRepository.save(new PosUser(KEY_SYSTEM_USER, systemTenant, username,
           PosRole.POS_ADMINISTRATOR)));
         person.setTenant(systemTenant);
-        posPersonsRepository.save(person);
+        posUserRepository.save(person);
       }
     }
     else
@@ -148,7 +151,7 @@ public class DbService
   @Value("${app.administrator.usernames}")
   private String[] adminUsernames;
 
-  private final PosUserRepository posPersonsRepository;
+  private final PosUserRepository posUserRepository;
 
   private final PosTenantsRepository posTenantsRepository;
 

@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.config;
 
+import java.util.ArrayList;
 import l9g.webapp.smartcardfront.db.service.DbUserService;
 import java.util.Collection;
 import java.util.List;
@@ -22,8 +23,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,6 +40,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AppAuthoritiesConverter
 {
   // private final PosUserRepository posUserRepository;
@@ -51,7 +55,7 @@ public class AppAuthoritiesConverter
       (jwt.getClaimAsMap("realm_access") != null
       && jwt.getClaimAsMap("realm_access").get("roles") != null)
       ? (List<String>)jwt.getClaimAsMap("realm_access").get("roles")
-      : List.of();
+      : new ArrayList<String>();
 
     List<String> resourceRoles =
       (jwt.getClaimAsMap("resource_access") != null
@@ -62,17 +66,18 @@ public class AppAuthoritiesConverter
       ? ((Map<String, List<String>>)jwt
         .getClaimAsMap("resource_access")
         .get(resourceAccessRoles)).get("roles")
-      : List.of();
+      : new ArrayList<String>();
 
     if(oidcUser != null && oidcUser.getPreferredUsername() != null)
     {
       Optional<PosUser> optional =
         userService.findUserByPreferredUsername(oidcUser.getPreferredUsername());
-        
+
       if(optional.isPresent())
       {
         PosUser user = optional.get();
-        resourceRoles.add(user.getRole().toString());
+        log.debug("posUser.role = {}", user.getRole().name());
+        resourceRoles.add(user.getRole().name());
       }
     }
  
