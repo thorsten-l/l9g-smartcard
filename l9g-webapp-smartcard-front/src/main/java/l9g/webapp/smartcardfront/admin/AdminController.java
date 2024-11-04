@@ -16,6 +16,7 @@
 package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 import l9g.webapp.smartcardfront.db.service.UserService;
@@ -31,10 +32,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -95,28 +99,48 @@ public class AdminController
   {
     log.debug("tenantForm {} for {}", id, principal.getPreferredUsername());
     generalModel(principal, model, session);
-    
-    if ("add".equals(id))
-    {      
-      model.addAttribute("addTenant", true );
-      model.addAttribute("tenant", new PosTenant());
+
+    if("add".equals(id))
+    {
+      model.addAttribute("addTenant", true);
+      model.addAttribute("formTenant", new PosTenant());
     }
     else
     {
-      model.addAttribute("tenant", tenantService.adminFindTenantById(id, principal));
+      model.addAttribute("formTenant", tenantService.adminFindTenantById(id, principal));
     }
     return "admin/tenantForm";
   }
 
   @PostMapping("/admin/tenant/{id}")
-  public String tenantFormAction(@PathVariable String id,
+  public String tenantFormAction(
+    RedirectAttributes redirectAttributes,
+    HttpSession session,
+    @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    Model model, HttpSession session, PosTenant tenant)
+    @Valid @ModelAttribute("formTenant") PosTenant formTenant,
+    BindingResult bindingResult,
+    Model model)
   {
     log.debug("tenantForm action {} for {}", id,
       principal.getPreferredUsername());
-    tenantService.adminSaveTenant(id, tenant, principal);
     generalModel(principal, model, session);
+
+    if(bindingResult.hasErrors())
+    {
+      log.debug("Form error: {}", bindingResult);
+      bindingResult.getAllErrors().forEach(error -> log.debug(" - Error: {}", error));
+      log.debug("show errors....");
+
+      if("add".equals(id))
+      {
+        model.addAttribute("addTenant", true);
+      }
+      model.addAttribute("formTenant", formTenant);
+      return "admin/tenantForm";
+    }
+
+    tenantService.adminSaveTenant(id, formTenant, principal);
     return "redirect:/admin/tenant";
   }
 

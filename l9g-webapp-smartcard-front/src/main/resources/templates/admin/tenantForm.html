@@ -16,7 +16,7 @@
           <div class="container-fluid">
             <div class="d-flex align-items-center">
               <h3 class="mb-0 me-2" th:text="#{tenant}">T</h3>
-              <h3 th:unless="${addTenant}" class="mb-0" th:text="${': ' + tenant.name}">T</h3>
+              <h3 th:unless="${addTenant}" class="mb-0" th:text="${': ' + formTenant.name}">T</h3>
             </div>
           </div> 
         </div>
@@ -29,12 +29,15 @@
                 <div class="card-header">
                   <div class="card-title" th:text="#{settings}">S</div>
                 </div>
-                <form th:action="${addTenant} ? @{/admin/tenant/add} : @{/admin/tenant/{id}(id=${tenant.id})}" 
-                      th:object="${tenant}" th:method="POST"> 
+                <form th:action="${addTenant} ? @{/admin/tenant/add} : @{/admin/tenant/{id}(id=${formTenant.id})}" 
+                      th:object="${formTenant}" th:method="POST"> 
                   <div class="card-body">
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{name}">N</label> 
-                      <input type="text" class="form-control" id="name" th:field="*{name}" />
+                      <input type="text" class="form-control" th:field="*{name}" />
+                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                        <span th:errors="*{name}"></span>
+                      </div>
                     </div>
                     <div class="mb-3"> 
                       <label for="shorthand" class="form-label" th:text="#{shorthand}">N</label> 

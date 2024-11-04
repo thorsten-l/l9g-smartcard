@@ -25,6 +25,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import l9g.webapp.smartcardfront.json.View;
 import lombok.Getter;
@@ -60,6 +61,7 @@ public class PosTenant extends PosUuidObject
 
   @JsonView(View.Base.class)
   @Column(name = "name", nullable = false, unique = true)
+  @NotBlank(message = "{error.name.notBlank}")
   private String name;
 
   @JsonView(View.Base.class)
