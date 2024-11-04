@@ -97,5 +97,5 @@ public class DbUserService
       + ", " + principal.getEmail() + ", "
       + principal.getPreferredUsername();
   }
-
+  
 }

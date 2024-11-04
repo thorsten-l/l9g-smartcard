@@ -47,7 +47,8 @@ public class AdminPropertyController
 
   @GetMapping("/admin/property")
   public String propertyHome(
-    @AuthenticationPrincipal DefaultOidcUser principal, Model model,
+    @AuthenticationPrincipal DefaultOidcUser principal, 
+    Model model,
     HttpSession session)
   {
     adminService.generalModel(principal, model, session);
@@ -56,9 +57,11 @@ public class AdminPropertyController
   }
 
   @GetMapping("/admin/property/{id}")
-  public String propertyForm(@PathVariable String id,
+  public String propertyForm(
+    @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    Model model, HttpSession session)
+    Model model, 
+    HttpSession session)
   {
     log.debug("propertyForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
@@ -75,24 +78,38 @@ public class AdminPropertyController
   }
 
   @PostMapping("/admin/property/{id}")
-  public String propertyFormAction(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable String id,
-    @AuthenticationPrincipal DefaultOidcUser principal, @Valid @ModelAttribute("formProperty") PosProperty formProperty,
+  public String propertyFormAction(
+    RedirectAttributes redirectAttributes, 
+    HttpSession session, 
+    @PathVariable String id,
+    @AuthenticationPrincipal DefaultOidcUser principal, 
+    @Valid @ModelAttribute("formProperty") PosProperty formProperty,
     BindingResult bindingResult, Model model)
   {
     log.debug("propertyForm action {} for {}", id, principal.getPreferredUsername());
+    
     if(bindingResult.hasErrors())
     {
       log.debug("Form error: {}", bindingResult);
+      adminService.generalModel(principal, model, session);
+      if("add".equals(id))
+      {
+        model.addAttribute("addProperty", true);
+      }
       model.addAttribute("formProperty", formProperty);
       return "admin/propertyForm";
     }
+    
     redirectAttributes.addFlashAttribute("savedProperty", 
       propertyService.ownerSaveProperty(id, formProperty, session, principal));
     return "redirect:/admin/property";
   }
 
   @GetMapping("/admin/property/{id}/delete")
-  public String propertyDelete(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable String id,
+  public String propertyDelete(
+    RedirectAttributes redirectAttributes, 
+    HttpSession session, 
+    @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal)
   {
     log.debug("property delete {} for {}", id, principal.getPreferredUsername());

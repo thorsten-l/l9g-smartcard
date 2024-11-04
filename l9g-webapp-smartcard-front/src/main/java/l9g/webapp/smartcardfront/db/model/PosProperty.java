@@ -22,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -57,6 +58,7 @@ public class PosProperty extends PosUuidObject
   private PosTenant tenant;
 
   @Column(name = "p_key", nullable = false)
+  @NotBlank(message = "{error.key.notBlank}")
   private String key;
 
   @Column(name = "p_value", length = 2048)

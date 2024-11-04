@@ -153,4 +153,21 @@ public class DbTenantService
     return tenant;
   }
 
+  public PosTenant checkTenantOwner(HttpSession session, DefaultOidcUser principal)
+  {
+    PosTenant tenant = getSelectedTenant(session, principal);
+    PosUser user = userService.posUserFromPrincipal(principal);
+    if(userService.isAdmin(principal)
+      || (userService.isOwner(principal)
+      && tenant.getId().equals(user.getTenant().getId())))
+    {
+      log.debug("access granted on properties");
+    }
+    else
+    {
+      throw new AccessDeniedException("No permissions on properties.");
+    }
+    return tenant;
+  }
+
 }

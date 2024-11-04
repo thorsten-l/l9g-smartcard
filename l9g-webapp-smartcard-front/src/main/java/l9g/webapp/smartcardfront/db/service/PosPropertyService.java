@@ -21,11 +21,9 @@ import l9g.webapp.smartcardfront.db.PosPosMapper;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,38 +44,22 @@ public class PosPropertyService
 
   private final PosPropertiesRepository posPropertiesRepository;
 
-  private PosTenant checkTenantOwner(HttpSession session, DefaultOidcUser principal)
-  {
-    PosTenant tenant = tenantService.getSelectedTenant(session, principal);
-    PosUser user = userService.posUserFromPrincipal(principal);
-    if( userService.isAdmin(principal) 
-      || (userService.isOwner(principal) 
-      && tenant.getId().equals(user.getTenant().getId())))
-    {
-      log.debug("access granted on properties");
-    }
-    else
-    {
-      throw new AccessDeniedException("No permissions on properties.");
-    }
-    return tenant;
-  }
-
   public List<PosProperty> ownerGetPropertiesByTenant(HttpSession session, DefaultOidcUser principal)
   {
-    return posPropertiesRepository.findAllByTenant(checkTenantOwner(session, principal));
+    return posPropertiesRepository.findAllByTenant(tenantService.checkTenantOwner(session, principal));
   }
 
   public PosProperty ownerGetPropertyById(String id, HttpSession session, DefaultOidcUser principal)
   {
-    return posPropertiesRepository.findByIdAndTenant(id, checkTenantOwner(session, principal))
+    tenantService.checkTenantOwner(session, principal);
+    return posPropertiesRepository.findById(id)
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Property not found"));
   }
 
   public PosProperty ownerSaveProperty(String id, PosProperty formProperty,
     HttpSession session, DefaultOidcUser principal)
   {
-    PosTenant tenant = checkTenantOwner(session, principal);
+    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
     PosProperty posProperty;
 
     if(formProperty.getValue() != null && formProperty.getValue().isBlank())
@@ -94,8 +76,8 @@ public class PosPropertyService
     else
     {
       posProperty = ownerGetPropertyById(id, session, principal);
-      posProperty.setModifiedBy(userService.gecosFromPrincipal(principal));
       PosPosMapper.INSTANCE.updatePosPropertyFromSource(formProperty, posProperty);
+      posProperty.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 
     log.debug("posProperty = {}", posProperty);
@@ -104,7 +86,7 @@ public class PosPropertyService
 
   public PosProperty ownerDeleteProperty(String id, HttpSession session, DefaultOidcUser principal)
   {
-    checkTenantOwner(session, principal);
+    tenantService.checkTenantOwner(session, principal);
     PosProperty property = ownerGetPropertyById(id, session, principal);
     posPropertiesRepository.delete(property);
     posPropertiesRepository.flush();

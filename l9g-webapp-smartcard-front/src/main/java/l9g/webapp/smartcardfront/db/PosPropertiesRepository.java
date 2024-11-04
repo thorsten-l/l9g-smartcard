@@ -32,8 +32,5 @@ public interface PosPropertiesRepository extends
 {
   Optional<PosProperty> findByTenantAndKey(PosTenant tenant, String key);
 
-  Optional<PosProperty> findByIdAndTenant(String id, PosTenant tenant);
-
   List<PosProperty> findAllByTenant(PosTenant tenant);
-
 }
