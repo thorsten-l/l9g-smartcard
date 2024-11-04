@@ -78,6 +78,8 @@ management:
 app:
   api:
     base-url: http://kasse.dev.sonia.de:8081
+  web:
+    base-url: https://kasse.dev.sonia.de
   oauth2:
     registration-id: app
     client-id: kasse

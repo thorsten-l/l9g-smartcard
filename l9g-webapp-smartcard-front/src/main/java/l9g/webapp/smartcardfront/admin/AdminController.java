@@ -25,9 +25,11 @@ import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
@@ -56,6 +58,9 @@ public class AdminController
   private final TenantService tenantService;
 
   private final PosTenantsRepository posTenantsRepository;
+  
+  @Value("${app.web.base-url}")
+  private String webBaseUrl;
 
   private void generalModel(DefaultOidcUser principal,
     Model model, HttpSession session)
@@ -81,6 +86,7 @@ public class AdminController
     model.addAttribute("selectedTenant",
       tenantService.getSelectedTenant(session, principal));
     model.addAttribute("tenants", tenants);
+    model.addAttribute("webBaseUrl", webBaseUrl );
   }
 
   @GetMapping("/admin/{page}")
@@ -140,7 +146,7 @@ public class AdminController
       return "admin/tenantForm";
     }
 
-    redirectAttributes.addFlashAttribute("savedTenant", 
+    redirectAttributes.addFlashAttribute("savedTenant",
       tenantService.adminSaveTenant(id, formTenant, principal));
     return "redirect:/admin/tenant";
   }
@@ -167,6 +173,26 @@ public class AdminController
 
     generalModel(principal, model, session);
     return "redirect:/admin/home";
+  }
+
+  @GetMapping("/ui/{category}/{page}")
+  public String ui(
+    Authentication authentication,
+    @PathVariable String category,
+    @PathVariable String page,
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    Model model,
+    HttpSession session)
+  {
+    log.debug("uiGET({}/{})", category, page);
+
+    model.addAttribute("layoutCategory", category);
+    model.addAttribute("layoutPage", page);
+    model.addAttribute("layoutFragment", "ui/" + category + "/" + page);
+
+    generalModel(principal, model, session);
+
+    return "ui/" + category + "/" + page;
   }
 
 }

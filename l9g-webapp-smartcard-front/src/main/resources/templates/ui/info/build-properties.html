@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>POS Admin</title>
+    <div th:replace="~{app/admin::head}"></div>
+  </head>
+
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <div th:replace="~{app/admin::header}"></div>
+      <div th:replace="~{app/sidebar::sidebar}"></div>
+      <!--begin::App Main-->
+      <main class="app-main">
+
+
+
+        <!--begin::App Content Header-->
+        <div class="app-content-header"> 
+          <!--begin::Container-->
+          <div class="container-fluid"> 
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h3 class="mb-0">Build Properties</h3>
+              </div>
+            </div> 
+            <!--end::Row-->
+          </div> 
+          <!--end::Container-->
+        </div> 
+        <!--end::App Content Header-->
+
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+
+            <div class="card mb-4">
+
+              <div class="card-header">
+                <h3 class="card-title">Build Properties</h3>
+              </div>
+
+              <div class="card-body p-0">
+
+                <table id="build-properties-table" class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Key</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+
+          </div> 
+          <!--end::Container-->
+        </div> 
+        <!--end::App Content-->
+
+
+
+      </main>
+    </div>
+
+    <script th:replace="~{app/admin::scripts}" th:remove="tag" />
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/v1/buildinfo')
+                .then(response => response.json()).then(data => {
+          const tableBody = document.querySelector('#build-properties-table tbody');
+          for (const [key, value] of Object.entries(data)) {
+            const row = document.createElement('tr');
+            const keyCell = document.createElement('td');
+            keyCell.textContent = key;
+            row.appendChild(keyCell);
+
+            const valueCell = document.createElement('td');
+            valueCell.textContent = value;
+            row.appendChild(valueCell);
+
+            tableBody.appendChild(row);
+          }
+        }).catch(error => {
+          const tableBody = document.querySelector('#build-properties-table tbody');
+          const row = document.createElement('tr');
+          const cell = document.createElement('td');
+          cell.setAttribute('colspan', '2');
+          cell.textContent = 'ERROR: loading data.';
+          row.appendChild(cell);
+          tableBody.appendChild(row);
+        });
+      });
+    </script>    
+
+  </body>
+</html>

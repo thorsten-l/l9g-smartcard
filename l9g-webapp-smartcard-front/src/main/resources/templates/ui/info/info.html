@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>POS Admin</title>
+    <div th:replace="~{app/admin::head}"></div>
+  </head>
+
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <div th:replace="~{app/admin::header}"></div>
+      <div th:replace="~{app/sidebar::sidebar}"></div>
+      <!--begin::App Main-->
+      <main class="app-main">
+
+    <!--begin::App Content Header-->
+    <div class="app-content-header"> 
+      <!--begin::Container-->
+      <div class="container-fluid"> 
+        <!--begin::Row-->
+        <div class="row">
+          <div class="col-sm-6">
+            <h3 class="mb-0">Info</h3>
+          </div>
+        </div> 
+        <!--end::Row-->
+      </div> 
+      <!--end::Container-->
+    </div> 
+    <!--end::App Content Header-->
+
+    <!--begin::App Content-->
+    <div class="app-content">
+      <!--begin::Container-->
+      <div class="container-fluid">
+
+        <div class="card card-info card-outline mb-4">
+          <div class="card-header">
+            <h3 class="card-title">Build Properties</h3>
+          </div>
+          <div class="card-body">
+            Build properties are collected during the maven build process.
+          </div>
+        </div>
+
+        <div class="card card-info card-outline mb-4">
+          <div class="card-header">
+            <h3 class="card-title">System Properties</h3>
+          </div>
+          <div class="card-body">
+            System properties are collected from the running Java Virtual Machine (JVM).
+          </div>
+        </div>
+
+        <div class="card card-info card-outline mb-4">
+          <div class="card-header">
+            <h3 class="card-title">Spring Boot Actuator</h3>
+          </div>
+          <div class="card-body">
+            Spring Boot Actuator is a subproject of Spring Boot that provides a set of endpoints to monitor and manage your Spring Boot applications. It allows you to inspect various aspects of your application's runtime behavior, such as:
+
+            <ul>
+              <li>Health: Checks the overall health of your application.</li>
+              <li>Metrics: Exposes performance metrics like HTTP requests, memory usage, and garbage collection.</li>
+              <li>Info: Displays application-specific information like version and build details.</li>
+            </ul>
+            These endpoints can be accessed through HTTP requests or other mechanisms like JMX. Actuator is a valuable tool for developers and operations teams to gain insights into their applications and troubleshoot issues.
+          </div>
+        </div>
+
+      </div> 
+      <!--end::Container-->
+    </div> 
+    <!--end::App Content-->
+        <!--end::App Content-->
+      </main>
+    </div>
+
+    <script th:replace="~{app/admin::scripts}" th:remove="tag" />
+  </body>
+</html>
