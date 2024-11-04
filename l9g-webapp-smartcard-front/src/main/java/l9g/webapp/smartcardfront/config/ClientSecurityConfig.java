@@ -122,9 +122,9 @@ public class ClientSecurityConfig
           .addLogoutHandler(invalidateCacheLogoutHandler())
           .logoutSuccessHandler(
             oidcLogoutSuccessHandler(clientRegistrationRepository))
-      )
+      );
       // permit even POST, PUT and DELETE requests
-      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
+      // .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
 
     return http.build();
   }

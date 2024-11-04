@@ -15,7 +15,6 @@
  */
 package l9g.webapp.smartcardfront.admin;
 
-import l9g.webapp.smartcardfront.admin.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
