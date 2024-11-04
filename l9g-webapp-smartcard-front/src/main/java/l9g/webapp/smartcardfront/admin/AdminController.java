@@ -37,13 +37,12 @@ public class AdminController
 {
   private final AdminService adminService;
 
-  @GetMapping("/admin/{page}")
-  public String admin(@PathVariable String page,
-    @AuthenticationPrincipal DefaultOidcUser principal, Model model,
-    HttpSession session)
+  @GetMapping("/admin/home")
+  public String adminHome(@AuthenticationPrincipal DefaultOidcUser principal,
+    Model model, HttpSession session)
   {
     adminService.generalModel(principal, model, session);
-    return "admin/" + page;
+    return "admin/home";
   }
 
   @GetMapping("/ui/{category}/{page}")

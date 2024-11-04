@@ -17,7 +17,6 @@ package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import l9g.webapp.smartcardfront.admin.AdminService;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +44,15 @@ public class AdminTenantController
   private final AdminService adminService;
 
   private final DbTenantService tenantService;
+
+  @GetMapping("/admin/tenant")
+  public String tenantHome(
+    @AuthenticationPrincipal DefaultOidcUser principal, Model model,
+    HttpSession session)
+  {
+    adminService.generalModel(principal, model, session);
+    return "admin/tenant";
+  }
 
   @GetMapping("/admin/tenant/{id}")
   public String tenantForm(@PathVariable String id,

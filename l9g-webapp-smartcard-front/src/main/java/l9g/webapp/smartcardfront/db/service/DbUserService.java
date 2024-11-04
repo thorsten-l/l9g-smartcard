@@ -76,6 +76,14 @@ public class DbUserService
       .equals("ROLE_" + PosRole.POS_ADMINISTRATOR));
   }
 
+  public boolean isOwner(DefaultOidcUser principal)
+  {
+    return principal.getAuthorities().stream()
+      .anyMatch(auth
+        -> auth.getAuthority().equals("ROLE_" + PosRole.POS_ADMINISTRATOR)
+      || auth.getAuthority().equals("ROLE_" + PosRole.POS_OWNER));
+  }
+
   public PosUser posUserFromPrincipal(DefaultOidcUser principal)
   {
     return findUserByPreferredUsername(

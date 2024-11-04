@@ -15,10 +15,11 @@
  */
 package l9g.webapp.smartcardfront.db;
 
+import java.util.List;
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -27,8 +28,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PosPropertiesRepository extends
-  ListCrudRepository<PosProperty, String>
+  JpaRepository<PosProperty, String>
 {
   Optional<PosProperty> findByTenantAndKey(PosTenant tenant, String key);
+
+  Optional<PosProperty> findByIdAndTenant(String id, PosTenant tenant);
+
+  List<PosProperty> findAllByTenant(PosTenant tenant);
 
 }

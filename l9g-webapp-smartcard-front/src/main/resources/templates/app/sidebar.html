@@ -43,6 +43,12 @@
                 </a>
               </li>
 
+              <li sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','ROLE_POS_OWNER')" class="nav-item">
+                <a th:href="@{/admin/property}" class="nav-link">
+                  <i class="fa-solid fa-gear"></i><p th:text="#{properties}">T</p>
+                </a>
+              </li>
+
               <!-- /////////////////////////////////////////// -->              
 
               <div sec:authorize="hasRole('ROLE_POS_ADMINISTRATOR')" th:remove="tag">
