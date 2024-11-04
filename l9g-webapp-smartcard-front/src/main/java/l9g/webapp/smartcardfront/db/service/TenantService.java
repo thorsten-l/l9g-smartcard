@@ -24,9 +24,12 @@ import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -90,15 +93,30 @@ public class TenantService
     return posTenant;
   }
 
+  public void adminSelectTenant(HttpSession session, String id, DefaultOidcUser principal)
+  {
+    if(userService.isAdmin(principal) && id != null)
+    {
+      log.debug("setting tenannt in session.");
+      PosTenant posTenant = posTenantsRepository.findById(id).orElseThrow(()
+        -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tenant not found"));
+      session.setAttribute(SESSION_POS_SELECTED_TENANT, posTenant);
+    }
+    else
+    {
+      throw new AccessDeniedException("You are not allowed to change your tenant.");
+    }
+  }
+
   public PosTenant adminSaveTenant(String id, PosTenant tenant, DefaultOidcUser principal)
   {
     PosTenant posTenant;
-    
-    if ( tenant.getShorthand() != null && tenant.getShorthand().isBlank())
+
+    if(tenant.getShorthand() != null && tenant.getShorthand().isBlank())
     {
       tenant.setShorthand(null);
     }
-    
+
     if("add".equals(id))
     {
       log.debug("add new tenant");
@@ -112,6 +130,30 @@ public class TenantService
     PosPosMapper.INSTANCE.updatePosTenantFromSource(tenant, posTenant);
     log.debug("posTenant = {}", posTenant);
     return posTenantsRepository.saveAndFlush(posTenant);
+  }
+
+  public PosTenant adminDeleteTenant(String id, DefaultOidcUser principal)
+  {
+    log.debug("delete tenant: {} with principal {}", id, principal.getName());
+    PosTenant tenant = posTenantsRepository.findById(id).orElseThrow(
+      () -> new AccessDeniedException("Unknown tenant id"));
+
+    if(userService.isAdmin(principal))
+    {
+      PosTenant systemTenant = posTenantsRepository.findByName(DbService.KEY_SYSTEM_TENANT).get();
+
+      if(systemTenant.getId().equals(id))
+      {
+        throw new AccessDeniedException("Deleting system tenant is forbidden");
+      }
+      else
+      {
+        posTenantsRepository.deleteById(id);
+        posTenantsRepository.flush();
+      }
+    }
+
+    return tenant;
   }
 
 }

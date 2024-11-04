@@ -55,7 +55,7 @@ limitations under the License.
                 </a>
                 <ul class="dropdown-menu">
                   <li th:each="tenant : ${tenants}">
-                    <a th:href="@{/admin/tenant/select/{id}(id=${tenant.id})}"
+                    <a th:href="@{/admin/tenant/{id}/select(id=${tenant.id})}"
                        class="dropdown-item" 
                        th:text="${tenant.name}">
                     </a>

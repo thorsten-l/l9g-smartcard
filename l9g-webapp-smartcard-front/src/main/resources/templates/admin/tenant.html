@@ -70,12 +70,23 @@
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag" />
 
-    <script th:if="${savedTenant!=null}" th:inline="javascript">
+    <script th:if="${savedTenant}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: /*[[#{saved}+'!']]*/ 'Title',
         text: /*[[${savedTenant.name} + ' ' + #{saved}]]*/ 'Text',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    </script>
+
+    <script th:if="${deletedTenant}" th:inline="javascript">
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: /*[[#{deleted}+'!']]*/ 'Title',
+        text: /*[[${deletedTenant.name} + ' ' + #{deleted}]]*/ 'Text',
         showConfirmButton: false,
         timer: 2000
       });
@@ -97,40 +108,11 @@
           cancelButtonText: 'Cancel'
         }).then((result) => {
           if (result.isConfirmed) {
-            fetch(`/api/v1/admin/tenant/${id}`, {
-              method: 'DELETE'
-            }).then(response => {
-              console.log(response)
-              if (response.ok) {
-                Swal.fire({
-                        position: "top-end",
-                        title: 'Deleted!',
-                        text: `"${name}" has been deleted.`,
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 2000
-                      }).then(() => {
-                  location.reload();
-                });
-              } else {
-                Swal.fire(
-                        'Error!',
-                        'An error occurred while trying to delete the entry.',
-                        'error'
-                        );
-              }
-            }).catch(error => {
-              Swal.fire(
-                      'Error!',
-                      'An error occurred: ' + error.message,
-                      'error'
-                      );
-            });
+            window.location.href = `/admin/tenant/${id}/delete`;
           }
         });
       }
     </script>
-
 
   </body>
 </html>
