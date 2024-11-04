@@ -123,12 +123,14 @@ public class PosUuidObject implements Serializable
     this.modifyTimestamp = new Date();
   }
 
+  @Column(updatable = false)
   private String createdBy;
 
   private String modifiedBy;
 
   @JsonView(View.Base.class)
   @Temporal(TemporalType.TIMESTAMP)
+  @Column(updatable = false)
   protected Date createTimestamp;
 
   @JsonView(View.Base.class)
@@ -139,7 +141,7 @@ public class PosUuidObject implements Serializable
   private boolean immutable;
 
   @Id
-  @Column(length = 40)
+  @Column(length = 40, updatable = false)
   @JsonView(View.Base.class)
   @Setter
   private String id;
