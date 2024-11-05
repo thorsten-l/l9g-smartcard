@@ -36,8 +36,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 public class PosPropertyService
-{
-
+{  
   private final DbUserService userService;
 
   private final DbTenantService tenantService;
@@ -89,6 +88,14 @@ public class PosPropertyService
     PosProperty property = ownerGetPropertyById(id, session, principal);
     posPropertiesRepository.delete(property);
     posPropertiesRepository.flush();
+    return property;
+  }
+  
+  public PosProperty emptyProperty(HttpSession session, DefaultOidcUser principal)
+  {
+    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
+    PosProperty property 
+      = new PosProperty(userService.gecosFromPrincipal(principal), tenant, "", "");
     return property;
   }
 

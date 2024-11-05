@@ -47,7 +47,7 @@ public class AdminPropertyController
 
   @GetMapping("/admin/property")
   public String propertyHome(
-    @AuthenticationPrincipal DefaultOidcUser principal, 
+    @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
@@ -60,15 +60,17 @@ public class AdminPropertyController
   public String propertyForm(
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    Model model, 
+    Model model,
     HttpSession session)
   {
     log.debug("propertyForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
     if("add".equals(id))
     {
+      PosProperty formProperty = propertyService.emptyProperty(session, principal);
+      log.debug("formProperty={}", formProperty);
       model.addAttribute("addProperty", true);
-      model.addAttribute("formProperty", new PosProperty());
+      model.addAttribute("formProperty", formProperty);
     }
     else
     {
@@ -79,15 +81,15 @@ public class AdminPropertyController
 
   @PostMapping("/admin/property/{id}")
   public String propertyFormAction(
-    RedirectAttributes redirectAttributes, 
-    HttpSession session, 
+    RedirectAttributes redirectAttributes,
+    HttpSession session,
     @PathVariable String id,
-    @AuthenticationPrincipal DefaultOidcUser principal, 
+    @AuthenticationPrincipal DefaultOidcUser principal,
     @Valid @ModelAttribute("formProperty") PosProperty formProperty,
     BindingResult bindingResult, Model model)
   {
     log.debug("propertyForm action {} for {}", id, principal.getPreferredUsername());
-    
+
     if(bindingResult.hasErrors())
     {
       log.debug("Form error: {}", bindingResult);
@@ -99,16 +101,31 @@ public class AdminPropertyController
       model.addAttribute("formProperty", formProperty);
       return "admin/propertyForm";
     }
-    
-    redirectAttributes.addFlashAttribute("savedProperty", 
-      propertyService.ownerSaveProperty(id, formProperty, session, principal));
+
+    try
+    {
+      redirectAttributes.addFlashAttribute("savedProperty",
+        propertyService.ownerSaveProperty(id, formProperty, session, principal));
+    }
+    catch(Throwable t)
+    {
+      adminService.generalModel(principal, model, session);
+      if("add".equals(id))
+      {
+        model.addAttribute("addProperty", true);
+      }
+      model.addAttribute("formProperty", formProperty);
+      model.addAttribute("savePropertyError", t.getMessage());
+      return "admin/propertyForm";
+    }
+
     return "redirect:/admin/property";
   }
 
   @GetMapping("/admin/property/{id}/delete")
   public String propertyDelete(
-    RedirectAttributes redirectAttributes, 
-    HttpSession session, 
+    RedirectAttributes redirectAttributes,
+    HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal)
   {

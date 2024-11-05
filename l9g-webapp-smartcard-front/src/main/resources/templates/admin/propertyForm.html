@@ -63,5 +63,15 @@
     </div>
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag"/>
+    
+    <script th:if="${savePropertyError}" th:inline="javascript">
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: 'Fehler',
+        text: 'Eigenschaft wurde nicht gespeichert. Schlüssel nicht einzigartig.'
+      });
+    </script>
+    
   </body>
 </html>

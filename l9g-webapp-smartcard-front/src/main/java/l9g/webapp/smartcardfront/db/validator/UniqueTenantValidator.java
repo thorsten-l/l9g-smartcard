@@ -23,12 +23,14 @@ import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @Slf4j
+@Component
 public class UniqueTenantValidator implements
   ConstraintValidator<UniqueTenant, PosTenant>
 {
