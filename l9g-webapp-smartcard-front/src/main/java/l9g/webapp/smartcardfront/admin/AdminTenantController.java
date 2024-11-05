@@ -19,6 +19,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormTenant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,7 +45,7 @@ public class AdminTenantController
 {
   private final AdminService adminService;
 
-  private final DbTenantService tenantService;
+  private final DbTenantService dbTenantService;
 
   @GetMapping("/admin/tenant")
   public String tenantHome(
@@ -65,11 +67,13 @@ public class AdminTenantController
     if("add".equals(id))
     {
       model.addAttribute("addTenant", true);
-      model.addAttribute("formTenant", new PosTenant());
+      model.addAttribute("formTenant", new FormTenant());
     }
     else
     {
-      model.addAttribute("formTenant", tenantService.adminFindTenantById(id, principal));
+      model.addAttribute("formTenant", 
+        FormPosMapper.INSTANCE.posTenantToFormTenant(
+          dbTenantService.adminFindTenantById(id, principal)));
     }
     return "admin/tenantForm";
   }
@@ -80,7 +84,7 @@ public class AdminTenantController
     HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    @Valid @ModelAttribute("formTenant") PosTenant formTenant,
+    @Valid @ModelAttribute("formTenant") FormTenant formTenant,
     BindingResult bindingResult,
     Model model)
   {
@@ -103,7 +107,7 @@ public class AdminTenantController
     }
 
     redirectAttributes.addFlashAttribute("savedTenant",
-      tenantService.adminSaveTenant(id, formTenant, principal));
+      dbTenantService.adminSaveTenant(id, formTenant, principal));
     return "redirect:/admin/tenant";
   }
 
@@ -119,7 +123,7 @@ public class AdminTenantController
       principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
     redirectAttributes.addFlashAttribute("deletedTenant",
-      tenantService.adminDeleteTenant(id, principal));
+      dbTenantService.adminDeleteTenant(id, principal));
     return "redirect:/admin/tenant";
   }
 
@@ -130,7 +134,7 @@ public class AdminTenantController
   {
     log.debug("selectedTenant {} for {}", id,
       principal.getPreferredUsername());
-    tenantService.adminSelectTenant(session, id, principal);
+    dbTenantService.adminSelectTenant(session, id, principal);
     adminService.generalModel(principal, model, session);
     return "redirect:/admin/home";
   }

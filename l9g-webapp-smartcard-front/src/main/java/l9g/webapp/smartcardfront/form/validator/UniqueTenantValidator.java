@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db.validator;
+package l9g.webapp.smartcardfront.form.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Optional;
-import java.util.UUID;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.form.model.FormTenant;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,26 +31,17 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class UniqueTenantValidator implements
-  ConstraintValidator<UniqueTenant, PosTenant>
+  ConstraintValidator<UniqueTenant, FormTenant>
 {
-  @Autowired
-  private PosTenantsRepository posTenantsRepository;
-
-  private String uuid = UUID.randomUUID().toString();
+  private final PosTenantsRepository posTenantsRepository;
 
   @Override
-  public boolean isValid(PosTenant formTenant,
+  public boolean isValid(FormTenant formTenant,
     ConstraintValidatorContext context)
   {
-    log.debug("uuid={}", uuid);
     log.debug("formTenant={}", formTenant);
-    log.debug("posTenantsRepository is available {}", (posTenantsRepository != null ? "true" : "false"));
-
-    if(posTenantsRepository == null)
-    {
-      return true;
-    }
 
     if(formTenant == null || formTenant.getName() == null
       || formTenant.getName().isEmpty())

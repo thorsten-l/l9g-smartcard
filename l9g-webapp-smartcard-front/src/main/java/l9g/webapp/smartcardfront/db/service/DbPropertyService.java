@@ -21,6 +21,8 @@ import l9g.webapp.smartcardfront.db.PosPosMapper;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PosPropertyService
+public class DbPropertyService
 {  
   private final DbUserService userService;
 
@@ -55,7 +57,7 @@ public class PosPropertyService
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Property not found"));
   }
 
-  public PosProperty ownerSaveProperty(String id, PosProperty formProperty,
+  public PosProperty ownerSaveProperty(String id, FormProperty formProperty,
     HttpSession session, DefaultOidcUser principal)
   {
     PosTenant tenant = tenantService.checkTenantOwner(session, principal);
@@ -75,7 +77,9 @@ public class PosPropertyService
     else
     {
       posProperty = ownerGetPropertyById(id, session, principal);
-      PosPosMapper.INSTANCE.updatePosPropertyFromSource(formProperty, posProperty);
+      posProperty.setKey(formProperty.getKey());
+      posProperty.setValue(formProperty.getValue());
+      log.debug("posProperty={}", posProperty);
       posProperty.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 

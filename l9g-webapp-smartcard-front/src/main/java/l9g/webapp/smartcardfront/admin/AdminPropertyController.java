@@ -18,7 +18,10 @@ package l9g.webapp.smartcardfront.admin;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
-import l9g.webapp.smartcardfront.db.service.PosPropertyService;
+import l9g.webapp.smartcardfront.db.service.DbTenantService;
+import l9g.webapp.smartcardfront.db.service.DbPropertyService;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,7 +46,9 @@ public class AdminPropertyController
 {
   private final AdminService adminService;
 
-  private final PosPropertyService propertyService;
+  private final DbTenantService dbTenantService;
+
+  private final DbPropertyService dbPropertyService;
 
   @GetMapping("/admin/property")
   public String propertyHome(
@@ -52,7 +57,7 @@ public class AdminPropertyController
     HttpSession session)
   {
     adminService.generalModel(principal, model, session);
-    model.addAttribute("properties", propertyService.ownerGetPropertiesByTenant(session, principal));
+    model.addAttribute("properties", dbPropertyService.ownerGetPropertiesByTenant(session, principal));
     return "admin/property";
   }
 
@@ -67,14 +72,18 @@ public class AdminPropertyController
     adminService.generalModel(principal, model, session);
     if("add".equals(id))
     {
-      PosProperty formProperty = propertyService.emptyProperty(session, principal);
+      FormProperty formProperty =
+        new FormProperty("add",
+          dbTenantService.checkTenantOwner(session, principal).getId(), "", "");
       log.debug("formProperty={}", formProperty);
       model.addAttribute("addProperty", true);
       model.addAttribute("formProperty", formProperty);
     }
     else
     {
-      model.addAttribute("formProperty", propertyService.ownerGetPropertyById(id, session, principal));
+      model.addAttribute("formProperty",
+        FormPosMapper.INSTANCE.posPropertyToFormProperty(
+          dbPropertyService.ownerGetPropertyById(id, session, principal)));
     }
     return "admin/propertyForm";
   }
@@ -85,7 +94,7 @@ public class AdminPropertyController
     HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    @Valid @ModelAttribute("formProperty") PosProperty formProperty,
+    @Valid @ModelAttribute("formProperty") FormProperty formProperty,
     BindingResult bindingResult, Model model)
   {
     log.debug("propertyForm action {} for {}", id, principal.getPreferredUsername());
@@ -104,8 +113,9 @@ public class AdminPropertyController
 
     try
     {
+      log.debug("formProperty = {}", formProperty);
       redirectAttributes.addFlashAttribute("savedProperty",
-        propertyService.ownerSaveProperty(id, formProperty, session, principal));
+        dbPropertyService.ownerSaveProperty(id, formProperty, session, principal));
     }
     catch(Throwable t)
     {
@@ -131,7 +141,7 @@ public class AdminPropertyController
   {
     log.debug("property delete {} for {}", id, principal.getPreferredUsername());
     redirectAttributes.addFlashAttribute("deletedProperty",
-      propertyService.ownerDeleteProperty(id, session, principal));
+      dbPropertyService.ownerDeleteProperty(id, session, principal));
     return "redirect:/admin/property";
   }
 

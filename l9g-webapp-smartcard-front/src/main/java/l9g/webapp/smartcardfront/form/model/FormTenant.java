@@ -13,26 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.form.model;
 
-import java.util.List;
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosProperty;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import l9g.webapp.smartcardfront.form.validator.UniqueTenant;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosPropertiesRepository extends
-  JpaRepository<PosProperty, String>
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@UniqueTenant(message = "{error.tenant.unique}")
+public class FormTenant 
 {
-  Optional<PosProperty> findByTenantAndKey(PosTenant tenant, String key);
+  private String id;
   
-  Optional<PosProperty> findByTenant_IdAndKey(String tenantId, String key);
+  @NotBlank(message = "{error.name.notBlank}")
+  private String name;
 
-  List<PosProperty> findAllByTenant(PosTenant tenant);
+  private String shorthand;
+
+  private String addressId;
 }

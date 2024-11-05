@@ -21,6 +21,7 @@ import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
+import l9g.webapp.smartcardfront.form.model.FormTenant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -105,26 +106,28 @@ public class DbTenantService
     }
   }
 
-  public PosTenant adminSaveTenant(String id, PosTenant tenant, DefaultOidcUser principal)
+  public PosTenant adminSaveTenant(String id, FormTenant formTenant, DefaultOidcUser principal)
   {
     PosTenant posTenant;
 
-    if(tenant.getShorthand() != null && tenant.getShorthand().isBlank())
+    if(formTenant.getShorthand() != null && formTenant.getShorthand().isBlank())
     {
-      tenant.setShorthand(null);
+      formTenant.setShorthand(null);
     }
 
     if("add".equals(id))
     {
       log.debug("add new tenant");
-      posTenant = new PosTenant(userService.gecosFromPrincipal(principal), tenant.getName());
+      posTenant = new PosTenant(userService.gecosFromPrincipal(principal), formTenant.getName());
     }
     else
     {
       posTenant = adminFindTenantById(id, principal);
     }
-    tenant.setModifiedBy(userService.gecosFromPrincipal(principal));
-    PosPosMapper.INSTANCE.updatePosTenantFromSource(tenant, posTenant);
+    
+    posTenant.setModifiedBy(userService.gecosFromPrincipal(principal));
+    posTenant.setName(formTenant.getName());
+    posTenant.setShorthand(formTenant.getShorthand());
     log.debug("posTenant = {}", posTenant);
     return posTenantsRepository.saveAndFlush(posTenant);
   }

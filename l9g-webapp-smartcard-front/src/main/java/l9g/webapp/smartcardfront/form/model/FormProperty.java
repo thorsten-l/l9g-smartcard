@@ -13,35 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db.validator;
+package l9g.webapp.smartcardfront.form.model;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import l9g.webapp.smartcardfront.form.validator.UniqueProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Constraint(validatedBy = UniqueTenantValidator.class)
-@Target(
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@UniqueProperty(message = "{error.property.unique}")
+public class FormProperty
 {
-  ElementType.TYPE
-})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface UniqueTenant
-{
 
-  String message() default "{error.tenant.unique}";
+  private String id;
 
-  Class<?>[] groups() default 
-  {
-  };
+  private String tenantId;
 
-  Class<? extends Payload>[] payload() default 
-  {
-  };
+  @NotBlank(message = "{error.key.notBlank}")
+  private String key;
+
+  private String value;
+
 }
