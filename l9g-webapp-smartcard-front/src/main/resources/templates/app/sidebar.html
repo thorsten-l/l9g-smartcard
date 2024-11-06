@@ -32,29 +32,33 @@
 
               <li class="nav-item">
                 <a th:href="@{/admin/home}" class="nav-link">
-                  <i class="nav-icon bi bi-speedometer"></i><p>Dashboard</p>
+                  <i class="nav-icon fa-solid fa-gauge-high me-2"></i>
+                  <p>Dashboard</p>
                 </a>
               </li>
 
               <li sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','ROLE_POS_OWNER')" class="nav-item">
                 <a th:href="@{/admin/property}" class="nav-link">
-                  <i class="fa-solid fa-gear"></i><p th:text="#{properties}">T</p>
+                  <i class="nav-icon fa-solid fa-gear me-2"></i>
+                  <p th:text="#{properties}">T</p>
                 </a>
               </li>
-
               <!-- /////////////////////////////////////////// -->              
 
               <div sec:authorize="hasRole('ROLE_POS_ADMINISTRATOR')" th:remove="tag">
+
                 <li class="nav-item">
                   <a th:href="@{/admin/tenant}" class="nav-link">
-                    <i class="nav-icon fa fa-building"></i><p th:text="#{tenants}">T</p>
+                    <i class="nav-icon fa-solid fa-building me-2"></i><p th:text="#{tenants}">T</p>
                   </a>
                 </li>
-                 <li class="nav-item">
+
+                <li class="nav-item">
                   <a th:href="@{/admin/address}" class="nav-link">
-                    <i class="fa-solid fa-location-dot"></i><p th:text="#{addresses}">T</p>
+                    <i class="nav-icon fa-solid fa-location-dot me-2"></i><p th:text="#{addresses}">T</p>
                   </a>
                 </li>  
+
                 <li class="nav-item">
                   <a href="#" class="nav-link"> 
                     <i class="nav-icon bi bi-bug"></i>
@@ -63,6 +67,7 @@
                       <i class="nav-arrow bi bi-chevron-right"></i>
                     </p>
                   </a>
+
                   <ul class="nav nav-treeview">
                     <li class="nav-item">
                       <a th:href="@{/system/test/400}" class="nav-link">

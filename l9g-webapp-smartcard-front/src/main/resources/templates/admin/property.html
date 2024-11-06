@@ -89,16 +89,18 @@
       function confirmDelete(button) {
         const id = button.getAttribute("data-id");
         const key = button.getAttribute("data-key");
+        const deleteMessage = `[[#{confirm.delete.text}]]`.replace("{0}", key).slice(1, -1);
 
-        Swal.fire({
-          title: 'Are you sure?',
-          text: `You are about to delete "${key}". This action cannot be undone.`,
+
+    Swal.fire({
+          title: /*[[#{confirm.delete.title}]]*/ 'T', 
+          text: deleteMessage,
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',
           cancelButtonColor: '#3085d6',
-          confirmButtonText: 'Yes, delete it!',
-          cancelButtonText: 'Cancel'
+          confirmButtonText: /*[[#{confirm.delete.confirmButton}]]*/ 'OK', // Lokalisierter Text für Bestätigungsbutton
+          cancelButtonText: /*[[#{confirm.delete.cancelButton}]]*/ 'Cancel' // Lokalisierter Text für Abbrechen-Button
         }).then((result) => {
           if (result.isConfirmed) {
             window.location.href = `/admin/property/${id}/delete`;
@@ -106,6 +108,5 @@
         });
       }
     </script>
-
   </body>
 </html>
