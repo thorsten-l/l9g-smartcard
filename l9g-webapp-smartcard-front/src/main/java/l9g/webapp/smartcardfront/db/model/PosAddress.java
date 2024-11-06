@@ -39,6 +39,11 @@ public class PosAddress extends PosUuidObject
 {
   private static final long serialVersionUID = 1200101847693707621L;
 
+  public PosAddress(String createdBy)
+  {
+    super(createdBy);
+  }
+
   private String name;
 
   @Column(length = 2048)
@@ -61,4 +66,5 @@ public class PosAddress extends PosUuidObject
   private String email;
 
   private String taxnumber;
+
 }

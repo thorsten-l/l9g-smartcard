@@ -143,7 +143,6 @@ public class PosUuidObject implements Serializable
   @Id
   @Column(length = 40, updatable = false)
   @JsonView(View.Base.class)
-  @Setter
   private String id;
 
 }

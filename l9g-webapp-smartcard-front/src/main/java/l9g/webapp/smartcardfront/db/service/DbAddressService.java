@@ -15,19 +15,14 @@
  */
 package l9g.webapp.smartcardfront.db.service;
 
-import jakarta.servlet.http.HttpSession;
-import l9g.webapp.smartcardfront.db.PosTenantsRepository;
-import l9g.webapp.smartcardfront.db.model.PosRole;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
-import l9g.webapp.smartcardfront.db.model.PosUser;
-import l9g.webapp.smartcardfront.form.model.FormTenant;
+import java.util.List;
+import l9g.webapp.smartcardfront.db.PosAddressesRepository;
+import l9g.webapp.smartcardfront.db.model.PosAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -36,43 +31,28 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DbTenantService
+public class DbAddressService
 {
-  private static final String SESSION_POS_SELECTED_TENANT = "POS_SELECTED_TENANT";
 
   private final DbUserService userService;
 
-  private final PosTenantsRepository posTenantsRepository;
-
-  public PosTenant getSelectedTenant(HttpSession session, PosUser user)
-  {
-    PosTenant tenant;
-
-    Object object = session.getAttribute(SESSION_POS_SELECTED_TENANT);
-
-    if(user != null && user.getRole() == PosRole.POS_ADMINISTRATOR
-      && object != null && object instanceof PosTenant)
+  private final PosAddressesRepository posAddressesRepository;
+  
+  
+  
+  public List<PosAddress> findAllAddresses(DefaultOidcUser principal){
+  
+    if(userService.isAdmin(principal))
     {
-      log.debug("selected tenant found in session");
-      tenant = (PosTenant)object;
+      return posAddressesRepository.findAll();
     }
     else
     {
-      log.debug("create new selected tenant for session");
-      tenant = user.getTenant();
+      throw new AccessDeniedException("Permission denied.");
     }
-
-    session.setAttribute(SESSION_POS_SELECTED_TENANT, tenant);
-
-    return tenant;
   }
 
-  public PosTenant getSelectedTenant(
-    HttpSession session, DefaultOidcUser principal)
-  {
-    return getSelectedTenant(session, userService.posUserFromPrincipal(principal));
-  }
-
+  /*
   public PosTenant adminFindTenantById(String id, DefaultOidcUser principal)
   {
     PosTenant posTenant = null;
@@ -171,5 +151,5 @@ public class DbTenantService
     }
     return tenant;
   }
-
+*/
 }

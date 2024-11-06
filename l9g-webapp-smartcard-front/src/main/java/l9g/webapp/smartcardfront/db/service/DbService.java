@@ -16,11 +16,13 @@
 package l9g.webapp.smartcardfront.db.service;
 
 import java.util.Optional;
+import l9g.webapp.smartcardfront.db.PosAddressesRepository;
 import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
+import l9g.webapp.smartcardfront.db.model.PosAddress;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
@@ -79,7 +81,7 @@ public class DbService
     Optional<PosProperty> dbInitialized = posPropertiesRepository
       .findByTenantAndKey(systemTenant, KEY_DB_INITIALIZED);
 
-    if( ! dbInitialized.isPresent())
+    if(!dbInitialized.isPresent())
     {
       log.info("\n\n*** INITIALIZE DATABASE ***\n");
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
@@ -92,7 +94,7 @@ public class DbService
       PosPointOfSales pos = posPointsOfSalesRepository.save(
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
       );
-      postTransactionsRepository.save(
+      posTransactionsRepository.save(
         new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
       );
 
@@ -105,14 +107,14 @@ public class DbService
       pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
 
-      postTransactionsRepository.save(
+      posTransactionsRepository.save(
         new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
       );
 
       PosTenant testTenant = posTenantsRepository.findByName(KEY_TEST_TENANT)
         .orElseGet(() -> posTenantsRepository.save(
         new PosTenant(KEY_SYSTEM_USER, KEY_TEST_TENANT)));
-      
+
       PosUser user = new PosUser(KEY_SYSTEM_USER, testTenant, "eid9573584", PosRole.POS_OWNER);
       posUserRepository.save(user);
 
@@ -123,6 +125,11 @@ public class DbService
       posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "WHISKEY"));
       posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "ZULU"));
       posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "LIMA"));
+      
+      PosAddress a = new PosAddress(KEY_SYSTEM_USER);
+      a.setName("Wolfenbüttel");
+      a.setDescription("Beschreibung");
+      posAddressesRepository.save(a);
     }
     else
     {
@@ -130,7 +137,7 @@ public class DbService
     }
 
     if(adminUsernames != null && adminUsernames.length > 0
-      &&  ! KEY_UNSET.equals(adminUsernames[0]))
+      && !KEY_UNSET.equals(adminUsernames[0]))
     {
       for(String username : adminUsernames)
       {
@@ -159,6 +166,8 @@ public class DbService
 
   private final PosPointsOfSalesRepository posPointsOfSalesRepository;
 
-  private final PosTransactionsRepository postTransactionsRepository;
+  private final PosTransactionsRepository posTransactionsRepository;
+
+  private final PosAddressesRepository posAddressesRepository;
 
 }

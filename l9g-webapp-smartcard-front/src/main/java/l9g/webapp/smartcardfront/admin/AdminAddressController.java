@@ -17,7 +17,7 @@ package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import l9g.webapp.smartcardfront.db.service.DbTenantService;
+import l9g.webapp.smartcardfront.db.service.DbAddressService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
 import lombok.RequiredArgsConstructor;
@@ -40,27 +40,28 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class AdminTenantController
+public class AdminAddressController
 {
   private final AdminService adminService;
 
-  private final DbTenantService dbTenantService;
+  private final DbAddressService dbAddressService;
 
-  @GetMapping("/admin/tenant")
-  public String tenantHome(
+  @GetMapping("/admin/address")
+  public String addressHome(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model,
     HttpSession session)
   {
     adminService.generalModel(principal, model, session);
-    return "admin/tenant";
+    model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
+    return "admin/address";
   }
-
-  @GetMapping("/admin/tenant/{id}")
-  public String tenantForm(@PathVariable String id,
+/*
+  @GetMapping("/admin/address/{id}")
+  public String addressForm(@PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model, HttpSession session)
   {
-    log.debug("tenantForm {} for {}", id, principal.getPreferredUsername());
+    log.debug("addressForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
 
     if("add".equals(id))
@@ -74,11 +75,11 @@ public class AdminTenantController
         FormPosMapper.INSTANCE.posTenantToFormTenant(
           dbTenantService.adminFindTenantById(id, principal)));
     }
-    return "admin/tenantForm";
+    return "admin/addressForm";
   }
 
-  @PostMapping("/admin/tenant/{id}")
-  public String tenantFormAction(
+  @PostMapping("/admin/address/{id}")
+  public String addressFormAction(
     RedirectAttributes redirectAttributes,
     HttpSession session,
     @PathVariable String id,
@@ -87,7 +88,7 @@ public class AdminTenantController
     BindingResult bindingResult,
     Model model)
   {
-    log.debug("tenantForm action {} for {}", id,
+    log.debug("addressForm action {} for {}", id,
       principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
 
@@ -102,32 +103,32 @@ public class AdminTenantController
         model.addAttribute("addTenant", true);
       }
       model.addAttribute("formTenant", formTenant);
-      return "admin/tenantForm";
+      return "admin/addressForm";
     }
 
     redirectAttributes.addFlashAttribute("savedTenant",
       dbTenantService.adminSaveTenant(id, formTenant, principal));
-    return "redirect:/admin/tenant";
+    return "redirect:/admin/address";
   }
 
-  @GetMapping("/admin/tenant/{id}/delete")
-  public String tenantDelete(
+  @GetMapping("/admin/address/{id}/delete")
+  public String addressDelete(
     RedirectAttributes redirectAttributes,
     HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model)
   {
-    log.debug("tenant delete {} for {}", id,
+    log.debug("address delete {} for {}", id,
       principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
     redirectAttributes.addFlashAttribute("deletedTenant",
       dbTenantService.adminDeleteTenant(id, principal));
-    return "redirect:/admin/tenant";
+    return "redirect:/admin/address";
   }
 
-  @GetMapping("/admin/tenant/{id}/select")
-  public String tenantSelect(@PathVariable String id,
+  @GetMapping("/admin/address/{id}/select")
+  public String addressSelect(@PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model, HttpSession session)
   {
@@ -137,5 +138,5 @@ public class AdminTenantController
     adminService.generalModel(principal, model, session);
     return "redirect:/admin/home";
   }
-
+*/
 }
