@@ -41,13 +41,15 @@
                     <tr th:each="entry : ${categories}">
                       <td th:text="${entry.name}"></td>
                       <td class="text-nowrap">
-                        <a class="btn btn-primary" th:href="@{/admin/category/{id}(id=${entry.id})}"
-                           th:title="${entry.id}">
-                          <i class="fa-solid fa-pencil"></i>
-                        </a>
-                        <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${entry.id}, data-name=${entry.name}">
-                          <i class="fa-solid fa-trash"></i>
-                        </button>
+                        <span th:unless="${entry.immutable}" th:remove="tag">
+                          <a class="btn btn-primary" th:href="@{/admin/category/{id}(id=${entry.id})}"
+                             th:title="${entry.id}">
+                            <i class="fa-solid fa-pencil"></i>
+                          </a>
+                          <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${entry.id}, data-name=${entry.name}">
+                            <i class="fa-solid fa-trash"></i>
+                          </button>
+                        </span>
                       </td>
                     </tr>
                   </tbody>
@@ -90,8 +92,8 @@
         const deleteMessage = `[[#{confirm.delete.text}]]`.replace("{0}", name).slice(1, -1);
 
 
-    Swal.fire({
-          title: /*[[#{confirm.delete.title}]]*/ 'T', 
+        Swal.fire({
+          title: /*[[#{confirm.delete.title}]]*/ 'T',
           text: deleteMessage,
           icon: 'warning',
           showCancelButton: true,

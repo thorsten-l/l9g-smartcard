@@ -17,13 +17,14 @@ package l9g.webapp.smartcardfront.db.service;
 
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.PosAddressesRepository;
+import l9g.webapp.smartcardfront.db.PosCategoriesRepository;
 import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
 import l9g.webapp.smartcardfront.db.PosProductsRepository;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
-import l9g.webapp.smartcardfront.db.model.PosAddress;
+import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
@@ -82,7 +83,7 @@ public class DbService
     Optional<PosProperty> dbInitialized = posPropertiesRepository
       .findByTenantAndKey(systemTenant, KEY_DB_INITIALIZED);
 
-    if(!dbInitialized.isPresent())
+    if( ! dbInitialized.isPresent())
     {
       log.info("\n\n*** INITIALIZE DATABASE ***\n");
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
@@ -102,35 +103,15 @@ public class DbService
       pos = posPointsOfSalesRepository.save(
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, "rz-dev1")
       );
+
       pos.setAmountCash(123.89);
       pos.setSumupReaderId("-reader id-");
       pos.setCardIssuing(true);
       pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
 
-      posTransactionsRepository.save(
-        new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
-      );
-
-      PosTenant testTenant = posTenantsRepository.findByName(KEY_TEST_TENANT)
-        .orElseGet(() -> posTenantsRepository.save(
-        new PosTenant(KEY_SYSTEM_USER, KEY_TEST_TENANT)));
-
-      PosUser user = new PosUser(KEY_SYSTEM_USER, testTenant, "eid9573584", PosRole.POS_OWNER);
-      posUserRepository.save(user);
-
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "NOVEMBER"));
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "DELTA"));
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "FOXTROT"));
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "OSCAR"));
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "WHISKEY"));
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "ZULU"));
-      posTenantsRepository.save(new PosTenant(KEY_SYSTEM_USER, "LIMA"));
-      
-      PosAddress a = new PosAddress(KEY_SYSTEM_USER);
-      a.setName("Wolfenbüttel");
-      a.setDescription("Beschreibung");
-      posAddressesRepository.save(a);
+      posCategoriesRepository.saveAndFlush(
+        new PosCategory(KEY_SYSTEM_USER, systemTenant, "default", true));
     }
     else
     {
@@ -138,7 +119,7 @@ public class DbService
     }
 
     if(adminUsernames != null && adminUsernames.length > 0
-      && !KEY_UNSET.equals(adminUsernames[0]))
+      &&  ! KEY_UNSET.equals(adminUsernames[0]))
     {
       for(String username : adminUsernames)
       {
@@ -170,7 +151,9 @@ public class DbService
   private final PosTransactionsRepository posTransactionsRepository;
 
   private final PosAddressesRepository posAddressesRepository;
-  
+
   private final PosProductsRepository posProductsRepository;
+
+  private final PosCategoriesRepository posCategoriesRepository;
 
 }

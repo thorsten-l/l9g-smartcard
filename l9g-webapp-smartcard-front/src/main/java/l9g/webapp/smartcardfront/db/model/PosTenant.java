@@ -78,4 +78,10 @@ public class PosTenant extends PosUuidObject
   @ToString.Exclude
   private List<PosProperty> properties;
 
+  @JsonView(View.Tenant.class)
+  @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE,
+             fetch = FetchType.EAGER)
+  @ToString.Exclude
+  private List<PosCategory> categories;
+
 }
