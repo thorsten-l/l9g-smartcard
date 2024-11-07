@@ -76,6 +76,7 @@ management:
         include: info,health,metrics
 
 app:
+  development: false
   api:
     base-url: http://kasse.dev.sonia.de:8081
   web:

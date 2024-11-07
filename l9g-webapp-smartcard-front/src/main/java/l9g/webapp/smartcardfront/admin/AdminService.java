@@ -47,6 +47,9 @@ public class AdminService
 
   @Value("${app.web.base-url}")
   private String webBaseUrl;
+  
+  @Value("${app.development:false}")
+  private boolean appDevelopment;
 
   public void generalModel(DefaultOidcUser principal,
     Model model, HttpSession session)
@@ -73,6 +76,7 @@ public class AdminService
       tenantService.getSelectedTenant(session, principal));
     model.addAttribute("tenants", tenants);
     model.addAttribute("webBaseUrl", webBaseUrl);
+    model.addAttribute("appDevelopment", appDevelopment);
   }
 
 }
