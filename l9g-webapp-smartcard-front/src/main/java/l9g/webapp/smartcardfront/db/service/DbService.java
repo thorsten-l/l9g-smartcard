@@ -18,6 +18,7 @@ package l9g.webapp.smartcardfront.db.service;
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.PosAddressesRepository;
 import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
+import l9g.webapp.smartcardfront.db.PosProductsRepository;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
@@ -169,5 +170,7 @@ public class DbService
   private final PosTransactionsRepository posTransactionsRepository;
 
   private final PosAddressesRepository posAddressesRepository;
+  
+  private final PosProductsRepository posProductsRepository;
 
 }
