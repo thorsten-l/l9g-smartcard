@@ -104,8 +104,8 @@ public class DbService
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, "rz-dev1")
       );
 
-      pos.setAmountCash(123.89);
-      pos.setSumupReaderId("-reader id-");
+      pos.setSumupReaderId("rz-dev1-sumup");
+      pos.setAmountCash(2.34);
       pos.setCardIssuing(true);
       pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
@@ -149,10 +149,6 @@ public class DbService
   private final PosPointsOfSalesRepository posPointsOfSalesRepository;
 
   private final PosTransactionsRepository posTransactionsRepository;
-
-  private final PosAddressesRepository posAddressesRepository;
-
-  private final PosProductsRepository posProductsRepository;
 
   private final PosCategoriesRepository posCategoriesRepository;
 

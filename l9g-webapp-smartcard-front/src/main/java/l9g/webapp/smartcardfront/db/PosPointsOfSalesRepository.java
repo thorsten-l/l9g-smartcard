@@ -17,7 +17,7 @@ package l9g.webapp.smartcardfront.db;
 
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PosPointsOfSalesRepository extends
-  ListCrudRepository<PosPointOfSales, String>
+  JpaRepository<PosPointOfSales, String>
 {
   Optional<PosPointOfSales> findByName(String name);
 
