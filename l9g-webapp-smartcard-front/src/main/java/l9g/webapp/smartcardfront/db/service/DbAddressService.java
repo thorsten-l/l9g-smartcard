@@ -18,11 +18,15 @@ package l9g.webapp.smartcardfront.db.service;
 import java.util.List;
 import l9g.webapp.smartcardfront.db.PosAddressesRepository;
 import l9g.webapp.smartcardfront.db.model.PosAddress;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -37,11 +41,10 @@ public class DbAddressService
   private final DbUserService userService;
 
   private final PosAddressesRepository posAddressesRepository;
-  
-  
-  
-  public List<PosAddress> findAllAddresses(DefaultOidcUser principal){
-  
+
+  public List<PosAddress> findAllAddresses(DefaultOidcUser principal)
+  {
+
     if(userService.isAdmin(principal))
     {
       return posAddressesRepository.findAll();
@@ -52,104 +55,59 @@ public class DbAddressService
     }
   }
 
-  /*
-  public PosTenant adminFindTenantById(String id, DefaultOidcUser principal)
+  public PosAddress adminFindAddressById(String id, DefaultOidcUser principal)
   {
-    PosTenant posTenant = null;
+    PosAddress posAddress = null;
 
     if(userService.isAdmin(principal) && id != null)
     {
-      posTenant = posTenantsRepository.findById(id).orElseThrow(()
-        -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tenant not found"));
-      log.debug("create or update a tenant: {}", posTenant.getName());
+      posAddress = posAddressesRepository.findById(id).orElseThrow(()
+        -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address not found"));
+      log.error("create or update address: {}", posAddress.getName());
     }
     else
     {
-      throw new AccessDeniedException("You are not allowed to create or update tenants.");
+      throw new AccessDeniedException("You are not allowed to create or update address.");
     }
-    return posTenant;
+    return posAddress;
   }
 
-  public void adminSelectTenant(HttpSession session, String id, DefaultOidcUser principal)
+  
+  
+  public PosAddress adminSaveAddress(String id, FormAddress formAddress, DefaultOidcUser principal)
   {
-    if(userService.isAdmin(principal) && id != null)
-    {
-      log.debug("setting tenannt in session.");
-      PosTenant posTenant = posTenantsRepository.findById(id).orElseThrow(()
-        -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tenant not found"));
-      session.setAttribute(SESSION_POS_SELECTED_TENANT, posTenant);
-    }
-    else
-    {
-      throw new AccessDeniedException("You are not allowed to change your tenant.");
-    }
-  }
+    PosAddress posAddress;
 
-  public PosTenant adminSaveTenant(String id, FormTenant formTenant, DefaultOidcUser principal)
-  {
-    PosTenant posTenant;
-
-    if(formTenant.getShorthand() != null && formTenant.getShorthand().isBlank())
-    {
-      formTenant.setShorthand(null);
-    }
 
     if("add".equals(id))
     {
-      log.debug("add new tenant");
-      posTenant = new PosTenant(userService.gecosFromPrincipal(principal), formTenant.getName());
+      log.debug("add new address");
+      posAddress = new PosAddress(userService.gecosFromPrincipal(principal));
     }
     else
     {
-      posTenant = adminFindTenantById(id, principal);
+      posAddress = adminFindAddressById(id, principal);
     }
     
-    posTenant.setModifiedBy(userService.gecosFromPrincipal(principal));
-    posTenant.setName(formTenant.getName());
-    posTenant.setShorthand(formTenant.getShorthand());
-    log.debug("posTenant = {}", posTenant);
-    return posTenantsRepository.saveAndFlush(posTenant);
+    posAddress.setModifiedBy(userService.gecosFromPrincipal(principal));
+    FormPosMapper.INSTANCE.updatePosAddressFromFormAddress(formAddress, posAddress);
+    log.debug("posAddress = {}", posAddress);
+    return posAddressesRepository.saveAndFlush(posAddress);
   }
-
-  public PosTenant adminDeleteTenant(String id, DefaultOidcUser principal)
+   
+  public PosAddress adminDeleteAddress(String id, DefaultOidcUser principal)
   {
     log.debug("delete tenant: {} with principal {}", id, principal.getName());
-    PosTenant tenant = posTenantsRepository.findById(id).orElseThrow(
+    PosAddress address = posAddressesRepository.findById(id).orElseThrow(
       () -> new AccessDeniedException("Unknown tenant id"));
 
     if(userService.isAdmin(principal))
     {
-      PosTenant systemTenant = posTenantsRepository.findByName(DbService.KEY_SYSTEM_TENANT).get();
-
-      if(systemTenant.getId().equals(id))
-      {
-        throw new AccessDeniedException("Deleting system tenant is forbidden");
-      }
-      else
-      {
-        posTenantsRepository.deleteById(id);
-        posTenantsRepository.flush();
-      }
+      posAddressesRepository.deleteById(id);
+      posAddressesRepository.flush();
     }
 
-    return tenant;
+    return address;
   }
 
-  public PosTenant checkTenantOwner(HttpSession session, DefaultOidcUser principal)
-  {
-    PosTenant tenant = getSelectedTenant(session, principal);
-    PosUser user = userService.posUserFromPrincipal(principal);
-    if(userService.isAdmin(principal)
-      || (userService.isOwner(principal)
-      && tenant.getId().equals(user.getTenant().getId())))
-    {
-      log.debug("access granted on properties");
-    }
-    else
-    {
-      throw new AccessDeniedException("No permissions on properties.");
-    }
-    return tenant;
-  }
-*/
 }

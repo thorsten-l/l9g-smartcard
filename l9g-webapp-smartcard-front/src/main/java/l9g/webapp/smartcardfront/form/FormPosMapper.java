@@ -15,12 +15,15 @@
  */
 package l9g.webapp.smartcardfront.form;
 
+import l9g.webapp.smartcardfront.db.model.PosAddress;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.form.model.FormAddress;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -38,11 +41,11 @@ public interface FormPosMapper
   @Mapping(target = "tenantId", expression = "java(posProperty.getTenant() != null ? posProperty.getTenant().getId() : null)")
   FormProperty posPropertyToFormProperty(PosProperty posProperty);
 
-  /*
+  FormAddress posAddressToFormAddress(PosAddress posAddress);
+  
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createTimestamp", ignore = true)
   @Mapping(target = "modifiedBy", ignore = true)
-  @Mapping(target = "tenant", ignore = true)
-  void updatePosPropertyFromFormProperty(FormProperty source, @MappingTarget PosProperty target);
-   */
+  void updatePosAddressFromFormAddress(FormAddress source, @MappingTarget PosAddress target);
+   
 }

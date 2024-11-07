@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.service.DbAddressService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
-import l9g.webapp.smartcardfront.form.model.FormTenant;
+import l9g.webapp.smartcardfront.form.model.FormAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,7 +55,7 @@ public class AdminAddressController
     model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
     return "admin/address";
   }
-/*
+
   @GetMapping("/admin/address/{id}")
   public String addressForm(@PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
@@ -66,14 +66,14 @@ public class AdminAddressController
 
     if("add".equals(id))
     {
-      model.addAttribute("addTenant", true);
-      model.addAttribute("formTenant", new FormTenant());
+      model.addAttribute("addAddress", true);
+      model.addAttribute("formAddress", new FormAddress());
     }
     else
     {
-      model.addAttribute("formTenant", 
-        FormPosMapper.INSTANCE.posTenantToFormTenant(
-          dbTenantService.adminFindTenantById(id, principal)));
+      model.addAttribute("formAddress", 
+        FormPosMapper.INSTANCE.posAddressToFormAddress(
+          dbAddressService.adminFindAddressById(id, principal)));
     }
     return "admin/addressForm";
   }
@@ -84,7 +84,7 @@ public class AdminAddressController
     HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    @Valid @ModelAttribute("formTenant") FormTenant formTenant,
+    @Valid @ModelAttribute("formAddress") FormAddress formAddress,
     BindingResult bindingResult,
     Model model)
   {
@@ -100,14 +100,14 @@ public class AdminAddressController
 
       if("add".equals(id))
       {
-        model.addAttribute("addTenant", true);
+        model.addAttribute("addAddress", true);
       }
-      model.addAttribute("formTenant", formTenant);
+      model.addAttribute("formAddress", formAddress);
       return "admin/addressForm";
     }
 
-    redirectAttributes.addFlashAttribute("savedTenant",
-      dbTenantService.adminSaveTenant(id, formTenant, principal));
+    redirectAttributes.addFlashAttribute("savedAddress",
+      dbAddressService.adminSaveAddress(id, formAddress, principal));
     return "redirect:/admin/address";
   }
 
@@ -122,21 +122,8 @@ public class AdminAddressController
     log.debug("address delete {} for {}", id,
       principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
-    redirectAttributes.addFlashAttribute("deletedTenant",
-      dbTenantService.adminDeleteTenant(id, principal));
+    redirectAttributes.addFlashAttribute("deletedAddress",
+      dbAddressService.adminDeleteAddress(id, principal));
     return "redirect:/admin/address";
   }
-
-  @GetMapping("/admin/address/{id}/select")
-  public String addressSelect(@PathVariable String id,
-    @AuthenticationPrincipal DefaultOidcUser principal,
-    Model model, HttpSession session)
-  {
-    log.debug("selectedTenant {} for {}", id,
-      principal.getPreferredUsername());
-    dbTenantService.adminSelectTenant(session, id, principal);
-    adminService.generalModel(principal, model, session);
-    return "redirect:/admin/home";
-  }
-*/
 }

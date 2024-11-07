@@ -19,7 +19,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="app-content">
           <div class="container-fluid">
             <div class="card card-primary card-outline mb-4">
@@ -32,19 +32,21 @@
                 </div>
               </div>
               <div class="card-body p-0">
-                
-                
+
+
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th style="width: 70%"><span th:text="#{name}" th:remove="tags">name</span></th>
-                      <th style="width: 30%"><span th:text="#{description}" th:remove="tags">shorthand</span></th>
+                      <th style="width: 20%"><span th:text="#{name}" th:remove="tags">name</span></th>
+                      <th style="width: 20%"><span th:text="#{city}" th:remove="tags">city</span></th>
+                      <th style="width: 60%"><span th:text="#{description}" th:remove="tags">description</span></th>
                       <th><span th:text="#{actions}" th:remove="tags">actions</span></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="align-middle" th:each="entry : ${addresses}">
                       <td th:text="${entry.name}"></td>
+                      <td th:text="${entry.city}"></td>
                       <td th:text="${entry.description}"></td>
                       <td class="text-nowrap">
                         <span th:unless="${entry.immutable}" th:remove="tag">
@@ -63,7 +65,7 @@
                     </tr>
                   </tbody>
                 </table>
-  
+
               </div>
             </div>
           </div> 
@@ -73,23 +75,23 @@
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag" />
 
-    <script th:if="${savedTenant}" th:inline="javascript">
+    <script th:if="${savedAddress}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: /*[[#{saved}+'!']]*/ 'Title',
-        text: /*[[${savedTenant.name} + ' ' + #{saved}]]*/ 'Text',
+        text: /*[[${savedAddress.name} + ' ' + #{saved}]]*/ 'Text',
         showConfirmButton: false,
         timer: 2000
       });
     </script>
 
-    <script th:if="${deletedTenant}" th:inline="javascript">
+    <script th:if="${deletedAddress}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: /*[[#{deleted}+'!']]*/ 'Title',
-        text: /*[[${deletedTenant.name} + ' ' + #{deleted}]]*/ 'Text',
+        text: /*[[${deletedAddress.name} + ' ' + #{deleted}]]*/ 'Text',
         showConfirmButton: false,
         timer: 2000
       });
@@ -111,7 +113,7 @@
           cancelButtonText: 'Cancel'
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = `/admin/tenant/${id}/delete`;
+            window.location.href = `/admin/address/${id}/delete`;
           }
         });
       }
