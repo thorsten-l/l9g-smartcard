@@ -49,6 +49,24 @@
                         <span th:errors="*{shorthand}"></span>
                       </div>
                     </div>
+                    <div class="mb-3"> 
+                      <label for="addressId" class="form-label" th:text="#{address}">N</label> 
+
+                      <select class="form-control select2" th:field="*{addressId}" style="width: 100%;">
+                        <div th:remove="tag" th:each="address : ${addresses}">
+                          <option th:value="${address.id}" 
+                                  th:text="${address.name}"
+                                  th:selected="${address.id} == *{addressId}"
+                                  >A</option>
+                        </div>
+                      </select>
+
+                      <div th:if="${#fields.hasErrors('addressId')}" class="text-danger">
+                        <span th:errors="*{addressId}"></span>
+                      </div>
+
+
+                    </div>
                   </div>
                   <div class="card-footer text-end"> 
                     <button type="submit" class="btn btn-primary" 

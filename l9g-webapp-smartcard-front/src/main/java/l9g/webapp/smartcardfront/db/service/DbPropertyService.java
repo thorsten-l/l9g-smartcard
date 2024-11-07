@@ -17,11 +17,9 @@ package l9g.webapp.smartcardfront.db.service;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import l9g.webapp.smartcardfront.db.PosPosMapper;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
-import l9g.webapp.smartcardfront.form.FormPosMapper;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

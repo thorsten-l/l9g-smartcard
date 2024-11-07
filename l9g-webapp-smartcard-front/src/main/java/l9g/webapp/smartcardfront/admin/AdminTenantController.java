@@ -18,6 +18,7 @@ package l9g.webapp.smartcardfront.admin;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import l9g.webapp.smartcardfront.db.service.DbAddressService;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
@@ -47,6 +48,8 @@ public class AdminTenantController
 
   private final DbTenantService dbTenantService;
 
+  private final DbAddressService dbAddressService;
+
   @GetMapping("/admin/tenant")
   public String tenantHome(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model,
@@ -63,6 +66,8 @@ public class AdminTenantController
   {
     log.debug("tenantForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
+
+    model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
 
     if("add".equals(id))
     {
@@ -91,6 +96,7 @@ public class AdminTenantController
     log.debug("tenantForm action {} for {}", id,
       principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
+    model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
 
     if(bindingResult.hasErrors())
     {

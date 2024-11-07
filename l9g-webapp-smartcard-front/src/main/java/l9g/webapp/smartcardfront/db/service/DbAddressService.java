@@ -47,7 +47,7 @@ public class DbAddressService
 
     if(userService.isAdmin(principal))
     {
-      return posAddressesRepository.findAll();
+      return posAddressesRepository.findAllByOrderByNameAsc();
     }
     else
     {
@@ -63,7 +63,7 @@ public class DbAddressService
     {
       posAddress = posAddressesRepository.findById(id).orElseThrow(()
         -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address not found"));
-      log.error("create or update address: {}", posAddress.getName());
+      log.debug("adminFindAddressById: {}", posAddress);
     }
     else
     {
