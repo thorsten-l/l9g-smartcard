@@ -13,25 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.form.validator;
 
-import java.util.List;
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosCategory;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosCategoriesRepository extends
-  JpaRepository<PosCategory, String>
+@Constraint(validatedBy = UniqueCategoryValidator.class)
+@Target(
 {
-  Optional<PosCategory> findByTenant_IdAndName(String tenantId, String name);
+  ElementType.TYPE
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface UniqueCategory
+{
 
-  List<PosCategory> findAllByTenant(PosTenant tenant);
+  String message() default "{error.category.unique}";
 
+  Class<?>[] groups() default 
+  {
+  };
+
+  Class<? extends Payload>[] payload() default 
+  {
+  };
 }

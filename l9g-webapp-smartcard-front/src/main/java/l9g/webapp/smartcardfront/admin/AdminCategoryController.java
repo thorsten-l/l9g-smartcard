@@ -17,9 +17,10 @@ package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import l9g.webapp.smartcardfront.db.service.DbCategoryService;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
-import l9g.webapp.smartcardfront.db.service.DbPropertyService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormCategory;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,62 +42,65 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class AdminPropertyController
+public class AdminCategoryController
 {
   private final AdminService adminService;
 
   private final DbTenantService dbTenantService;
 
-  private final DbPropertyService dbPropertyService;
+  private final DbCategoryService dbCategoryService;
+  
+  
 
-  @GetMapping("/admin/property")
-  public String propertyHome(
+  @GetMapping("/admin/category")
+  public String categoryHome(
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
     adminService.generalModel(principal, model, session);
-    model.addAttribute("properties", dbPropertyService.ownerGetPropertiesByTenant(session, principal));
-    return "admin/property";
+    model.addAttribute("categories", dbCategoryService.ownerGetCategoriesByTenant(session, principal));
+    return "admin/category";
   }
 
-  @GetMapping("/admin/property/{id}")
-  public String propertyForm(
+  @GetMapping("/admin/category/{id}")
+  public String categoryForm(
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
-    log.debug("propertyForm {} for {}", id, principal.getPreferredUsername());
+    log.debug("categoryForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
     if("add".equals(id))
     {
-      FormProperty formProperty =
-        new FormProperty("add",
-          dbTenantService.checkTenantOwner(session, principal).getId(), "", "");
-      log.debug("formProperty={}", formProperty);
-      model.addAttribute("addProperty", true);
-      model.addAttribute("formProperty", formProperty);
+      FormCategory formCategory =
+        new FormCategory();
+      formCategory.setTenantId(dbTenantService.getSelectedTenant(session, principal).getId());
+      formCategory.setId("add");
+      log.debug("formCategory={}", formCategory);
+      model.addAttribute("addCategory", true);
+      model.addAttribute("formCategory", formCategory);
     }
     else
     {
-      model.addAttribute("formProperty",
-        FormPosMapper.INSTANCE.posPropertyToFormProperty(
-          dbPropertyService.ownerGetPropertyById(id, session, principal)));
+      model.addAttribute("formCategory",
+        FormPosMapper.INSTANCE.posCategoryToFormCategory(
+          dbCategoryService.ownerGetCategoryById(id, session, principal)));
     }
-    return "admin/propertyForm";
+    return "admin/categoryForm";
   }
 
-  @PostMapping("/admin/property/{id}")
-  public String propertyFormAction(
+  @PostMapping("/admin/category/{id}")
+  public String categoryFormAction(
     RedirectAttributes redirectAttributes,
     HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    @Valid @ModelAttribute("formProperty") FormProperty formProperty,
+    @Valid @ModelAttribute("formCategory") FormCategory formCategory,
     BindingResult bindingResult, Model model)
   {
-    log.debug("propertyForm action {} for {}", id, principal.getPreferredUsername());
+    log.debug("categoryForm action {} for {}", id, principal.getPreferredUsername());
 
     if(bindingResult.hasErrors())
     {
@@ -104,44 +108,44 @@ public class AdminPropertyController
       adminService.generalModel(principal, model, session);
       if("add".equals(id))
       {
-        model.addAttribute("addProperty", true);
+        model.addAttribute("addCategory", true);
       }
-      model.addAttribute("formProperty", formProperty);
-      return "admin/propertyForm";
+      model.addAttribute("formCategory", formCategory);
+      return "admin/categoryForm";
     }
 
     try
     {
-      log.debug("formProperty = {}", formProperty);
-      redirectAttributes.addFlashAttribute("savedProperty",
-        dbPropertyService.ownerSaveProperty(id, formProperty, session, principal));
+      log.debug("formCategory = {}", formCategory);
+      redirectAttributes.addFlashAttribute("savedCategory",
+        dbCategoryService.ownerSaveCategory(id, formCategory, session, principal));
     }
     catch(Throwable t)
     {
       adminService.generalModel(principal, model, session);
       if("add".equals(id))
       {
-        model.addAttribute("addProperty", true);
+        model.addAttribute("addCategory", true);
       }
-      model.addAttribute("formProperty", formProperty);
-      model.addAttribute("savePropertyError", t.getMessage());
-      return "admin/propertyForm";
+      model.addAttribute("formCategory", formCategory);
+      model.addAttribute("saveCategoryError", t.getMessage());
+      return "admin/categoryForm";
     }
 
-    return "redirect:/admin/property";
+    return "redirect:/admin/category";
   }
 
-  @GetMapping("/admin/property/{id}/delete")
-  public String propertyDelete(
+  @GetMapping("/admin/category/{id}/delete")
+  public String categoryDelete(
     RedirectAttributes redirectAttributes,
     HttpSession session,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal)
   {
-    log.debug("property delete {} for {}", id, principal.getPreferredUsername());
-    redirectAttributes.addFlashAttribute("deletedProperty",
-      dbPropertyService.ownerDeleteProperty(id, session, principal));
-    return "redirect:/admin/property";
+    log.debug("category delete {} for {}", id, principal.getPreferredUsername());
+    redirectAttributes.addFlashAttribute("deletedCategory",
+      dbCategoryService.ownerDeleteCategory(id, session, principal));
+    return "redirect:/admin/category";
   }
 
 }

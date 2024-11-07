@@ -13,25 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.form.model;
 
-import java.util.List;
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosCategory;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import l9g.webapp.smartcardfront.form.validator.UniqueCategory;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosCategoriesRepository extends
-  JpaRepository<PosCategory, String>
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@UniqueCategory(message = "{error.category.unique}")
+public class FormCategory
 {
-  Optional<PosCategory> findByTenant_IdAndName(String tenantId, String name);
 
-  List<PosCategory> findAllByTenant(PosTenant tenant);
+  private String id;
+
+  private String tenantId;
+
+  @NotBlank(message = "{error.name.notBlank}")
+  private String name;
+
 
 }
