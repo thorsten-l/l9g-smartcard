@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.admin;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
@@ -70,7 +71,7 @@ public class AdminTenantController
     }
     else
     {
-      model.addAttribute("formTenant", 
+      model.addAttribute("formTenant",
         FormPosMapper.INSTANCE.posTenantToFormTenant(
           dbTenantService.adminFindTenantById(id, principal)));
     }
@@ -129,13 +130,42 @@ public class AdminTenantController
   @GetMapping("/admin/tenant/{id}/select")
   public String tenantSelect(@PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    Model model, HttpSession session)
+    Model model, HttpSession session, HttpServletRequest request)
   {
     log.debug("selectedTenant {} for {}", id,
       principal.getPreferredUsername());
     dbTenantService.adminSelectTenant(session, id, principal);
     adminService.generalModel(principal, model, session);
-    return "redirect:/admin/home";
+
+    String referrer = request.getHeader("Referer");
+
+    log.debug("referrer={}", referrer);
+
+    if(referrer == null || referrer.isEmpty())
+    {
+      referrer = "/admin/home";
+    }
+    else
+    {
+      int index = referrer.indexOf("://");
+      if(index >= 0)
+      {
+        index += 3;
+        for(int i = 0; i < 3; i ++)
+        {
+          index = referrer.indexOf("/", index + 1);
+          if(index <= 0)
+          {
+            break;
+          }
+        }
+        referrer = (index >= 0) ? referrer.substring(0, index) : referrer;
+      }
+    }
+
+    log.debug("redirect=redirect:{}", referrer);
+
+    return "redirect:" + referrer;
   }
 
 }
