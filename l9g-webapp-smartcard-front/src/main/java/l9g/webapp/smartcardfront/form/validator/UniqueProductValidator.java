@@ -51,7 +51,7 @@ public class UniqueProductValidator implements
 
     Optional<PosProduct> optional 
       = posProductsRepository
-        .findByTenant_IdAndName(formProduct.getCategoryId(), formProduct.getName());
+        .findByCategory_IdAndName(formProduct.getCategoryId(), formProduct.getName());
     
     if( ! optional.isEmpty() &&  ! optional.get().getId().equals(formProduct.getId()))
     {

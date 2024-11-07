@@ -18,7 +18,6 @@ package l9g.webapp.smartcardfront.db;
 import java.util.List;
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -30,10 +29,7 @@ import org.springframework.stereotype.Repository;
 public interface PosProductsRepository extends
   JpaRepository<PosProduct, String>
 {
-  Optional<PosProduct> findByTenant_IdAndName(String tenantId, String name);
+  Optional<PosProduct> findByCategory_IdAndName(String categoryId, String name);
 
   List<PosProduct> findAllByOrderByNameAsc();
-
-  List<PosProduct> findAllByTenant(PosTenant tenant);
-
 }
