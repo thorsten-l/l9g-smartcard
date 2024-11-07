@@ -16,7 +16,6 @@
 package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.service.DbCategoryService;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
@@ -27,12 +26,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -75,7 +70,7 @@ public class AdminProductController
     {
       FormProduct formProduct =
         new FormProduct();
-      formProduct.setcategoryId(dbCategoryService.getSelectedCategory(session, principal).getId());
+      formProduct.setcategoryId(dbProductService.getSelectedProduct(session, principal).getId());
       formProduct.setId("add");
       log.debug("formProduct={}", formProduct);
       model.addAttribute("addProduct", true);
@@ -89,6 +84,7 @@ public class AdminProductController
     }
     return "admin/productForm";
   }
+  
 
   @PostMapping("/admin/product/{id}")
   public String productFormAction(

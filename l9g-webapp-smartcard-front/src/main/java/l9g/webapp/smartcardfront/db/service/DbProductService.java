@@ -55,6 +55,7 @@ public class DbProductService
     return null;
   }
 
+  /*
   public PosCategory ownerGetCategoryById(String id, HttpSession session, DefaultOidcUser principal)
   {
     tenantService.checkTenantOwner(session, principal);
@@ -62,41 +63,41 @@ public class DbProductService
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
   }
 
-  public PosCategory ownerSaveCategory(String id, FormCategory formCategory,
+  public PosProduct ownerSaveProduct(String id, FormProduct formProduct,
     HttpSession session, DefaultOidcUser principal)
   {
     PosTenant tenant = tenantService.checkTenantOwner(session, principal);
-    PosCategory posCategory;
+    PosProduct posProduct;
 
-    if(formCategory.getName() != null && formCategory.getName().isBlank())
+    if(formProduct.getName() != null && formProduct.getName().isBlank())
     {
-      formCategory.setName(null);
+      formProduct.setName(null);
     }
     
     if("add".equals(id))
     {
       log.debug("add new category");
-      posCategory = new PosCategory(userService.gecosFromPrincipal(principal),
-        tenant, formCategory.getName());
+      posProduct = new PosProduct(userService.gecosFromPrincipal(principal),
+        tenant, formProduct.getName());
     }
     else
     {
-      posCategory = ownerGetCategoryById(id, session, principal);
-      posCategory.setName(formCategory.getName());
-      log.debug("posCategory={}", posCategory);
-      posCategory.setModifiedBy(userService.gecosFromPrincipal(principal));
+      posProduct = ownerGetProductById(id, session, principal);
+      posProduct.setName(formProduct.getName());
+      log.debug("posProduct={}", posProduct);
+      posProduct.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 
-    log.debug("posCategory = {}", posCategory);
-    return posCategoriesRepository.saveAndFlush(posCategory);
+    log.debug("posProduct = {}", posProduct);
+    return posProductsRepository.saveAndFlush(posProduct);
   }
 
-  public PosCategory ownerDeleteCategory(String id, HttpSession session, DefaultOidcUser principal)
+  public PosProduct ownerDeleteProduct(String id, HttpSession session, DefaultOidcUser principal)
   {
-    PosCategory category = ownerGetCategoryById(id, session, principal);
-    posCategoriesRepository.delete(category);
-    posCategoriesRepository.flush();
-    return category;
+    PosProduct product = ownerGetProductById(id, session, principal);
+    posProductsRepository.delete(product);
+    posProductsRepository.flush();
+    return product;
   }
-
+*/
 }
