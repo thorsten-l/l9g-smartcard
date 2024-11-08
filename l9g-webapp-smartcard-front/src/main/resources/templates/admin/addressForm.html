@@ -42,77 +42,94 @@
                         <span th:errors="*{name}"></span>
                       </div>
                     </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{description}">N</label> 
-                      <input type="text" class="form-control" th:field="*{description}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{description}"></span>
+
+                    <div class="row">                   
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{description}">N</label> 
+                        <input type="text" class="form-control" th:field="*{description}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{description}"></span>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{taxnumber}">N</label> 
+                        <input type="text" class="form-control" th:field="*{taxnumber}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{taxnumber}"></span>
+                        </div>
                       </div>
                     </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{addressLine1}">N</label> 
-                      <input type="text" class="form-control" th:field="*{addressLine1}" />
-                      <div th:if="${#fields.hasErrors('addressLine1')}" class="text-danger">
-                        <span th:errors="*{addressLine1}"></span>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{addressLine1}">N</label> 
+                        <input type="text" class="form-control" th:field="*{addressLine1}" />
+                        <div th:if="${#fields.hasErrors('addressLine1')}" class="text-danger">
+                          <span th:errors="*{addressLine1}"></span>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{addressLine2}">N</label> 
+                        <input type="text" class="form-control" th:field="*{addressLine2}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{addressLine2}"></span>
+                        </div>
                       </div>
                     </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{addressLine2}">N</label> 
-                      <input type="text" class="form-control" th:field="*{addressLine2}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{addressLine2}"></span>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{postalCode}">N</label> 
+                        <input type="number" min="0" max="99999" size="5" oninput="this.value=this.value.slice(0,5)" class="form-control" th:field="*{postalCode}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{postalCode}"></span>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3"> 
+                        <label for="city" class="form-label" th:text="#{city}">N</label> 
+                        <input type="text" class="form-control" th:field="*{city}" />
+                        <div th:if="${#fields.hasErrors('city')}" class="text-danger">
+                          <span th:errors="*{city}"></span>
+                        </div>
                       </div>
                     </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{postalCode}">N</label> 
-                      <input type="number" min="0" max="99999" size="5" oninput="this.value=this.value.slice(0,5)" class="form-control" th:field="*{postalCode}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{postalCode}"></span>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{state}">N</label> 
+                        <input type="text" class="form-control" th:field="*{state}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{state}"></span>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{country}">N</label> 
+                        <input type="text" class="form-control" th:field="*{country}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{country}"></span>
+                        </div>
                       </div>
                     </div>
-                    <div class="mb-3"> 
-                      <label for="city" class="form-label" th:text="#{city}">N</label> 
-                      <input type="text" class="form-control" th:field="*{city}" />
-                      <div th:if="${#fields.hasErrors('city')}" class="text-danger">
-                        <span th:errors="*{city}"></span>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{telephonenumber}">N</label> 
+                        <input type="text" class="form-control" th:field="*{telephonenumber}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{telephonenumber}"></span>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3"> 
+                        <label for="name" class="form-label" th:text="#{email}">N</label> 
+                        <input type="text" class="form-control" th:field="*{email}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                          <span th:errors="*{email}"></span>
+                        </div>
                       </div>
                     </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{state}">N</label> 
-                      <input type="text" class="form-control" th:field="*{state}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{state}"></span>
-                      </div>
-                    </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{country}">N</label> 
-                      <input type="text" class="form-control" th:field="*{country}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{country}"></span>
-                      </div>
-                    </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{telephonenumber}">N</label> 
-                      <input type="text" class="form-control" th:field="*{telephonenumber}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{telephonenumber}"></span>
-                      </div>
-                    </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{email}">N</label> 
-                      <input type="text" class="form-control" th:field="*{email}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{email}"></span>
-                      </div>
-                    </div>
-                    <div class="mb-3"> 
-                      <label for="name" class="form-label" th:text="#{taxnumber}">N</label> 
-                      <input type="text" class="form-control" th:field="*{taxnumber}" />
-                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
-                        <span th:errors="*{taxnumber}"></span>
-                      </div>
-                    </div>
+
                   </div>
+
                   <div class="card-footer text-end"> 
                     <button type="submit" class="btn btn-primary" 
                             th:text="#{save}">S</button> 
