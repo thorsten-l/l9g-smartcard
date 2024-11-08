@@ -18,6 +18,7 @@ package l9g.webapp.smartcardfront.form.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import l9g.webapp.smartcardfront.form.validator.UniqueCategory;
+import l9g.webapp.smartcardfront.form.validator.UniqueProduct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,11 +36,13 @@ import lombok.ToString;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @UniqueCategory(message = "{error.product.unique}")
+@UniqueProduct(message = "{error.product.name.unique}")
 public class FormProduct
 {
 
   private String id;
 
+  
   private String categoryId;
 
   @NotBlank(message = "{error.name.notBlank}")

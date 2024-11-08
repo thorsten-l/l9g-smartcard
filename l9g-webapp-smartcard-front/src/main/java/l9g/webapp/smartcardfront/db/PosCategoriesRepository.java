@@ -32,6 +32,8 @@ public interface PosCategoriesRepository extends
 {
   Optional<PosCategory> findByTenant_IdAndName(String tenantId, String name);
 
+  List<PosCategory> findByTenantOrderByNameAsc(PosTenant tenant);
+
   List<PosCategory> findAllByTenant(PosTenant tenant);
 
 }

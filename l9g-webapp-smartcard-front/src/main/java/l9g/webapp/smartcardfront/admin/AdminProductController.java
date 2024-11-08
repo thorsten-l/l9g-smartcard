@@ -16,6 +16,10 @@
 package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import java.util.List;
+import l9g.webapp.smartcardfront.db.model.PosCategory;
+import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.service.DbCategoryService;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
@@ -26,8 +30,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -41,10 +49,8 @@ public class AdminProductController
   private final AdminService adminService;
 
   private final DbCategoryService dbCategoryService;
-  
+
   private final DbProductService dbProductService;
-  
-  
 
   @GetMapping("/admin/product")
   public String productHome(
@@ -56,7 +62,7 @@ public class AdminProductController
     model.addAttribute("products", dbProductService.ownerFindAllProducts(session, principal));
     return "admin/product";
   }
-/*
+
   @GetMapping("/admin/product/{id}")
   public String productForm(
     @PathVariable String id,
@@ -70,21 +76,29 @@ public class AdminProductController
     {
       FormProduct formProduct =
         new FormProduct();
-      formProduct.setcategoryId(dbProductService.getSelectedProduct(session, principal).getId());
+      /*formProduct.setcategoryId(dbProductService.getSelectedProduct(session, principal).getId());*/
       formProduct.setId("add");
-      log.debug("formProduct={}", formProduct);
+      List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
+      if(!categories.isEmpty())
+      {
+        formProduct.setCategoryId(categories.get(0).getId());
+      }
+
       model.addAttribute("addProduct", true);
       model.addAttribute("formProduct", formProduct);
+      model.addAttribute("categories", categories);
+      log.debug("formProduct={}", formProduct);
     }
     else
     {
-      model.addAttribute("formProduct",
-        FormPosMapper.INSTANCE.posProductToFormProduct(
-          dbProductService.ownerGetProductById(id, session, principal)));
+      PosProduct posProduct = dbProductService.ownerGetProductById(id, session, principal);
+      FormProduct formProduct = FormPosMapper.INSTANCE.posProductToFormProduct(posProduct);
+      List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
+      model.addAttribute("formProduct", formProduct);
+      model.addAttribute("categories", categories);
     }
     return "admin/productForm";
   }
-  
 
   @PostMapping("/admin/product/{id}")
   public String productFormAction(
@@ -95,7 +109,7 @@ public class AdminProductController
     @Valid @ModelAttribute("formProduct") FormProduct formProduct,
     BindingResult bindingResult, Model model)
   {
-    log.debug("categoryProduct action {} for {}", id, principal.getPreferredUsername());
+    log.debug("productForm action {} for {}", id, principal.getPreferredUsername());
 
     if(bindingResult.hasErrors())
     {
@@ -105,7 +119,9 @@ public class AdminProductController
       {
         model.addAttribute("addProduct", true);
       }
+      List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
       model.addAttribute("formProduct", formProduct);
+      model.addAttribute("categories", categories);
       return "admin/productForm";
     }
 
@@ -142,5 +158,5 @@ public class AdminProductController
       dbProductService.ownerDeleteProduct(id, session, principal));
     return "redirect:/admin/product";
   }
-*/
+
 }

@@ -18,7 +18,9 @@ package l9g.webapp.smartcardfront.form.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Optional;
+import l9g.webapp.smartcardfront.db.PosCategoriesRepository;
 import l9g.webapp.smartcardfront.db.PosProductsRepository;
+import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.form.model.FormProduct;
 import lombok.RequiredArgsConstructor;
@@ -37,23 +39,38 @@ public class UniqueProductValidator implements
 {
   private final PosProductsRepository posProductsRepository;
 
+  private final PosCategoriesRepository posCategoriesRepository;
+
   @Override
   public boolean isValid(FormProduct formProduct,
     ConstraintValidatorContext context)
   {
-    log.debug("formProduct={}", formProduct);
-    
+    log.debug("Validaiton formProduct={}", formProduct);
+
     if(formProduct == null || formProduct.getName() == null
       || formProduct.getName().isEmpty())
     {
       return true;
     }
 
-    Optional<PosProduct> optional 
-      = posProductsRepository
-        .findByCategory_IdAndName(formProduct.getCategoryId(), formProduct.getName());
+    Optional<PosCategory> category = posCategoriesRepository.findById(formProduct.getCategoryId());
+
+    if(category.isEmpty())
+    {
+      context.disableDefaultConstraintViolation();
+      context.buildConstraintViolationWithTemplate("Die angegebenen Kategorie exisitiert nicht")
+        .addPropertyNode("categoryId")
+        .addConstraintViolation();
+      
+      return false;
     
-    if( ! optional.isEmpty() &&  ! optional.get().getId().equals(formProduct.getId()))
+    }
+
+    Optional<PosProduct> optional =
+      posProductsRepository
+        .findByCategory_IdAndName(formProduct.getCategoryId(), formProduct.getName());
+
+    if(!optional.isEmpty() && !optional.get().getId().equals(formProduct.getId()))
     {
       context.disableDefaultConstraintViolation();
       context.buildConstraintViolationWithTemplate(

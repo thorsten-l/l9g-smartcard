@@ -17,10 +17,12 @@ package l9g.webapp.smartcardfront.form;
 
 import l9g.webapp.smartcardfront.db.model.PosAddress;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
+import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.form.model.FormAddress;
 import l9g.webapp.smartcardfront.form.model.FormCategory;
+import l9g.webapp.smartcardfront.form.model.FormProduct;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
 import org.mapstruct.Mapper;
@@ -44,13 +46,18 @@ public interface FormPosMapper
   FormProperty posPropertyToFormProperty(PosProperty posProperty);
 
   FormAddress posAddressToFormAddress(PosAddress posAddress);
-  
+
   @Mapping(target = "tenantId", expression = "java(posCategory.getTenant() != null ? posCategory.getTenant().getId() : null)")
   FormCategory posCategoryToFormCategory(PosCategory posCategory);
-  
+
+  @Mapping(target = "categoryId", expression = "java(posProduct.getCategory() != null ? posProduct.getCategory().getId() : null)")  // Mapping der Kategorie ID
+  @Mapping(target = "id", source = "posProduct.id")
+  @Mapping(target = "name", source = "posProduct.name")
+  FormProduct posProductToFormProduct(PosProduct posProduct);
+
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createTimestamp", ignore = true)
   @Mapping(target = "modifiedBy", ignore = true)
   void updatePosAddressFromFormAddress(FormAddress source, @MappingTarget PosAddress target);
-   
+
 }
