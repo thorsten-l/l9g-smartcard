@@ -59,6 +59,7 @@ public class PosProduct extends PosUuidObject
     this.name = name;
   }
 
+  
   @ManyToOne
   @JoinColumn(name = "category_id", nullable = false)
   private PosCategory category;

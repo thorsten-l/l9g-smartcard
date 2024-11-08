@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Property Form</title>
+    <title>Product Form</title>
     <div th:replace="~{app/admin::head}"></div>
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -21,6 +21,7 @@
 
         <div class="app-content">
           <div class="container-fluid">
+            
             <div class="w-100"> 
               <div class="card card-primary card-outline mb-4">
                 <div class="card-header">
@@ -28,10 +29,10 @@
                 </div>
                 <form th:action="${addProduct} ? @{/admin/product/add} : @{/admin/product/{id}(id=${formProduct.id})}" 
                       th:object="${formProduct}" th:method="POST">
-
+                  
                   <input type="hidden" th:field="*{id}"/>
                   <input type="hidden" th:field="*{categoryId}"/>
-
+                  
                   <div class="card-body">
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{name}">Key</label> 
@@ -40,25 +41,20 @@
                         <span th:errors="*{name}"></span>
                       </div>
                     </div>
-                  </div>
-                  <div class="card-body">
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{description}">Key</label> 
                       <input type="text" class="form-control" th:field="*{description}"/>
                     </div>
-                  </div>
-                  <div class="card-body">
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{price}">Key</label> 
                       <input type="text" class="form-control" th:field="*{price}"/>
                     </div>
-                  </div>
-                  <div class="card-body">
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{tax}">Key</label> 
                       <input type="text" class="form-control" th:field="*{tax}"/>
                     </div>
-                  </div>
+                 </div>   
+                    
                   <div class="card-footer text-end"> 
                     <button type="submit" class="btn btn-primary" 
                             th:text="#{save}">Save</button> 
