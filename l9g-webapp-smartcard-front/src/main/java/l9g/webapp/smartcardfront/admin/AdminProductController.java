@@ -72,30 +72,27 @@ public class AdminProductController
   {
     log.debug("productForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
+
+    List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
+    model.addAttribute("categories", categories);
+
     if("add".equals(id))
     {
-      FormProduct formProduct =
-        new FormProduct();
-      /*formProduct.setcategoryId(dbProductService.getSelectedProduct(session, principal).getId());*/
+      FormProduct formProduct = new FormProduct();
       formProduct.setId("add");
-      List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
-      if(!categories.isEmpty())
+      if( ! categories.isEmpty())
       {
         formProduct.setCategoryId(categories.get(0).getId());
       }
-
       model.addAttribute("addProduct", true);
       model.addAttribute("formProduct", formProduct);
-      model.addAttribute("categories", categories);
       log.debug("formProduct={}", formProduct);
     }
     else
     {
       PosProduct posProduct = dbProductService.ownerGetProductById(id, session, principal);
       FormProduct formProduct = FormPosMapper.INSTANCE.posProductToFormProduct(posProduct);
-      List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
       model.addAttribute("formProduct", formProduct);
-      model.addAttribute("categories", categories);
     }
     return "admin/productForm";
   }
@@ -110,6 +107,8 @@ public class AdminProductController
     BindingResult bindingResult, Model model)
   {
     log.debug("productForm action {} for {}", id, principal.getPreferredUsername());
+    List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
+    model.addAttribute("categories", categories);
 
     if(bindingResult.hasErrors())
     {
@@ -119,9 +118,7 @@ public class AdminProductController
       {
         model.addAttribute("addProduct", true);
       }
-      List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
       model.addAttribute("formProduct", formProduct);
-      model.addAttribute("categories", categories);
       return "admin/productForm";
     }
 
