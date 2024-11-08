@@ -16,9 +16,12 @@
 package l9g.webapp.smartcardfront.form.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
-import l9g.webapp.smartcardfront.form.validator.UniqueCategory;
-import l9g.webapp.smartcardfront.form.validator.UniqueProduct;
+import l9g.webapp.smartcardfront.db.model.PosRole;
+import l9g.webapp.smartcardfront.form.validator.UniqueProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,21 +38,19 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@UniqueProduct(message = "{error.product.name.unique}")
-public class FormProduct
+public class FormUser
 {
-
   private String id;
 
-  private String categoryId;
+  private String tenantId;
 
-  @NotBlank(message = "{error.name.notBlank}")
-  private String name;
+  @Column(nullable = false)
+  private String username;
 
-  private String description;
+  @Column(nullable = false)
+  private String gecos;
 
-  private double price;
-
-  private double tax;
+  @Column(nullable = false)
+  private String role;
 
 }

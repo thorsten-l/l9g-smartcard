@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Property Form</title>
+    <title>User Form</title>
     <div th:replace="~{app/admin::head}"></div>
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -13,8 +13,8 @@
         <div class="app-content-header">
           <div class="container-fluid">
             <div class="d-flex align-items-center">
-              <h3 class="mb-0 me-2" th:text="#{property}">Property</h3>
-              <h3 th:unless="${addProperty}" class="mb-0" th:text="${': ' + formProperty.key}"></h3>
+              <h3 class="mb-0 me-2" th:text="#{user}">User</h3>
+              <h3 th:unless="${addUser}" class="mb-0" th:text="${': ' + formUser.gecos}"></h3>
             </div>
           </div> 
         </div>
@@ -23,28 +23,38 @@
           <div class="container-fluid">
             <div class="w-100"> 
               <div class="card card-primary card-outline mb-4">
-                <div class="card-header">
+                <div style="background-color: #e8f0ff;" class="card-header d-flex align-items-center justify-content-between">
                   <div class="card-title" th:text="#{overview}">Details</div>
                 </div>
-                <form th:action="${addProperty} ? @{/admin/property/add} : @{/admin/property/{id}(id=${formProperty.id})}" 
-                      th:object="${formProperty}" th:method="POST">
+                <form th:action="${addUser} ? @{/admin/user/add} : @{/admin/user/{id}(id=${formUser.id})}" 
+                      th:object="${formUser}" th:method="POST">
 
                   <input type="hidden" th:field="*{id}"/>
+                  <input type="hidden" th:field="*{username}"/>
                   <input type="hidden" th:field="*{tenantId}"/>
 
                   <div class="card-body">
                     <div class="mb-3"> 
-                      <label for="key" class="form-label" th:text="#{key}">Key</label> 
-                      <input type="text" class="form-control" th:field="*{key}"/>
-                      <div th:if="${#fields.hasErrors('key')}" class="text-danger">
-                        <span th:errors="*{key}"></span>
+                      <label for="gecos" class="form-label" th:text="#{gecos}">Gecos</label> 
+                      <input type="text" class="form-control" th:field="*{gecos}" readonly="true"/>
+                      <div th:if="${#fields.hasErrors('gecos')}" class="text-danger">
+                        <span th:errors="*{gecos}"></span>
                       </div>
                     </div>
                     <div class="mb-3"> 
-                      <label for="value" class="form-label" th:text="#{value}">Value</label> 
-                      <textarea class="form-control" th:field="*{value}" rows="4"></textarea>
-                      <div th:if="${#fields.hasErrors('value')}" class="text-danger">
-                        <span th:errors="*{value}"></span>
+                      <label for="role" class="form-label" th:text="#{role}">Role</label> 
+
+                      <select class="form-control select2" th:field="*{role}" style="width: 100%;">
+                        <div th:remove="tag" th:each="roleEntry : ${roles}">
+                          <option th:value="${roleEntry}" 
+                                  th:text="#{${roleEntry}} + ' (' + ${roleEntry} + ')'"
+                                  th:selected="${roleEntry} == *{role}"
+                                  >R</option>
+                        </div>
+                      </select>
+
+                      <div th:if="${#fields.hasErrors('role')}" class="text-danger">
+                        <span th:errors="*{role}"></span>
                       </div>
                     </div>
                   </div>
@@ -52,11 +62,18 @@
                     <button type="submit" class="btn btn-primary" 
                             th:text="#{save}">Save</button> 
                     <a type="button" class="btn btn-danger" 
-                       th:href="@{/admin/property}"
+                       th:href="@{/admin/user}"
                        th:text="#{cancel}" >Cancel</a>                  
                   </div>
                 </form>
               </div>
+
+              <div class="card card-success card-outline mb-4">
+                <div style="background-color: #e8fff0;" class="card-header d-flex align-items-center justify-content-between">
+                  <div class="card-title" th:text="#{usersearch}">S</div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -64,8 +81,8 @@
     </div>
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag"/>
-    
-    <script th:if="${savePropertyError}" th:inline="javascript">
+
+    <script th:if="${saveUserError}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
         icon: "error",
@@ -73,6 +90,6 @@
         text: 'Eigenschaft wurde nicht gespeichert. Schlüssel nicht einzigartig.'
       });
     </script>
-    
+
   </body>
 </html>

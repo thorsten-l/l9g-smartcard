@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 public @interface UniqueProduct
 {
 
-  String message() default "{error.Product.unique}";
+  String message() default "{error.product.name.unique}";
 
   Class<?>[] groups() default 
   {
