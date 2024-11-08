@@ -17,10 +17,14 @@ package l9g.webapp.smartcardfront.db.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
+import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
+import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -97,5 +101,10 @@ public class DbUserService
       + ", " + principal.getEmail() + ", "
       + principal.getPreferredUsername();
   }
-  
+
+  public List<PosUser> ownerGetUsersByTenant(HttpSession session, DefaultOidcUser principal, PosTenant tenant)
+  {
+    return posUserRepository.findAllByTenant(tenant);
+  }
+
 }

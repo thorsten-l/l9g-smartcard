@@ -15,7 +15,9 @@
  */
 package l9g.webapp.smartcardfront.db;
 
+import java.util.List;
 import java.util.Optional;
+import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -29,4 +31,7 @@ public interface PosUserRepository extends
   JpaRepository<PosUser, String>
 {
   Optional<PosUser> findByUsername(String username);
+
+  List<PosUser> findAllByTenant(PosTenant tenant);
+
 }

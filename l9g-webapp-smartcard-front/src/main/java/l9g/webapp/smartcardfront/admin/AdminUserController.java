@@ -1,0 +1,148 @@
+/*
+ * Copyright 2024 Thorsten Ludewig (t.ludewig@gmail.com).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package l9g.webapp.smartcardfront.admin;
+
+import jakarta.servlet.http.HttpSession;
+import l9g.webapp.smartcardfront.db.service.DbTenantService;
+import l9g.webapp.smartcardfront.db.service.DbUserService;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormProperty;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+/**
+ *
+ * @author Thorsten Ludewig (t.ludewig@gmail.com)
+ */
+@Controller
+@Slf4j
+@RequiredArgsConstructor
+public class AdminUserController
+{
+  private final AdminService adminService;
+
+  private final DbTenantService dbTenantService;
+
+  private final DbUserService dbUserService;
+
+  @GetMapping("/admin/user")
+  public String propertyHome(
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    Model model,
+    HttpSession session)
+  {
+    adminService.generalModel(principal, model, session);
+        
+    model.addAttribute("users", 
+      dbUserService.ownerGetUsersByTenant(session, principal, 
+        dbTenantService.checkTenantOwner(session, principal)));
+    return "admin/user";
+  }
+
+  @GetMapping("/admin/user/{id}")
+  public String propertyForm(
+    @PathVariable String id,
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    Model model,
+    HttpSession session)
+  {
+    log.debug("propertyForm {} for {}", id, principal.getPreferredUsername());
+    adminService.generalModel(principal, model, session);
+    if("add".equals(id))
+    {
+      FormProperty formProperty =
+        new FormProperty("add",
+          dbTenantService.checkTenantOwner(session, principal).getId(), "", "");
+      log.debug("formProperty={}", formProperty);
+      model.addAttribute("addProperty", true);
+      model.addAttribute("formProperty", formProperty);
+    }
+    else
+    {
+      /*
+      model.addAttribute("formProperty",
+        FormPosMapper.INSTANCE.posPropertyToFormProperty(
+          dbPropertyService.ownerGetPropertyById(id, session, principal)));
+      */
+    }
+    return "admin/userForm";
+  }
+
+  /*
+  @PostMapping("/admin/property/{id}")
+  public String propertyFormAction(
+    RedirectAttributes redirectAttributes,
+    HttpSession session,
+    @PathVariable String id,
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    @Valid @ModelAttribute("formProperty") FormProperty formProperty,
+    BindingResult bindingResult, Model model)
+  {
+    log.debug("propertyForm action {} for {}", id, principal.getPreferredUsername());
+
+    if(bindingResult.hasErrors())
+    {
+      log.debug("Form error: {}", bindingResult);
+      adminService.generalModel(principal, model, session);
+      if("add".equals(id))
+      {
+        model.addAttribute("addProperty", true);
+      }
+      model.addAttribute("formProperty", formProperty);
+      return "admin/propertyForm";
+    }
+
+    try
+    {
+      log.debug("formProperty = {}", formProperty);
+      redirectAttributes.addFlashAttribute("savedProperty",
+        dbPropertyService.ownerSaveProperty(id, formProperty, session, principal));
+    }
+    catch(Throwable t)
+    {
+      adminService.generalModel(principal, model, session);
+      if("add".equals(id))
+      {
+        model.addAttribute("addProperty", true);
+      }
+      model.addAttribute("formProperty", formProperty);
+      model.addAttribute("savePropertyError", t.getMessage());
+      return "admin/propertyForm";
+    }
+
+    return "redirect:/admin/property";
+  }
+
+  @GetMapping("/admin/property/{id}/delete")
+  public String propertyDelete(
+    RedirectAttributes redirectAttributes,
+    HttpSession session,
+    @PathVariable String id,
+    @AuthenticationPrincipal DefaultOidcUser principal)
+  {
+    log.debug("property delete {} for {}", id, principal.getPreferredUsername());
+    redirectAttributes.addFlashAttribute("deletedProperty",
+      dbPropertyService.ownerDeleteProperty(id, session, principal));
+    return "redirect:/admin/property";
+  }
+*/
+}

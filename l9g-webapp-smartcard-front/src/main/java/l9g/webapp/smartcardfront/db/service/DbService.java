@@ -112,31 +112,31 @@ public class DbService
 
       PosCategory posCategory = posCategoriesRepository.saveAndFlush(
         new PosCategory(KEY_SYSTEM_USER, systemTenant, "default", true));
-      
+
       posProductsRepository.saveAndFlush(
         new PosProduct(KEY_SYSTEM_USER, posCategory, "Sample"));
-    }
-    else
-    {
-      log.info("Database already initialized.");
-    }
 
-    if(adminUsernames != null && adminUsernames.length > 0
-      &&  ! KEY_UNSET.equals(adminUsernames[0]))
-    {
-      for(String username : adminUsernames)
+      if(adminUsernames != null && adminUsernames.length > 0
+        &&  ! KEY_UNSET.equals(adminUsernames[0]))
       {
-        log.debug("Create/update '{}' as administrator", username);
-        PosUser person = posUserRepository.findByUsername(username)
-          .orElseGet(() -> posUserRepository.save(new PosUser(KEY_SYSTEM_USER, systemTenant, username,
-          PosRole.POS_ADMINISTRATOR)));
-        person.setTenant(systemTenant);
-        posUserRepository.save(person);
+        for(String username : adminUsernames)
+        {
+          log.debug("Create/update '{}' as administrator", username);
+          PosUser person = posUserRepository.findByUsername(username)
+            .orElseGet(() -> posUserRepository.save(new PosUser(KEY_SYSTEM_USER, systemTenant, username, "System Admin (" + username + ")",
+            PosRole.POS_ADMINISTRATOR)));
+          person.setTenant(systemTenant);
+          posUserRepository.save(person);
+        }
+      }
+      else
+      {
+        log.warn("No administrator usernames specified in config.yaml");
       }
     }
     else
     {
-      log.warn("No administrator usernames specified in config.yaml");
+      log.info("Database already initialized.");
     }
   }
 

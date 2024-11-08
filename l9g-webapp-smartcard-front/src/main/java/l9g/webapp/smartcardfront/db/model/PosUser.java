@@ -44,11 +44,12 @@ public class PosUser extends PosUuidObject
   private static final long serialVersionUID = -2875364432403999861L;
 
   public PosUser(String createdBy, PosTenant tenant,
-    String username, PosRole role)
+    String username, String gecos, PosRole role)
   {
     super(createdBy);
     this.tenant = tenant;
     this.username = username;
+    this.gecos = gecos;
     this.role = role;
   }
 
@@ -58,6 +59,9 @@ public class PosUser extends PosUuidObject
 
   @Column(nullable = false)
   private String username;
+
+  @Column(nullable = false)
+  private String gecos;
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
