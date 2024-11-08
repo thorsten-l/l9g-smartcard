@@ -16,7 +16,6 @@
 package l9g.webapp.smartcardfront.db.service;
 
 import java.util.Optional;
-import l9g.webapp.smartcardfront.db.PosAddressesRepository;
 import l9g.webapp.smartcardfront.db.PosCategoriesRepository;
 import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
 import l9g.webapp.smartcardfront.db.PosProductsRepository;
@@ -27,6 +26,7 @@ import l9g.webapp.smartcardfront.db.PosUserRepository;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
+import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
@@ -110,8 +110,11 @@ public class DbService
       pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
 
-      posCategoriesRepository.saveAndFlush(
+      PosCategory posCategory = posCategoriesRepository.saveAndFlush(
         new PosCategory(KEY_SYSTEM_USER, systemTenant, "default", true));
+      
+      posProductsRepository.saveAndFlush(
+        new PosProduct(KEY_SYSTEM_USER, posCategory, "Sample"));
     }
     else
     {
@@ -151,5 +154,7 @@ public class DbService
   private final PosTransactionsRepository posTransactionsRepository;
 
   private final PosCategoriesRepository posCategoriesRepository;
+
+  private final PosProductsRepository posProductsRepository;
 
 }

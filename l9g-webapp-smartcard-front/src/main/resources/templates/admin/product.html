@@ -33,10 +33,10 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th style="width: 50%"><span th:text="#{name}">Key</span></th>
+                      <th style="width: 30%"><span th:text="#{name}">Key</span></th>
                       <th style="width: 30%"><span th:text="#{description}">Key</span></th>
-                      <th style="width: 10%"><span th:text="#{price}">Key</span></th>
-                      <th style="width: 10%"><span th:text="#{tax}">Key</span></th>
+                      <th style="width: 20%"><span th:text="#{price}">Key</span></th>
+                      <th style="width: 20%"><span th:text="#{variations}">V</span></th>
                       <th><span th:text="#{actions}">Actions</span></th>
                     </tr>
                   </thead>
@@ -50,6 +50,10 @@
                         <a class="btn btn-primary" th:href="@{/admin/product/{id}(id=${entry.id})}"
                            th:title="${entry.id}">
                           <i class="fa-solid fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-secondary" th:href="@{/admin/product/{id}/variation(id=${entry.id})}"
+                           th:title="#{variations}">
+                          <i class="fa-regular fa-object-group"></i>
                         </a>
                         <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${entry.id}, data-name=${entry.name}">
                           <i class="fa-solid fa-trash"></i>
