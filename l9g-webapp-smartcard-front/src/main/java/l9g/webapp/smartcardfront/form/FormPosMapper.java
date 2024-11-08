@@ -20,11 +20,13 @@ import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.form.model.FormAddress;
 import l9g.webapp.smartcardfront.form.model.FormCategory;
 import l9g.webapp.smartcardfront.form.model.FormProduct;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
+import l9g.webapp.smartcardfront.form.model.FormUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -45,12 +47,16 @@ public interface FormPosMapper
   @Mapping(target = "tenantId", expression = "java(posProperty.getTenant() != null ? posProperty.getTenant().getId() : null)")
   FormProperty posPropertyToFormProperty(PosProperty posProperty);
 
+  @Mapping(target = "tenantId", expression = "java(posUser.getTenant() != null ? posUser.getTenant().getId() : null)")
+  FormUser posUserToFormUser(PosUser posUser);
+
   FormAddress posAddressToFormAddress(PosAddress posAddress);
 
   @Mapping(target = "tenantId", expression = "java(posCategory.getTenant() != null ? posCategory.getTenant().getId() : null)")
   FormCategory posCategoryToFormCategory(PosCategory posCategory);
 
-  @Mapping(target = "categoryId", expression = "java(posProduct.getCategory() != null ? posProduct.getCategory().getId() : null)")  // Mapping der Kategorie ID
+  @Mapping(target = "categoryId", expression = "java(posProduct.getCategory() != null ? posProduct.getCategory().getId() : null)")
+  @Mapping(target = "variations", expression = "java(posProduct.getVariations() != null ? posProduct.getVariations().size() : 0)")
   @Mapping(target = "id", source = "posProduct.id")
   @Mapping(target = "name", source = "posProduct.name")
   FormProduct posProductToFormProduct(PosProduct posProduct);

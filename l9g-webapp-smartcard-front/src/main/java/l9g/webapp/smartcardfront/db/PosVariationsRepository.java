@@ -15,7 +15,7 @@
  */
 package l9g.webapp.smartcardfront.db;
 
-import l9g.webapp.smartcardfront.db.model.PosVarriation;
+import l9g.webapp.smartcardfront.db.model.PosVariation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @Repository
-public interface PosVarriationsRepository extends
-  JpaRepository<PosVarriation, String>
+public interface PosVariationsRepository extends
+  JpaRepository<PosVariation, String>
 {
 }

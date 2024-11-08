@@ -16,13 +16,15 @@
 package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import l9g.webapp.smartcardfront.db.model.PosRole;
+import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import l9g.webapp.smartcardfront.db.service.DbUserService;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
 import l9g.webapp.smartcardfront.form.model.FormUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +32,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -72,6 +78,8 @@ public class AdminUserController
     log.debug("userForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session);
 
+    PosTenant tenant = dbTenantService.checkTenantOwner(session, principal);
+
     boolean isAdmin = dbUserService.isAdmin(principal);
     List<String> roles = new ArrayList<>();
     for(PosRole role : PosRole.values())
@@ -81,7 +89,7 @@ public class AdminUserController
         roles.add(role.name());
       }
     }
-    
+
     Collections.sort(roles);
     model.addAttribute("roles", roles);
 
@@ -89,26 +97,21 @@ public class AdminUserController
     {
 
       FormUser formUser =
-        new FormUser("add",
-          dbTenantService.checkTenantOwner(session, principal).getId(),
-          "", "", PosRole.POS_CASHIER.name());
+        new FormUser("add", tenant.getId(), "", "", PosRole.POS_CASHIER.name());
 
       log.debug("formUser={}", formUser);
       model.addAttribute("addUser", true);
       model.addAttribute("formUser", formUser);
     }
     else
-    {
-      /*
+    {      
       model.addAttribute("formUser",
         FormPosMapper.INSTANCE.posUserToFormUser(
-          dbUserService.ownerGetUserById(id, session, principal)));
-       */
+          dbUserService.ownerGetUserById(id, principal, tenant)));
     }
     return "admin/userForm";
   }
 
-  /*
   @PostMapping("/admin/user/{id}")
   public String userFormAction(
     RedirectAttributes redirectAttributes,
@@ -136,7 +139,8 @@ public class AdminUserController
     {
       log.debug("formUser = {}", formUser);
       redirectAttributes.addFlashAttribute("savedUser",
-        dbUserService.ownerSaveUser(id, formUser, session, principal));
+        dbUserService.ownerSaveUser(id, formUser, session, principal,
+          dbTenantService.checkTenantOwner(session, principal)));
     }
     catch(Throwable t)
     {
@@ -162,8 +166,9 @@ public class AdminUserController
   {
     log.debug("user delete {} for {}", id, principal.getPreferredUsername());
     redirectAttributes.addFlashAttribute("deletedUser",
-      dbUserService.ownerDeleteUser(id, session, principal));
+      dbUserService.ownerDeleteUser(id, session, principal,
+        dbTenantService.checkTenantOwner(session, principal)));
     return "redirect:/admin/user";
   }
-   */
+
 }

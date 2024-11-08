@@ -33,21 +33,21 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th style="width: 50%"><span th:text="#{gecos}">U</span></th>
-                      <th style="width: 50%" ><span th:text="#{role}">R</span></th>
+                      <th style="width: 65%"><span th:text="#{gecos}">U</span></th>
+                      <th style="width: 35%" ><span th:text="#{role}">R</span></th>
                       <th><span th:text="#{actions}">Actions</span></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr th:each="entry : ${users}">
                       <td th:text="${entry.gecos}"></td>
-                      <td th:text="${entry.role}"></td>
+                      <td th:text="#{${entry.role}}"></td>
                       <td class="text-nowrap">
-                        <a class="btn btn-primary" th:href="@{/admin/user/{id}(id=${entry.id})}"
-                           th:title="${entry.id}">
-                          <i class="fa-solid fa-pencil"></i>
-                        </a>
                         <div th:unless="${entry.username == principal.preferredUsername}" th:remove="tag">
+                          <a class="btn btn-primary" th:href="@{/admin/user/{id}(id=${entry.id})}"
+                             th:title="${entry.id}">
+                            <i class="fa-solid fa-pencil"></i>
+                          </a>
                           <!-- du kannst dich selbst nicht löschen! -->
                           <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${entry.id}, data-gecos=${entry.gecos}">
                             <i class="fa-solid fa-trash"></i>

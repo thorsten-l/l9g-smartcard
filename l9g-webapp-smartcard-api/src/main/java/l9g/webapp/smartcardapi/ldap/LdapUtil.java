@@ -52,7 +52,7 @@ public class LdapUtil
 
     log.debug("LDAP search for userId = " + userId);
 
-    if(userId != null && !userId.isBlank())
+    if(userId != null &&  ! userId.isBlank())
     {
       try
       {
@@ -110,7 +110,7 @@ public class LdapUtil
 
     return account;
   }
-  
+
   public Map<String, String> searchForCard(long serialNumber)
   {
     Map<String, String> account = new LinkedHashMap<>();
@@ -188,7 +188,7 @@ public class LdapUtil
     {
       return accounts;
     }
-
+    /*
     for(String token : tokens)
     {
       if(token.length() < 2)
@@ -196,23 +196,39 @@ public class LdapUtil
         return accounts;
       }
     }
-
+     */
     log.debug("LDAP search for term = '{}' {}", term, tokens);
 
     StringBuffer subFilter = new StringBuffer();
     subFilter.append("(|");
-    for(String token : tokens)
+
+    if(tokens.length == 1)
     {
       subFilter.append("(sn=");
-      subFilter.append(token);
+      subFilter.append(tokens[0]);
+      subFilter.append("*)");
+      subFilter.append("(givenName=");
+      subFilter.append(tokens[0]);
       subFilter.append("*)");
     }
-    subFilter.append(")(|");
-    for(String token : tokens)
+    else
     {
-      subFilter.append("(givenName=");
-      subFilter.append(token);
-      subFilter.append("*)");
+      if(tokens.length == 2)
+      {
+        subFilter.append("(&(sn=");
+        subFilter.append(tokens[0]);
+        subFilter.append("*)");
+        subFilter.append("(givenName=");
+        subFilter.append(tokens[1]);
+        subFilter.append("*))");
+        
+        subFilter.append("(&(sn=");
+        subFilter.append(tokens[1]);
+        subFilter.append("*)");
+        subFilter.append("(givenName=");
+        subFilter.append(tokens[0]);
+        subFilter.append("*))");
+      }
     }
     subFilter.append(")");
 
@@ -249,7 +265,7 @@ public class LdapUtil
 
         for(SearchResultEntry entry : entries)
         {
-           Map<String, String> account = new LinkedHashMap<>();
+          Map<String, String> account = new LinkedHashMap<>();
 
           entry.getAttributes().forEach(attribute ->
           {
@@ -311,7 +327,7 @@ public class LdapUtil
 
   @Value("${ldap.search.filter.userid}")
   private String searchUserIdFilter;
-  
+
   @Value("${ldap.search.filter.card}")
   private String searchCardFilter;
 

@@ -22,14 +22,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
-import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
+import l9g.webapp.smartcardfront.form.model.FormUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -102,9 +104,62 @@ public class DbUserService
       + principal.getPreferredUsername();
   }
 
-  public List<PosUser> ownerGetUsersByTenant(HttpSession session, DefaultOidcUser principal, PosTenant tenant)
+  public List<PosUser> ownerGetUsersByTenant(HttpSession session,
+    DefaultOidcUser principal, PosTenant tenant)
   {
-    return posUserRepository.findAllByTenant(tenant);
+    return posUserRepository.findAllByTenantOrderByGecosAsc(tenant);
+  }
+
+  public PosUser ownerGetUserById(String id, DefaultOidcUser principal, PosTenant tenant)
+  {
+    if(isAdmin(principal) || posUserFromPrincipal(principal).getTenant().getId().equals(tenant.getId()))
+    {
+      return posUserRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+    else
+    {
+      throw new AccessDeniedException("Access denied");
+    }
+  }
+
+  public PosUser ownerSaveUser(String id, FormUser formUser,
+    HttpSession session, DefaultOidcUser principal, PosTenant tenant)
+  {
+    PosUser posUser;
+
+    if(formUser.getUsername() != null && formUser.getUsername().isBlank())
+    {
+      formUser.setUsername(null);
+    }
+
+    if("add".equals(id))
+    {
+      log.debug("add new property");
+      posUser = new PosUser(gecosFromPrincipal(principal),
+        tenant, formUser.getUsername(), formUser.getGecos(), PosRole.valueOf(formUser.getRole()));
+    }
+    else
+    {
+      posUser = ownerGetUserById(id, principal, tenant);
+      log.debug("posProperty={}", posUser);
+      posUser.setRole(PosRole.valueOf(formUser.getRole()));
+      posUser.setModifiedBy(gecosFromPrincipal(principal));
+    }
+
+    log.debug("posUser = {}", posUser);
+    return posUserRepository.saveAndFlush(posUser);
+  }
+
+  public PosUser ownerDeleteUser(String id, HttpSession session,
+    DefaultOidcUser principal, PosTenant tenant)
+  {
+    PosUser posUser = ownerGetUserById(id, principal, tenant);
+    log.debug("posUser={}", posUser);
+
+    posUserRepository.delete(posUser);
+    posUserRepository.flush();
+    return posUser;
   }
 
 }

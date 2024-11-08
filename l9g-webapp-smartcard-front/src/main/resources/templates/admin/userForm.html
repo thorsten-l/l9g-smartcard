@@ -21,7 +21,24 @@
 
         <div class="app-content">
           <div class="container-fluid">
-            <div class="w-100"> 
+            <div class="w-100">
+
+              <div th:if="${addUser}" class="card card-success card-outline mb-4">
+                <div style="background-color: #f0fff0;" class="card-header d-flex align-items-center justify-content-between">
+                  <div class="card-title" th:text="#{usersearch}">S</div>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="customerInfo" class="form-label" th:text="#{name}">U</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="fa-regular fa-user"></i></span> 
+                      <select id="customerInfo" required="true" name="customerInfo" 
+                              class="form-select"></select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div class="card card-primary card-outline mb-4">
                 <div style="background-color: #e8f0ff;" class="card-header d-flex align-items-center justify-content-between">
                   <div class="card-title" th:text="#{overview}">Details</div>
@@ -68,12 +85,6 @@
                 </form>
               </div>
 
-              <div class="card card-success card-outline mb-4">
-                <div style="background-color: #e8fff0;" class="card-header d-flex align-items-center justify-content-between">
-                  <div class="card-title" th:text="#{usersearch}">S</div>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>
@@ -91,5 +102,29 @@
       });
     </script>
 
+    <script th:inline="javascript">
+      const apiCustomerInfoUrl = /*[[@{/api/v1/customer}]]*/ '';
+      const apiCustomerInfoTermUrl = apiCustomerInfoUrl + "/term";
+
+      $('#customerInfo').on('select2:select', function (e) {
+        var selectedOption = e.params.data;
+        console.log("ID: " + selectedOption.id);
+        console.log("Value: " + selectedOption.text);
+        document.getElementById("username").value = selectedOption.id;
+        document.getElementById("gecos").value = selectedOption.text;
+        console.log("username: " + document.getElementById("username").value);
+        console.log("gecos " + document.getElementById("gecos").value);
+      });
+
+      $('#customerInfo').select2({
+        theme: 'bootstrap-5',
+        minimumInputLength: 5,
+        language: 'de',
+        ajax: {
+          url: apiCustomerInfoTermUrl,
+          dataType: 'json'
+        }
+      });
+    </script>
   </body>
 </html>

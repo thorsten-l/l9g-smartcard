@@ -17,7 +17,6 @@ package l9g.webapp.smartcardfront.form.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
-import l9g.webapp.smartcardfront.form.validator.UniqueCategory;
 import l9g.webapp.smartcardfront.form.validator.UniqueProduct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,5 +50,7 @@ public class FormProduct
   private double price;
 
   private double tax;
+  
+  private int variations;
 
 }

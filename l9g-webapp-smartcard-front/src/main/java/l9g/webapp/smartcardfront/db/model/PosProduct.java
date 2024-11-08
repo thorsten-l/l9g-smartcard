@@ -75,6 +75,6 @@ public class PosProduct extends PosUuidObject
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE,
              fetch = FetchType.EAGER)
-  private List<PosVarriation> varriations;
+  private List<PosVariation> variations;
 
 }

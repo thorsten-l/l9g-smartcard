@@ -45,7 +45,7 @@
                       <td th:text="${entry.name}"></td>
                       <td th:text="${entry.description}"></td>
                       <td th:text="${entry.price}"></td>
-                      <td th:text="${entry.tax}"></td>
+                      <td th:text="${entry.variations.size()}"></td>
                       <td class="text-nowrap">
                         <a class="btn btn-primary" th:href="@{/admin/product/{id}(id=${entry.id})}"
                            th:title="${entry.id}">

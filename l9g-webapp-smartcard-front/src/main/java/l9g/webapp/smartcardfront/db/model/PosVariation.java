@@ -35,7 +35,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "varriations", uniqueConstraints =
+@Table(name = "variations", uniqueConstraints =
      {
        @UniqueConstraint(columnNames =
        {
@@ -44,11 +44,11 @@ import lombok.ToString;
 })
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class PosVarriation extends PosUuidObject
+public class PosVariation extends PosUuidObject
 {
   private static final long serialVersionUID = -8043510890118920536L;
 
-  public PosVarriation(String createdBy, PosProduct product, String name)
+  public PosVariation(String createdBy, PosProduct product, String name)
   {
     super(createdBy);
     this.product = product;

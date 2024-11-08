@@ -34,4 +34,6 @@ public interface PosUserRepository extends
 
   List<PosUser> findAllByTenant(PosTenant tenant);
 
+  List<PosUser> findAllByTenantOrderByGecosAsc(PosTenant tenant);
+
 }
