@@ -33,14 +33,14 @@
               <li class="nav-item">
                 <a th:href="@{/admin/home}" class="nav-link">
                   <i class="nav-icon fa-solid fa-gauge-high me-2"></i>
-                  <p>Dashboard</p>
+                  <p th:text="#{dashboard}">Dashboard</p>
                 </a>
               </li>
 
               <li class="nav-item">
                 <a th:href="@{/admin/home}" class="nav-link">
                   <i class="nav-icon fa-solid fa-book me-2"></i>
-                  <p>Kassenbuch</p>
+                  <p th:text="#{cash_books}">Kassenbuch</p>
                 </a>
               </li>
 
@@ -49,21 +49,21 @@
                 <li class="nav-item">
                   <a th:href="@{/admin/category}" class="nav-link">
                     <i class="nav-icon fa-solid fa-layer-group me-2"></i>
-                    <p>Kategorien</p>
+                    <p th:text="#{categories}">Kategorien</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
                   <a th:href="@{/admin/product}" class="nav-link">
                     <i class="nav-icon fa-solid fa-bullseye me-2"></i>
-                    <p>Produkte</p>
+                    <p th:text="#{products}">Produkte</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
                   <a th:href="@{/admin/user}" class="nav-link">
                     <i class="nav-icon fa-solid fa-user-group me-2"></i>
-                    <p>Benutzer</p>
+                    <p th:text="#{users}">Benutzer</p>
                   </a>
                 </li>
 
@@ -97,7 +97,7 @@
                 <li class="nav-item">
                   <a th:href="@{/admin/home}" class="nav-link">
                     <i class="nav-icon fa-solid fa-cash-register me-2"></i>
-                    <p>Kassensystem</p>
+                    <p th:text="#{points_of_sale}">Kassensystem</p>
                   </a>
                 </li>
 
