@@ -17,14 +17,14 @@
  * Author:  Thorsten Ludewig (t.ludewig@gmail.com)
  * Created: 19.10.2024
  */
-drop table if exists persons;
-drop table if exists receipts;
-drop table if exists transaction_products;
-drop table if exists transactions;
-drop table if exists point_of_sales;
-drop table if exists varriations;
-drop table if exists products;
-drop table if exists categories;
-drop table if exists properties;
-drop table if exists tenants;
-drop table if exists addresses;
+drop table if exists persons cascade;
+drop table if exists receipts cascade;
+drop table if exists transaction_products cascade;
+drop table if exists transactions cascade;
+drop table if exists point_of_sales cascade;
+drop table if exists varriations cascade;
+drop table if exists products cascade;
+drop table if exists categories cascade;
+drop table if exists properties cascade;
+drop table if exists tenants cascade;
+drop table if exists addresses cascade;
