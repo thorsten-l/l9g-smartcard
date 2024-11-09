@@ -111,7 +111,7 @@ public class DbService
       posPointsOfSalesRepository.save(pos);
 
       PosCategory posCategory = posCategoriesRepository.saveAndFlush(
-        new PosCategory(KEY_SYSTEM_USER, systemTenant, "default", true));
+        new PosCategory(KEY_SYSTEM_USER, systemTenant, "Default", true, true ));
 
       posProductsRepository.saveAndFlush(
         new PosProduct(KEY_SYSTEM_USER, posCategory, "Sample"));

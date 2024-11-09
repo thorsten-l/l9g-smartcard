@@ -148,7 +148,7 @@ public class DbTenantService
       PosCategory posCategory =
         new PosCategory(
           dbUserService.gecosFromPrincipal(principal),
-          posTenant, "default", true);
+          posTenant, "Default", true, true);
       posCategoriesRepository.saveAndFlush(posCategory);
     }
 

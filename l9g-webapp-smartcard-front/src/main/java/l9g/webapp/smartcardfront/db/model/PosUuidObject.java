@@ -37,11 +37,17 @@ public class PosUuidObject implements Serializable
   private static final long serialVersionUID = 1575497541642600225l;
 
   //~--- constructors ---------------------------------------------------------
-  public PosUuidObject(String createdBy, boolean immutable)
+  public PosUuidObject(String createdBy, boolean immutable, boolean hidden )
   {
     this.createdBy = this.modifiedBy = createdBy;
     this.id = UUID.randomUUID().toString();
     this.immutable = immutable;
+    this.hidden = hidden;
+  }
+
+  public PosUuidObject(String createdBy, boolean immutable)
+  {
+    this( createdBy, immutable, false );
   }
 
   public PosUuidObject(String createdBy)

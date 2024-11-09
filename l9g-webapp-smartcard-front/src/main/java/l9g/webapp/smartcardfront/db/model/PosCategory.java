@@ -53,16 +53,17 @@ public class PosCategory extends PosUuidObject
   private static final long serialVersionUID = 7718553203197438944L;
 
   public PosCategory(
-    String createdBy, PosTenant tenant, String name, boolean immutable)
+    String createdBy, PosTenant tenant, String name, 
+    boolean immutable, boolean hidden)
   {
-    super(createdBy, immutable);
+    super(createdBy, immutable, hidden);
     this.tenant = tenant;
     this.name = name;
   }
-
+  
   public PosCategory(String createdBy, PosTenant tenant, String name)
   {
-    this(createdBy, tenant, name, false);
+    this(createdBy, tenant, name, false, false );
   }
 
   @ManyToOne
