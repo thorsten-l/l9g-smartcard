@@ -18,7 +18,6 @@ package l9g.webapp.smartcardfront.db.service;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import l9g.webapp.smartcardfront.db.PosCategoriesRepository;
-import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.form.model.FormCategory;
@@ -81,6 +80,7 @@ public class DbCategoryService
       posCategory.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 
+    posCategory.setHidden(formCategory.isHidden());
     log.debug("posCategory = {}", posCategory);
     return posCategoriesRepository.saveAndFlush(posCategory);
   }

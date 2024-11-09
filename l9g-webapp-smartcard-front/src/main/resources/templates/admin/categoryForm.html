@@ -40,6 +40,12 @@
                         <span th:errors="*{name}"></span>
                       </div>
                     </div>
+                    <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" 
+                             th:field="*{hidden}" id="hiddenCheckbox"/>
+                      <label for="hiddenCheckbox" class="form-check-label" 
+                             th:text="#{hidden}">Hidden</label>
+                    </div>
                   </div>
                   <div class="card-footer text-end"> 
                     <button type="submit" class="btn btn-primary" 
@@ -57,7 +63,7 @@
     </div>
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag"/>
-    
+
     <script th:if="${saveCategoryError}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
@@ -66,6 +72,6 @@
         text: 'Eigenschaft wurde nicht gespeichert. Schlüssel nicht einzigartig.'
       });
     </script>
-    
+
   </body>
 </html>
