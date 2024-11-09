@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.db;
 
+import java.util.List;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,6 @@ import org.springframework.stereotype.Repository;
 public interface PosVariationsRepository extends
   JpaRepository<PosVariation, String>
 {
+  List<PosVariation> findAllByProduct_idOrderByNameAsc(String productId);
+
 }
