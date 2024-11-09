@@ -23,6 +23,7 @@ import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
 import l9g.webapp.smartcardfront.db.PosUserRepository;
+import l9g.webapp.smartcardfront.db.PosVariationsRepository;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
@@ -31,6 +32,7 @@ import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosTransaction;
+import l9g.webapp.smartcardfront.db.model.PosVariation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,7 +93,7 @@ public class DbService
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
-        systemTenant, KEY_DEFAULT_TAX, "1.0"));
+        systemTenant, KEY_DEFAULT_TAX, "0.0"));
 
       PosPointOfSales pos = posPointsOfSalesRepository.save(
         new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
@@ -111,10 +113,19 @@ public class DbService
       posPointsOfSalesRepository.save(pos);
 
       PosCategory posCategory = posCategoriesRepository.saveAndFlush(
-        new PosCategory(KEY_SYSTEM_USER, systemTenant, "Default", true, true ));
+        new PosCategory(KEY_SYSTEM_USER, systemTenant, "Default", true, true));
 
-      posProductsRepository.saveAndFlush(
-        new PosProduct(KEY_SYSTEM_USER, posCategory, "Sample"));
+      
+      PosProduct posProduct = posProductsRepository.saveAndFlush(
+        new PosProduct(KEY_SYSTEM_USER, posCategory, "Sample product", 
+          "The description", 1.0, 0.0));
+      
+      posVariationsRepository.saveAndFlush(
+        new PosVariation(KEY_SYSTEM_USER, posProduct, "Sample Var1", 10.10, 0.0));
+      posVariationsRepository.saveAndFlush(
+        new PosVariation(KEY_SYSTEM_USER, posProduct, "Sample Var2", 20.20, 7.0));
+      posVariationsRepository.saveAndFlush(
+        new PosVariation(KEY_SYSTEM_USER, posProduct, "Sample Var3", 30.30, 19.0));
 
       if(adminUsernames != null && adminUsernames.length > 0
         &&  ! KEY_UNSET.equals(adminUsernames[0]))
@@ -156,5 +167,7 @@ public class DbService
   private final PosCategoriesRepository posCategoriesRepository;
 
   private final PosProductsRepository posProductsRepository;
+
+  private final PosVariationsRepository posVariationsRepository;
 
 }

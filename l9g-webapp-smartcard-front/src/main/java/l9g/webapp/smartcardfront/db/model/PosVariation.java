@@ -22,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,21 +49,25 @@ public class PosVariation extends PosUuidObject
 {
   private static final long serialVersionUID = -8043510890118920536L;
 
-  public PosVariation(String createdBy, PosProduct product, String name)
+  public PosVariation(String createdBy, PosProduct product,
+    String name, double price, double tax)
   {
     super(createdBy);
     this.product = product;
     this.name = name;
+    this.price = price;
+    this.tax = tax;
   }
 
   @ManyToOne
   @JoinColumn(name = "product_id", nullable = false)
+  @ToString.Exclude
   private PosProduct product;
 
   @Column(nullable = false)
   private String name;
 
-  private double tax = 1.0;
+  private double tax;
 
   private double price;
 

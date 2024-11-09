@@ -25,6 +25,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,16 +53,25 @@ public class PosProduct extends PosUuidObject
 {
   private static final long serialVersionUID = 7718553203197438944L;
 
-  public PosProduct(String createdBy, PosCategory category, String name)
+  public PosProduct(String createdBy, PosCategory category, String name,
+    String description, double price, double tax)
   {
     super(createdBy);
     this.category = category;
     this.name = name;
+    this.description = description;
+    this.price = price;
+    this.tax = tax;
   }
 
-  
+  public PosProduct(String createdBy, PosCategory category, String name)
+  {
+    this(createdBy, category, name, null, 0.0, 0.0);
+  }
+
   @ManyToOne
   @JoinColumn(name = "category_id", nullable = false)
+  @ToString.Exclude
   private PosCategory category;
 
   @Column(nullable = false)
@@ -76,6 +86,6 @@ public class PosProduct extends PosUuidObject
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE,
              fetch = FetchType.EAGER)
-  private List<PosVariation> variations;
+  private List<PosVariation> variations = new ArrayList<>();
 
 }

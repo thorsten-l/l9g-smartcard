@@ -66,4 +66,11 @@ public interface FormPosMapper
   @Mapping(target = "modifiedBy", ignore = true)
   void updatePosAddressFromFormAddress(FormAddress source, @MappingTarget PosAddress target);
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createTimestamp", ignore = true)
+  @Mapping(target = "modifiedBy", ignore = true)
+  @Mapping(target = "category", ignore = true)
+  @Mapping(target = "variations", ignore = true)
+  void updatePosProductFromFormProduct(FormProduct source, @MappingTarget PosProduct target);
+
 }

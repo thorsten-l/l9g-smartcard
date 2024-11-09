@@ -22,6 +22,7 @@ import l9g.webapp.smartcardfront.db.PosProductsRepository;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
 import l9g.webapp.smartcardfront.form.model.FormProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,9 +89,10 @@ public class DbProductService
     else
     {
       posProduct = ownerGetProductById(id, session, principal);
-      posProduct.setName(formProduct.getName());
+      FormPosMapper.INSTANCE.updatePosProductFromFormProduct(formProduct, posProduct);
+      // posProduct.setName(formProduct.getName());
       posProduct.setCategory(category);
-      log.debug("posProduct={}", posProduct);
+      // posProduct.setDescription(formProduct.getDescription());
       posProduct.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 
