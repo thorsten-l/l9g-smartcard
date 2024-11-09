@@ -45,4 +45,6 @@ public class FormTenant
   private String shorthand;
 
   private String addressId;
+  
+  private boolean hidden;
 }

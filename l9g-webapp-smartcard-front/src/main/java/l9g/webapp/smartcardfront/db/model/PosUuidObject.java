@@ -72,7 +72,7 @@ public class PosUuidObject implements Serializable
         this.getClass().getCanonicalName(), id);
       throw new IllegalStateException("Cannot remove an immutable object.");
     }
-    */
+     */
     log.debug("done");
   }
 
@@ -141,6 +141,10 @@ public class PosUuidObject implements Serializable
 
   @JsonView(View.Base.class)
   private boolean immutable;
+
+  @Setter
+  @JsonView(View.Base.class)
+  private boolean hidden;
 
   @Id
   @Column(length = 40, updatable = false)

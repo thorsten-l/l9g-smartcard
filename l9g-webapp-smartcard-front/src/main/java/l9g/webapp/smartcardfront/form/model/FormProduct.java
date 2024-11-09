@@ -53,4 +53,5 @@ public class FormProduct
   
   private int variations;
 
+  private boolean hidden;
 }

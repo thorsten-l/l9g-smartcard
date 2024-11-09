@@ -47,4 +47,5 @@ public class FormProperty
 
   private String value;
 
+  private boolean hidden;
 }

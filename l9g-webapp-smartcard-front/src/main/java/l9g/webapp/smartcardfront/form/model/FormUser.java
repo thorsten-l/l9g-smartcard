@@ -17,11 +17,6 @@ package l9g.webapp.smartcardfront.form.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
-import l9g.webapp.smartcardfront.db.model.PosRole;
-import l9g.webapp.smartcardfront.form.validator.UniqueProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,4 +48,5 @@ public class FormUser
   @Column(nullable = false)
   private String role;
 
+  private boolean hidden;
 }

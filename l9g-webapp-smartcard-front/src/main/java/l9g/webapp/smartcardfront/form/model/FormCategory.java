@@ -45,5 +45,5 @@ public class FormCategory
   @NotBlank(message = "{error.name.notBlank}")
   private String name;
 
-
+  private boolean hidden;
 }

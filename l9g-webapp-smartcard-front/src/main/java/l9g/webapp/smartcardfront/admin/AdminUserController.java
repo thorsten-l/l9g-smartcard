@@ -97,14 +97,15 @@ public class AdminUserController
     {
 
       FormUser formUser =
-        new FormUser("add", tenant.getId(), "", "", PosRole.POS_CASHIER.name());
+        new FormUser("add", tenant.getId(), "", "",
+          PosRole.POS_CASHIER.name(), false);
 
       log.debug("formUser={}", formUser);
       model.addAttribute("addUser", true);
       model.addAttribute("formUser", formUser);
     }
     else
-    {      
+    {
       model.addAttribute("formUser",
         FormPosMapper.INSTANCE.posUserToFormUser(
           dbUserService.ownerGetUserById(id, principal, tenant)));

@@ -62,4 +62,5 @@ public class FormAddress
 
   private String taxnumber;
 
+  private boolean hidden;
 }

@@ -73,7 +73,8 @@ public class AdminPropertyController
     {
       FormProperty formProperty =
         new FormProperty("add",
-          dbTenantService.checkTenantOwner(session, principal).getId(), "", "");
+          dbTenantService.checkTenantOwner(session, principal).getId(),
+          "", "", false);
       log.debug("formProperty={}", formProperty);
       model.addAttribute("addProperty", true);
       model.addAttribute("formProperty", formProperty);
