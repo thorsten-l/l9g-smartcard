@@ -89,10 +89,9 @@ public class DbProductService
     else
     {
       posProduct = ownerGetProductById(id, session, principal);
-      FormPosMapper.INSTANCE.updatePosProductFromFormProduct(formProduct, posProduct);
-      // posProduct.setName(formProduct.getName());
+      FormPosMapper.INSTANCE.updatePosProductFromFormProduct(
+        formProduct, posProduct);
       posProduct.setCategory(category);
-      // posProduct.setDescription(formProduct.getDescription());
       posProduct.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 
