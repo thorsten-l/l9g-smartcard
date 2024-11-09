@@ -52,7 +52,7 @@ public class AdminService
   private boolean appDevelopment;
 
   public void generalModel(DefaultOidcUser principal,
-    Model model, HttpSession session)
+    Model model, HttpSession session, String activePages )
   {
     log.debug("preferred_username={}", principal.getPreferredUsername());
 
@@ -77,6 +77,7 @@ public class AdminService
     model.addAttribute("tenants", tenants);
     model.addAttribute("webBaseUrl", webBaseUrl);
     model.addAttribute("appDevelopment", appDevelopment);
+    model.addAttribute("activePages", activePages);
   }
 
 }

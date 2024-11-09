@@ -54,13 +54,15 @@ public class AdminUserController
 
   private final DbUserService dbUserService;
 
+  private static final String ACTIVE_PAGES = "user";
+
   @GetMapping("/admin/user")
   public String userHome(
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     model.addAttribute("users",
       dbUserService.ownerGetUsersByTenant(session, principal,
@@ -76,7 +78,7 @@ public class AdminUserController
     HttpSession session)
   {
     log.debug("userForm {} for {}", id, principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     PosTenant tenant = dbTenantService.checkTenantOwner(session, principal);
 
@@ -127,7 +129,7 @@ public class AdminUserController
     if(bindingResult.hasErrors())
     {
       log.debug("Form error: {}", bindingResult);
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addUser", true);
@@ -145,7 +147,7 @@ public class AdminUserController
     }
     catch(Throwable t)
     {
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addUser", true);

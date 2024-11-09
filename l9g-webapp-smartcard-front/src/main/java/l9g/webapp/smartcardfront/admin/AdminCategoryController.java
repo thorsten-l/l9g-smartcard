@@ -21,7 +21,6 @@ import l9g.webapp.smartcardfront.db.service.DbCategoryService;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
 import l9g.webapp.smartcardfront.form.model.FormCategory;
-import l9g.webapp.smartcardfront.form.model.FormProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -49,8 +48,8 @@ public class AdminCategoryController
   private final DbTenantService dbTenantService;
 
   private final DbCategoryService dbCategoryService;
-  
-  
+
+  private static final String ACTIVE_PAGES = "category";
 
   @GetMapping("/admin/category")
   public String categoryHome(
@@ -58,7 +57,7 @@ public class AdminCategoryController
     Model model,
     HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     model.addAttribute("categories", dbCategoryService.ownerGetCategoriesByTenant(session, principal));
     return "admin/category";
   }
@@ -71,7 +70,7 @@ public class AdminCategoryController
     HttpSession session)
   {
     log.debug("categoryForm {} for {}", id, principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     if("add".equals(id))
     {
       FormCategory formCategory =
@@ -105,7 +104,7 @@ public class AdminCategoryController
     if(bindingResult.hasErrors())
     {
       log.debug("Form error: {}", bindingResult);
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addCategory", true);
@@ -122,7 +121,7 @@ public class AdminCategoryController
     }
     catch(Throwable t)
     {
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addCategory", true);

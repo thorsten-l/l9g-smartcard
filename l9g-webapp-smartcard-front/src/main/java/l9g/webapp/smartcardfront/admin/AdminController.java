@@ -36,12 +36,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class AdminController
 {
   private final AdminService adminService;
+  
+  private static final String ACTIVE_PAGES = "home";
 
   @GetMapping("/admin/home")
   public String adminHome(@AuthenticationPrincipal DefaultOidcUser principal,
     Model model, HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     return "admin/home";
   }
 
@@ -60,7 +62,7 @@ public class AdminController
     model.addAttribute("layoutPage", page);
     model.addAttribute("layoutFragment", "ui/" + category + "/" + page);
 
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     return "ui/" + category + "/" + page;
   }

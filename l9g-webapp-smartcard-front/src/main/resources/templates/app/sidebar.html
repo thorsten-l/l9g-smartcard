@@ -31,14 +31,16 @@
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
 
               <li class="nav-item">
-                <a th:href="@{/admin/home}" class="nav-link">
+                <a th:href="@{/admin/home}" class="nav-link"
+                   th:classappend="${activePages == 'home'} ? ' active' : ''">
                   <i class="nav-icon fa-solid fa-gauge-high me-2"></i>
                   <p th:text="#{dashboard}">Dashboard</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a th:href="@{/admin/home}" class="nav-link">
+                <a th:href="@{/admin/home}" class="nav-link"
+                   th:classappend="${activePages == 'cashbook'} ? ' active' : ''">
                   <i class="nav-icon fa-solid fa-book me-2"></i>
                   <p th:text="#{cash_books}">Kassenbuch</p>
                 </a>
@@ -47,28 +49,32 @@
               <div sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','ROLE_POS_OWNER')" th:remove="tag">
                 <li class="nav-header">OWNER</li>
                 <li class="nav-item">
-                  <a th:href="@{/admin/category}" class="nav-link">
+                  <a th:href="@{/admin/category}" class="nav-link"
+                     th:classappend="${activePages == 'category'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-layer-group me-2"></i>
                     <p th:text="#{categories}">Kategorien</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/product}" class="nav-link">
+                  <a th:href="@{/admin/product}" class="nav-link"
+                     th:classappend="${activePages == 'product'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-bullseye me-2"></i>
                     <p th:text="#{products}">Produkte</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/user}" class="nav-link">
+                  <a th:href="@{/admin/user}" class="nav-link"
+                     th:classappend="${activePages == 'user'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-user-group me-2"></i>
                     <p th:text="#{users}">Benutzer</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/property}" class="nav-link">
+                  <a th:href="@{/admin/property}" class="nav-link"
+                     th:classappend="${activePages == 'property'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-gear me-2"></i>
                     <p th:text="#{properties}">T</p>
                   </a>
@@ -83,19 +89,22 @@
                 <li class="nav-header">ADMINISTRATOR</li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/tenant}" class="nav-link">
+                  <a th:href="@{/admin/tenant}" class="nav-link"
+                     th:classappend="${activePages == 'tenant'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-building me-2"></i><p th:text="#{tenants}">T</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/address}" class="nav-link">
+                  <a th:href="@{/admin/address}" class="nav-link"
+                     th:classappend="${activePages == 'address'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-location-dot me-2"></i><p th:text="#{addresses}">T</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/home}" class="nav-link">
+                  <a th:href="@{/admin/home}" class="nav-link"
+                     th:classappend="${activePages == 'pos'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-cash-register me-2"></i>
                     <p th:text="#{points_of_sale}">Kassensystem</p>
                   </a>

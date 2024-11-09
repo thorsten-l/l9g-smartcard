@@ -45,13 +45,15 @@ public class AdminAddressController
   private final AdminService adminService;
 
   private final DbAddressService dbAddressService;
+  
+  private static final String ACTIVE_PAGES = "address";
 
   @GetMapping("/admin/address")
   public String addressHome(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model,
     HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
     return "admin/address";
   }
@@ -62,7 +64,7 @@ public class AdminAddressController
     Model model, HttpSession session)
   {
     log.debug("addressForm {} for {}", id, principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     if("add".equals(id))
     {
@@ -90,7 +92,7 @@ public class AdminAddressController
   {
     log.debug("addressForm action {} for {}", id,
       principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     if(bindingResult.hasErrors())
     {
@@ -121,7 +123,7 @@ public class AdminAddressController
   {
     log.debug("address delete {} for {}", id,
       principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     redirectAttributes.addFlashAttribute("deletedAddress",
       dbAddressService.adminDeleteAddress(id, principal));
     return "redirect:/admin/address";

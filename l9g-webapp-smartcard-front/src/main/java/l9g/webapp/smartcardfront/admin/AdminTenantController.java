@@ -50,12 +50,14 @@ public class AdminTenantController
 
   private final DbAddressService dbAddressService;
 
+  private static final String ACTIVE_PAGES = "tenant";
+
   @GetMapping("/admin/tenant")
   public String tenantHome(
     @AuthenticationPrincipal DefaultOidcUser principal, Model model,
     HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     return "admin/tenant";
   }
 
@@ -65,7 +67,7 @@ public class AdminTenantController
     Model model, HttpSession session)
   {
     log.debug("tenantForm {} for {}", id, principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
 
@@ -95,7 +97,7 @@ public class AdminTenantController
   {
     log.debug("tenantForm action {} for {}", id,
       principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     model.addAttribute("addresses", dbAddressService.findAllAddresses(principal));
 
     if(bindingResult.hasErrors())
@@ -127,7 +129,7 @@ public class AdminTenantController
   {
     log.debug("tenant delete {} for {}", id,
       principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     redirectAttributes.addFlashAttribute("deletedTenant",
       dbTenantService.adminDeleteTenant(id, principal));
     return "redirect:/admin/tenant";
@@ -141,7 +143,7 @@ public class AdminTenantController
     log.debug("selectedTenant {} for {}", id,
       principal.getPreferredUsername());
     dbTenantService.adminSelectTenant(session, id, principal);
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     String referrer = request.getHeader("Referer");
 

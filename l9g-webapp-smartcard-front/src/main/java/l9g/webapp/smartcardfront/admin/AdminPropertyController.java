@@ -49,13 +49,15 @@ public class AdminPropertyController
 
   private final DbPropertyService dbPropertyService;
 
+  private static final String ACTIVE_PAGES = "property";
+
   @GetMapping("/admin/property")
   public String propertyHome(
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     model.addAttribute("properties", dbPropertyService.ownerGetPropertiesByTenant(session, principal));
     return "admin/property";
   }
@@ -68,7 +70,7 @@ public class AdminPropertyController
     HttpSession session)
   {
     log.debug("propertyForm {} for {}", id, principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     if("add".equals(id))
     {
       FormProperty formProperty =
@@ -102,7 +104,7 @@ public class AdminPropertyController
     if(bindingResult.hasErrors())
     {
       log.debug("Form error: {}", bindingResult);
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addProperty", true);
@@ -119,7 +121,7 @@ public class AdminPropertyController
     }
     catch(Throwable t)
     {
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addProperty", true);

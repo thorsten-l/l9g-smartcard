@@ -52,13 +52,15 @@ public class AdminProductController
 
   private final DbProductService dbProductService;
 
+  private static final String ACTIVE_PAGES = "product";
+
   @GetMapping("/admin/product")
   public String productHome(
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     model.addAttribute("products", dbProductService.ownerFindAllProducts(session, principal));
     return "admin/product";
   }
@@ -71,7 +73,7 @@ public class AdminProductController
     HttpSession session)
   {
     log.debug("productForm {} for {}", id, principal.getPreferredUsername());
-    adminService.generalModel(principal, model, session);
+    adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
     List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
     model.addAttribute("categories", categories);
@@ -113,7 +115,7 @@ public class AdminProductController
     if(bindingResult.hasErrors())
     {
       log.debug("Form error: {}", bindingResult);
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addProduct", true);
@@ -130,7 +132,7 @@ public class AdminProductController
     }
     catch(Throwable t)
     {
-      adminService.generalModel(principal, model, session);
+      adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
         model.addAttribute("addProduct", true);
