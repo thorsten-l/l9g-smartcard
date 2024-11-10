@@ -64,6 +64,7 @@ public class DbService
   public static final String KEY_DB_INITIALIZED = "database.initialized";
 
   public static final String KEY_DEFAULT_CURRENCY = "default.currency";
+  public static final String KEY_DEFAULT_CURRENCY_SYMBOL = "default.currency.symbol";
 
   public static final String KEY_DEFAULT_TAX = "default.tax";
 
@@ -92,6 +93,8 @@ public class DbService
         systemTenant, KEY_DB_INITIALIZED, "true"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_CURRENCY, "EUR"));
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
+        systemTenant, KEY_DEFAULT_CURRENCY_SYMBOL, "€"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_TAX, "0.0"));
 

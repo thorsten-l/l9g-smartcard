@@ -13,18 +13,21 @@
         <div class="app-content-header">
           <div class="container-fluid">
             <div class="col-sm-6">
-              <h3 class="mb-0" th:text="#{variation}">V</h3>
+              <h3 class="mb-0">
+                <span th:text="${product.name}" th:remove="tag"></span>
+              </h3>
+              <h5 class="mb-0" th:text="#{variations}">V</h5>
             </div>
           </div>
         </div>
 
         <div class="app-content">
-          <div class="container-fluid">
+          <div class="container-fluid">       
             <div class="card card-primary card-outline mb-4">
               <div style="background-color: #e8f0ff;" class="card-header d-flex align-items-center justify-content-between">
                 <div class="card-title mb-0" th:text="#{overview}">Overview</div>
                 <div class="ms-auto">
-                  <a class="btn btn-success" th:href="@{/admin/product/{productId}/variation/add(productId=${productId})}">
+                  <a class="btn btn-success" th:href="@{/admin/product/{productId}/variation/add(productId=${product.id})}">
                     <i class="fa-solid fa-plus"></i>
                   </a>
                 </div>
@@ -40,12 +43,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr th:each="entry : ${variations}">
+                    <tr th:each="entry : ${product.variations}">
                       <td th:text="${entry.name}"></td>
-                      <td th:text="${entry.price}"></td>
-                      <td th:text="${entry.tax}"></td>
+                      <td th:text="${#numbers.formatDecimal(entry.price, 1, 2) + currencySymbol}"></td>
+                      <td th:text="${#numbers.formatDecimal(entry.tax, 1, 1) + '%'}"></td>
                       <td class="text-nowrap">
-                        <a class="btn btn-primary" th:href="@{/admin/product/{productId}/variation/{id}(productId=${productId},id=${entry.id})}"
+                        <a class="btn btn-primary" th:href="@{/admin/product/{productId}/variation/{id}(productId=${product.id},id=${entry.id})}"
                            th:title="${entry.id}">
                           <i class="fa-solid fa-pencil"></i>
                         </a>
@@ -94,8 +97,8 @@
         const deleteMessage = `[[#{confirm.delete.text}]]`.replace("{0}", name).slice(1, -1);
 
 
-    Swal.fire({
-          title: /*[[#{confirm.delete.title}]]*/ 'T', 
+        Swal.fire({
+          title: /*[[#{confirm.delete.title}]]*/ 'T',
           text: deleteMessage,
           icon: 'warning',
           showCancelButton: true,

@@ -16,8 +16,8 @@
 package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import l9g.webapp.smartcardfront.db.model.PosVariation;
+import l9g.webapp.smartcardfront.db.model.PosProduct;
+import l9g.webapp.smartcardfront.db.service.DbProductService;
 import l9g.webapp.smartcardfront.db.service.DbVariationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +39,8 @@ public class AdminVariationController
 {
   private final AdminService adminService;
 
+  private final DbProductService dbProductService;
+
   private final DbVariationService dbVariationService;
 
   private static final String ACTIVE_PAGES = "product";
@@ -52,10 +54,9 @@ public class AdminVariationController
   {
     log.debug("productId={}", productId);
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
-    List<PosVariation> variations = dbVariationService.productFindAllVariations(productId);
-    log.debug("variations={}", variations);
-    model.addAttribute("productId", productId);
-    model.addAttribute("variations", variations);
+    PosProduct posProduct = dbProductService.ownerGetProductById(productId, session, principal);
+    log.debug("posProduct={}", posProduct);
+    model.addAttribute("product", posProduct);
     return "admin/variation";
   }
 

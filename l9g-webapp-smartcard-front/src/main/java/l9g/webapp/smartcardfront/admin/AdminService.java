@@ -21,6 +21,7 @@ import java.util.Locale;
 import l9g.webapp.smartcardfront.db.service.DbUserService;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
+import l9g.webapp.smartcardfront.db.service.DbPropertyService;
 import l9g.webapp.smartcardfront.db.service.DbTenantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,26 +40,28 @@ import org.springframework.ui.Model;
 @RequiredArgsConstructor
 public class AdminService
 {
-  private final DbUserService userService;
+  private final DbUserService dbUserService;
 
-  private final DbTenantService tenantService;
+  private final DbTenantService dbTenantService;
+
+  private final DbPropertyService dbPropertyService;
 
   private final PosTenantsRepository posTenantsRepository;
 
   @Value("${app.web.base-url}")
   private String webBaseUrl;
-  
+
   @Value("${app.development:false}")
   private boolean appDevelopment;
 
   public void generalModel(DefaultOidcUser principal,
-    Model model, HttpSession session, String activePages )
+    Model model, HttpSession session, String activePages)
   {
     log.debug("preferred_username={}", principal.getPreferredUsername());
 
     List<PosTenant> tenants;
 
-    if(userService.isAdmin(principal))
+    if(dbUserService.isAdmin(principal))
     {
       log.debug("{} is administrator!", principal.getName());
       tenants = posTenantsRepository.findAllByOrderByNameAsc();
@@ -73,11 +76,15 @@ public class AdminService
     model.addAttribute("principal", principal);
     model.addAttribute("locale", locale.toString());
     model.addAttribute("selectedTenant",
-      tenantService.getSelectedTenant(session, principal));
+      dbTenantService.getSelectedTenant(session, principal));
     model.addAttribute("tenants", tenants);
     model.addAttribute("webBaseUrl", webBaseUrl);
     model.addAttribute("appDevelopment", appDevelopment);
     model.addAttribute("activePages", activePages);
+    model.addAttribute("currency",
+      dbPropertyService.getCurrency(session, principal));
+    model.addAttribute("currencySymbol",
+      dbPropertyService.getCurrencySymbol(session, principal));
   }
 
 }

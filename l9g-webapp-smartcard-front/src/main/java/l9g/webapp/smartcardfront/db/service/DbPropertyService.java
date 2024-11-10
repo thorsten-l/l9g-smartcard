@@ -36,21 +36,21 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 public class DbPropertyService
-{  
-  private final DbUserService userService;
+{
+  private final DbUserService dbUserService;
 
-  private final DbTenantService tenantService;
+  private final DbTenantService dbTenantService;
 
   private final PosPropertiesRepository posPropertiesRepository;
 
   public List<PosProperty> ownerGetPropertiesByTenant(HttpSession session, DefaultOidcUser principal)
   {
-    return posPropertiesRepository.findAllByTenant(tenantService.checkTenantOwner(session, principal));
+    return posPropertiesRepository.findAllByTenant(dbTenantService.checkTenantOwner(session, principal));
   }
 
   public PosProperty ownerGetPropertyById(String id, HttpSession session, DefaultOidcUser principal)
   {
-    tenantService.checkTenantOwner(session, principal);
+    dbTenantService.checkTenantOwner(session, principal);
     return posPropertiesRepository.findById(id)
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Property not found"));
   }
@@ -58,18 +58,18 @@ public class DbPropertyService
   public PosProperty ownerSaveProperty(String id, FormProperty formProperty,
     HttpSession session, DefaultOidcUser principal)
   {
-    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
+    PosTenant tenant = dbTenantService.checkTenantOwner(session, principal);
     PosProperty posProperty;
 
     if(formProperty.getValue() != null && formProperty.getValue().isBlank())
     {
       formProperty.setValue(null);
     }
-    
+
     if("add".equals(id))
     {
       log.debug("add new property");
-      posProperty = new PosProperty(userService.gecosFromPrincipal(principal),
+      posProperty = new PosProperty(dbUserService.gecosFromPrincipal(principal),
         tenant, formProperty.getKey(), formProperty.getValue());
     }
     else
@@ -78,7 +78,7 @@ public class DbPropertyService
       posProperty.setKey(formProperty.getKey());
       posProperty.setValue(formProperty.getValue());
       log.debug("posProperty={}", posProperty);
-      posProperty.setModifiedBy(userService.gecosFromPrincipal(principal));
+      posProperty.setModifiedBy(dbUserService.gecosFromPrincipal(principal));
     }
 
     log.debug("posProperty = {}", posProperty);
@@ -92,13 +92,34 @@ public class DbPropertyService
     posPropertiesRepository.flush();
     return property;
   }
-  
+
   public PosProperty emptyProperty(HttpSession session, DefaultOidcUser principal)
   {
-    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
-    PosProperty property 
-      = new PosProperty(userService.gecosFromPrincipal(principal), tenant, "", "");
+    PosTenant tenant = dbTenantService.checkTenantOwner(session, principal);
+    PosProperty property =
+      new PosProperty(dbUserService.gecosFromPrincipal(principal), tenant, "", "");
     return property;
+  }
+
+  public String getPropertyValue(
+    HttpSession session, DefaultOidcUser principal, String key)
+  {
+    // TODO: Error handling / Override default property by tenants property
+    return posPropertiesRepository.findByTenantAndKey(
+      dbTenantService.getSystemTenant(), key)
+      .get().getValue();
+  }
+
+  public String getCurrency(HttpSession session, DefaultOidcUser principal)
+  {
+    return getPropertyValue(session, principal, DbService.KEY_DEFAULT_CURRENCY);
+  }
+
+  public String getCurrencySymbol(
+    HttpSession session, DefaultOidcUser principal)
+  {
+    return getPropertyValue(session, principal,
+      DbService.KEY_DEFAULT_CURRENCY_SYMBOL);
   }
 
 }

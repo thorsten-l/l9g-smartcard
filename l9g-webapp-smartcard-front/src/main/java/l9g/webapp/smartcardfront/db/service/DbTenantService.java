@@ -196,4 +196,8 @@ public class DbTenantService
     return tenant;
   }
 
+  public PosTenant getSystemTenant()
+  {
+    return posTenantsRepository.findByName(DbService.KEY_SYSTEM_TENANT).get();
+  }
 }
