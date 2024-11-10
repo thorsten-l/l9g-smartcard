@@ -20,6 +20,9 @@ import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
 import l9g.webapp.smartcardfront.db.service.DbVariationService;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormProduct;
+import l9g.webapp.smartcardfront.form.model.FormVariation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -62,9 +65,9 @@ public class AdminVariationController
     return "admin/variation";
   }
 
-  /*
-  @GetMapping("/admin/product/{id}")
+  @GetMapping("/admin/product/{productId}/variation/{id}")
   public String productForm(
+    @PathVariable String productId,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
@@ -72,30 +75,27 @@ public class AdminVariationController
   {
     log.debug("productForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
-
-    List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
-    model.addAttribute("categories", categories);
+    PosProduct posProduct = dbProductService.ownerGetProductById(productId, session, principal);
+    model.addAttribute("product", posProduct);
+    FormVariation formVariation;
 
     if("add".equals(id))
     {
-      FormProduct formProduct = new FormProduct();
-      formProduct.setId("add");
-      if( ! categories.isEmpty())
-      {
-        formProduct.setCategoryId(categories.get(0).getId());
-      }
-      model.addAttribute("addProduct", true);
-      model.addAttribute("formProduct", formProduct);
-      log.debug("formProduct={}", formProduct);
+      formVariation = new FormVariation("add", productId, null, 0, 0, false);
+      model.addAttribute("addVariation", true);
     }
     else
     {
-      PosProduct posProduct = dbProductService.ownerGetProductById(id, session, principal);
-      FormProduct formProduct = FormPosMapper.INSTANCE.posProductToFormProduct(posProduct);
-      model.addAttribute("formProduct", formProduct);
+      PosVariation posVariation = dbVariationService.ownerGetVariationById(id, session, principal);
+      formVariation = FormPosMapper.INSTANCE.posVariationToFormVariation(posVariation);
     }
-    return "admin/productForm";
+
+    model.addAttribute("formVariation", formVariation);
+    log.debug("formVariation={}", formVariation);
+    return "admin/variationForm";
   }
+
+  /*
 
   @PostMapping("/admin/product/{id}")
   public String productFormAction(
@@ -142,7 +142,7 @@ public class AdminVariationController
 
     return "redirect:/admin/product";
   }
-*/
+   */
   @GetMapping("/admin/product/{productId}/variation/{id}/delete")
   public String productDelete(
     RedirectAttributes redirectAttributes,
@@ -151,11 +151,11 @@ public class AdminVariationController
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal)
   {
-    log.debug("!!! delete variation {} of product {} for {}", productId, id, principal.getPreferredUsername());
-    redirectAttributes.addFlashAttribute("deletedVariation", new PosVariation("", null, "xyz", 0, 0));
-    //redirectAttributes.addFlashAttribute("deletedproduct",
-    //  dbProductService.ownerDeleteProduct(id, session, principal));
+    log.debug("delete variation {} of product {} for {}",
+      productId, id, principal.getPreferredUsername());
+    redirectAttributes.addFlashAttribute("deletedVariation",
+      dbVariationService.ownerDeleteVariationById(id, session, principal));
     return "redirect:/admin/product/" + productId + "/variation";
   }
-   
+
 }

@@ -15,12 +15,17 @@
  */
 package l9g.webapp.smartcardfront.db.service;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import l9g.webapp.smartcardfront.db.PosVariationsRepository;
+import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -33,12 +38,11 @@ public class DbVariationService
 {
   // private final DbUserService userService;
 
- //  private final DbTenantService tenantService;
+  private final DbTenantService dbTenantService;
 
   private final PosVariationsRepository posVariationsRepository;
 
   // private final PosProductsRepository posProductsRepository;
-
   public List<PosVariation> productFindAllVariations(String productId)
   {
     return posVariationsRepository.findAllByProduct_idOrderByNameAsc(productId);
@@ -87,15 +91,26 @@ public class DbVariationService
     log.debug("posProduct = {}", posProduct);
     return posProductsRepository.saveAndFlush(posProduct);
   }
-
-  public PosProduct ownerDeleteProduct(String id, HttpSession session, DefaultOidcUser principal)
+   */
+  public PosVariation ownerGetVariationById(
+    String id, HttpSession session, DefaultOidcUser principal)
   {
-    PosProduct product = ownerGetProductById(id, session, principal);
-    posProductsRepository.delete(product);
-    posProductsRepository.flush();
-    return product;
+    dbTenantService.checkTenantOwner(session, principal);
+    return posVariationsRepository.findById(id)
+      .orElseThrow(() -> new ResponseStatusException(
+      HttpStatus.NOT_FOUND, "Variation not found"));
   }
 
+  public PosVariation ownerDeleteVariationById(
+    String id, HttpSession session, DefaultOidcUser principal)
+  {
+    PosVariation variation = ownerGetVariationById(id, session, principal);
+    posVariationsRepository.delete(variation);
+    posVariationsRepository.flush();
+    return variation;
+  }
+
+  /*
   public List<PosCategory> getAllCategories(HttpSession session, DefaultOidcUser principal)
   {
     PosTenant tenant = tenantService.checkTenantOwner(session, principal);

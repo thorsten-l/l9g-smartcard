@@ -21,12 +21,14 @@ import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosUser;
+import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.form.model.FormAddress;
 import l9g.webapp.smartcardfront.form.model.FormCategory;
 import l9g.webapp.smartcardfront.form.model.FormProduct;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
 import l9g.webapp.smartcardfront.form.model.FormUser;
+import l9g.webapp.smartcardfront.form.model.FormVariation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -57,9 +59,10 @@ public interface FormPosMapper
 
   @Mapping(target = "categoryId", expression = "java(posProduct.getCategory() != null ? posProduct.getCategory().getId() : null)")
   @Mapping(target = "variations", expression = "java(posProduct.getVariations() != null ? posProduct.getVariations().size() : 0)")
-  @Mapping(target = "id", source = "posProduct.id")
-  @Mapping(target = "name", source = "posProduct.name")
   FormProduct posProductToFormProduct(PosProduct posProduct);
+
+  @Mapping(target = "productId", expression = "java(posVariation.getProduct() != null ? posVariation.getProduct().getId() : null)")
+  FormVariation posVariationToFormVariation(PosVariation posVariation);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createTimestamp", ignore = true)
