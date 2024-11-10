@@ -52,7 +52,7 @@
                            th:title="${entry.id}">
                           <i class="fa-solid fa-pencil"></i>
                         </a>
-                        <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-id=${entry.id}, data-name=${entry.name}">
+                        <button class="btn btn-danger" onclick="confirmDelete(this)" th:attr="data-productId=${product.id}, data-id=${entry.id}, data-name=${entry.name}">
                           <i class="fa-solid fa-trash"></i>
                         </button>
                       </td>
@@ -92,6 +92,7 @@
 
     <script th:inline="javascript">
       function confirmDelete(button) {
+        const productId = button.getAttribute("data-productId");
         const id = button.getAttribute("data-id");
         const name = button.getAttribute("data-name");
         const deleteMessage = `[[#{confirm.delete.text}]]`.replace("{0}", name).slice(1, -1);
@@ -108,7 +109,7 @@
           cancelButtonText: /*[[#{confirm.delete.cancelButton}]]*/ 'Cancel' // Lokalisierter Text für Abbrechen-Button
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = `/admin/product/${id}/delete`;
+            window.location.href = `/admin/product/${productId}/variation/${id}/delete`;
           }
         });
       }
