@@ -19,3 +19,7 @@ rebel.xml
 .cache*
 
 server.p12
+
+.idea/
+.cache_ggshield/
+
