@@ -13,6 +13,7 @@ Thumbs.db
 *.bak
 *.log
 *.jar
+*.iml
 
 rebel.xml
 .rebel.xml*
