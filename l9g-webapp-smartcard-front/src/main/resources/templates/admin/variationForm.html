@@ -12,10 +12,8 @@
       <main class="app-main">
         <div class="app-content-header">
           <div class="container-fluid">
-            <div class="d-flex align-items-center">
-              <h3 class="mb-0 me-2" th:text="#{variation}">V</h3>
-              <h3 th:unless="${addVariation}" class="mb-0" th:text="${': ' + formVariation.name}"></h3>
-            </div>
+            <h3 class="mb-0 me-2" th:text="${product.name}">V</h3>
+            <h5 class="mb-0 me-2" th:text="#{variation}">V</h5>
           </div> 
         </div>
 
@@ -43,7 +41,8 @@
                     </div>
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{price}">P</label> 
-                      <input type="text" class="form-control" th:field="*{price}"/>
+                      <input type="text" class="form-control" 
+                             th:field="*{price}" />
                     </div>
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{tax}">T</label> 

@@ -21,3 +21,7 @@ limitations under the License.
 .nav-header {
   margin-top: 1em;
 }
+
+.card-header {
+  background-color: #e8f0ff;
+}
