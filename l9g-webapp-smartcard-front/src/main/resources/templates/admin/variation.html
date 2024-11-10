@@ -68,23 +68,23 @@
 
     <script th:replace="~{app/admin::scripts}" th:remove="tag"/>
 
-    <script th:if="${savedProduct}" th:inline="javascript">
+    <script th:if="${savedVariation}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: /*[[#{saved}+'!']]*/ 'Title',
-        text: /*[[${savedProduct.name} + ' ' + #{saved}]]*/ 'Text',
+        text: /*[[${savedVariation.name} + ' ' + #{saved}]]*/ 'Text',
         showConfirmButton: false,
         timer: 2000
       });
     </script>
 
-    <script th:if="${deletedProduct}" th:inline="javascript">
+    <script th:if="${deletedVariation}" th:inline="javascript">
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: /*[[#{deleted}+'!']]*/ 'Title',
-        text: /*[[${deletedProduct.name} + ' ' + #{deleted}]]*/ 'Text',
+        text: /*[[${deletedVariation.name} + ' ' + #{deleted}]]*/ 'Text',
         showConfirmButton: false,
         timer: 2000
       });

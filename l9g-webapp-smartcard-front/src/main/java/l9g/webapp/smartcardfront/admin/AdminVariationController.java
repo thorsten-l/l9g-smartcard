@@ -17,6 +17,7 @@ package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
+import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
 import l9g.webapp.smartcardfront.db.service.DbVariationService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -140,18 +142,20 @@ public class AdminVariationController
 
     return "redirect:/admin/product";
   }
-
-  @GetMapping("/admin/product/{id}/delete")
+*/
+  @GetMapping("/admin/product/{productId}/variation/{id}/delete")
   public String productDelete(
     RedirectAttributes redirectAttributes,
     HttpSession session,
+    @PathVariable String productId,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal)
   {
-    log.debug("product delete {} for {}", id, principal.getPreferredUsername());
-    redirectAttributes.addFlashAttribute("deletedproduct",
-      dbProductService.ownerDeleteProduct(id, session, principal));
-    return "redirect:/admin/product";
+    log.debug("!!! delete variation {} of product {} for {}", productId, id, principal.getPreferredUsername());
+    redirectAttributes.addFlashAttribute("deletedVariation", new PosVariation("", null, "xyz", 0, 0));
+    //redirectAttributes.addFlashAttribute("deletedproduct",
+    //  dbProductService.ownerDeleteProduct(id, session, principal));
+    return "redirect:/admin/product/" + productId + "/variation";
   }
-   */
+   
 }
