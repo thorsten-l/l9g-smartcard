@@ -90,6 +90,9 @@
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
           <release>${java.version}</release>
+          <compilerArgs>
+            <arg>-proc:full</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       
