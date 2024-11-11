@@ -76,4 +76,10 @@ public interface FormPosMapper
   @Mapping(target = "variations", ignore = true)
   void updatePosProductFromFormProduct(FormProduct source, @MappingTarget PosProduct target);
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createTimestamp", ignore = true)
+  @Mapping(target = "modifiedBy", ignore = true)
+  @Mapping(target = "product", ignore = true)
+  void updatePosVariationFromFormVariation(FormVariation source, @MappingTarget PosVariation target);
+
 }

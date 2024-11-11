@@ -16,12 +16,14 @@
 package l9g.webapp.smartcardfront.admin;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
+import l9g.webapp.smartcardfront.db.service.DbPropertyService;
+import l9g.webapp.smartcardfront.db.service.DbService;
 import l9g.webapp.smartcardfront.db.service.DbVariationService;
 import l9g.webapp.smartcardfront.form.FormPosMapper;
-import l9g.webapp.smartcardfront.form.model.FormProduct;
 import l9g.webapp.smartcardfront.form.model.FormVariation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +31,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -48,10 +53,12 @@ public class AdminVariationController
 
   private final DbVariationService dbVariationService;
 
+  private final DbPropertyService dbPropertyService;
+
   private static final String ACTIVE_PAGES = "product";
 
   @GetMapping("/admin/product/{productId}/variation")
-  public String productHome(
+  public String variationHome(
     @AuthenticationPrincipal DefaultOidcUser principal,
     @PathVariable String productId,
     Model model,
@@ -59,35 +66,41 @@ public class AdminVariationController
   {
     log.debug("productId={}", productId);
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
-    PosProduct posProduct = dbProductService.ownerGetProductById(productId, session, principal);
+    PosProduct posProduct =
+      dbProductService.ownerGetProductById(productId, session, principal);
     log.debug("posProduct={}", posProduct);
     model.addAttribute("product", posProduct);
     return "admin/variation";
   }
 
   @GetMapping("/admin/product/{productId}/variation/{id}")
-  public String productForm(
+  public String variationForm(
     @PathVariable String productId,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
     Model model,
     HttpSession session)
   {
-    log.debug("productForm {} for {}", id, principal.getPreferredUsername());
+    log.debug("variationForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
-    PosProduct posProduct = dbProductService.ownerGetProductById(productId, session, principal);
+    PosProduct posProduct =
+      dbProductService.ownerGetProductById(productId, session, principal);
     model.addAttribute("product", posProduct);
     FormVariation formVariation;
 
     if("add".equals(id))
     {
-      formVariation = new FormVariation("add", productId, null, 0, 0, false);
+      formVariation = new FormVariation("add", productId, null, 0,
+        Double.parseDouble(dbPropertyService.getPropertyValue(
+          session, principal, DbService.KEY_DEFAULT_TAX)), false);
       model.addAttribute("addVariation", true);
     }
     else
     {
-      PosVariation posVariation = dbVariationService.ownerGetVariationById(id, session, principal);
-      formVariation = FormPosMapper.INSTANCE.posVariationToFormVariation(posVariation);
+      PosVariation posVariation =
+        dbVariationService.ownerGetVariationById(id, session, principal);
+      formVariation =
+        FormPosMapper.INSTANCE.posVariationToFormVariation(posVariation);
     }
 
     model.addAttribute("formVariation", formVariation);
@@ -95,20 +108,21 @@ public class AdminVariationController
     return "admin/variationForm";
   }
 
-  /*
-
-  @PostMapping("/admin/product/{id}")
-  public String productFormAction(
+  @PostMapping("/admin/product/{productId}/variation/{id}")
+  public String variationFormAction(
     RedirectAttributes redirectAttributes,
     HttpSession session,
+    @PathVariable String productId,
     @PathVariable String id,
     @AuthenticationPrincipal DefaultOidcUser principal,
-    @Valid @ModelAttribute("formProduct") FormProduct formProduct,
+    @Valid @ModelAttribute("formVariation") FormVariation formVariation,
     BindingResult bindingResult, Model model)
   {
-    log.debug("productForm action {} for {}", id, principal.getPreferredUsername());
-    List<PosCategory> categories = dbProductService.getAllCategories(session, principal);
-    model.addAttribute("categories", categories);
+    log.debug("variationForm action {} for {}",
+      id, principal.getPreferredUsername());
+    PosProduct posProduct =
+      dbProductService.ownerGetProductById(productId, session, principal);
+    model.addAttribute("product", posProduct);
 
     if(bindingResult.hasErrors())
     {
@@ -116,35 +130,36 @@ public class AdminVariationController
       adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
-        model.addAttribute("addProduct", true);
+        model.addAttribute("addVariation", true);
       }
-      model.addAttribute("formProduct", formProduct);
-      return "admin/productForm";
+      model.addAttribute("formVariation", formVariation);
+      return "admin/variationForm";
     }
 
     try
     {
-      log.debug("formProduct = {}", formProduct);
-      redirectAttributes.addFlashAttribute("savedProduct",
-        dbProductService.ownerSaveProduct(id, formProduct, session, principal));
+      log.debug("formVariation = {}", formVariation);
+      redirectAttributes.addFlashAttribute("savedVariation",
+        dbVariationService.ownerSaveVariation(
+          posProduct, id, formVariation, session, principal));
     }
     catch(Throwable t)
     {
       adminService.generalModel(principal, model, session, ACTIVE_PAGES);
       if("add".equals(id))
       {
-        model.addAttribute("addProduct", true);
+        model.addAttribute("addVariation", true);
       }
-      model.addAttribute("formProduct", formProduct);
+      model.addAttribute("formVariation", formVariation);
       model.addAttribute("saveProductError", t.getMessage());
-      return "admin/productForm";
+      return "admin/variationForm";
     }
 
-    return "redirect:/admin/product";
+    return "redirect:/admin/product/" + productId + "/variation";
   }
-   */
+
   @GetMapping("/admin/product/{productId}/variation/{id}/delete")
-  public String productDelete(
+  public String variationDelete(
     RedirectAttributes redirectAttributes,
     HttpSession session,
     @PathVariable String productId,

@@ -25,7 +25,7 @@
                 <div class="card-header">
                   <div class="card-title" th:text="#{overview}">Details</div>
                 </div>
-                <form th:action="${addVariation} ? @{/admin/variation/add} : @{/admin/variation/{id}(id=${formVariation.id})}" 
+                <form th:action="${addVariation} ? @{/admin/product/{productId}/variation/add(productId=${product.id})} : @{/admin/product/{productId}/variation/{id}(productId=${product.id},id=${formVariation.id})}" 
                       th:object="${formVariation}" th:method="POST">
 
                   <input type="hidden" th:field="*{id}"/>

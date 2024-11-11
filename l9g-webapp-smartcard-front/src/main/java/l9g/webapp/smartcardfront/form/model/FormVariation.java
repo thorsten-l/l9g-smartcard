@@ -34,7 +34,6 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@UniqueProduct(message = "{error.variation.name.unique}")
 public class FormVariation
 {
   private String id;

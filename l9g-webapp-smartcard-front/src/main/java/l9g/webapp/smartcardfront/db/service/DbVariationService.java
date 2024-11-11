@@ -18,8 +18,12 @@ package l9g.webapp.smartcardfront.db.service;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import l9g.webapp.smartcardfront.db.PosVariationsRepository;
+import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
+import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
+import l9g.webapp.smartcardfront.form.FormPosMapper;
+import l9g.webapp.smartcardfront.form.model.FormVariation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,62 +40,54 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class DbVariationService
 {
-  // private final DbUserService userService;
+  private final DbUserService userService;
 
   private final DbTenantService dbTenantService;
 
+  private final DbPropertyService dbPropertyService;
+
   private final PosVariationsRepository posVariationsRepository;
 
-  // private final PosProductsRepository posProductsRepository;
   public List<PosVariation> productFindAllVariations(String productId)
   {
     return posVariationsRepository.findAllByProduct_idOrderByNameAsc(productId);
   }
 
-  /*
-
-  public PosProduct ownerGetProductById(String id, HttpSession session, DefaultOidcUser principal)
-  {
-    tenantService.checkTenantOwner(session, principal);
-    return posProductsRepository.findById(id)
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-  }
-
-  public PosProduct ownerSaveProduct(String id, FormProduct formProduct,
+  public PosVariation ownerSaveVariation(PosProduct posProduct, String id, FormVariation formVariation,
     HttpSession session, DefaultOidcUser principal)
   {
-    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
-    log.debug("User ist authorized for tenant: {}", tenant.getId());
-    PosProduct posProduct;
+    PosVariation posVariation;
 
-    if(formProduct.getName() != null && formProduct.getName().isBlank())
+    if(formVariation.getName() != null && formVariation.getName().isBlank())
     {
-      formProduct.setName(null);
+      formVariation.setName(null);
     }
-
-    String categoryId = formProduct.getCategoryId();
-    PosCategory category = posCategoriesRepository.findById(categoryId)
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
     if("add".equals(id))
     {
-      log.debug("add new product");
-      posProduct = new PosProduct(userService.gecosFromPrincipal(principal),
-        category, formProduct.getName());
+      log.debug("add new variation");
+      posVariation = new PosVariation(
+        userService.gecosFromPrincipal(principal), posProduct, 
+        formVariation.getName(), formVariation.getPrice(),
+        formVariation.getTax());
+/*
+        Double.parseDouble(
+          dbPropertyService.getPropertyValue(
+            session, principal, DbService.KEY_DEFAULT_TAX)));
+*/
     }
     else
     {
-      posProduct = ownerGetProductById(id, session, principal);
-      FormPosMapper.INSTANCE.updatePosProductFromFormProduct(
-        formProduct, posProduct);
-      posProduct.setCategory(category);
-      posProduct.setModifiedBy(userService.gecosFromPrincipal(principal));
+      posVariation = ownerGetVariationById(id, session, principal);
+      FormPosMapper.INSTANCE.updatePosVariationFromFormVariation(
+        formVariation, posVariation);
+      posVariation.setModifiedBy(userService.gecosFromPrincipal(principal));
     }
 
-    log.debug("posProduct = {}", posProduct);
-    return posProductsRepository.saveAndFlush(posProduct);
+    log.debug("posVariation = {}", posVariation);
+    return posVariationsRepository.saveAndFlush(posVariation);
   }
-   */
+
   public PosVariation ownerGetVariationById(
     String id, HttpSession session, DefaultOidcUser principal)
   {
@@ -110,11 +106,4 @@ public class DbVariationService
     return variation;
   }
 
-  /*
-  public List<PosCategory> getAllCategories(HttpSession session, DefaultOidcUser principal)
-  {
-    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
-    return posCategoriesRepository.findByTenantOrderByNameAsc(tenant);
-  }
-   */
 }
