@@ -17,7 +17,7 @@ package l9g.webapp.smartcardfront.form.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
-import l9g.webapp.smartcardfront.form.validator.UniqueProduct;
+import l9g.webapp.smartcardfront.form.validator.UniqueVariation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +34,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@UniqueVariation(message = "{error.variation.name.unique}")
 public class FormVariation
 {
   private String id;

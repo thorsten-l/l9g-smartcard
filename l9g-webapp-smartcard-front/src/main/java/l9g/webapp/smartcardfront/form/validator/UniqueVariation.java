@@ -13,24 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.form.validator;
 
-import java.util.List;
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosVariation;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosVariationsRepository extends
-  JpaRepository<PosVariation, String>
+@Constraint(validatedBy = UniqueVariationValidator.class)
+@Target(
 {
-  List<PosVariation> findAllByProduct_IdOrderByNameAsc(String productId);
+  ElementType.TYPE
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface UniqueVariation
+{
 
-  Optional<PosVariation> findByProduct_IdAndName(String productId, String name);
+  String message() default "{error.variation.name.unique}";
 
+  Class<?>[] groups() default 
+  {
+  };
+
+  Class<? extends Payload>[] payload() default 
+  {
+  };
 }

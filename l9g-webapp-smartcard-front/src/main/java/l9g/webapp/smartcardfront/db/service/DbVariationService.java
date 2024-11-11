@@ -50,7 +50,7 @@ public class DbVariationService
 
   public List<PosVariation> productFindAllVariations(String productId)
   {
-    return posVariationsRepository.findAllByProduct_idOrderByNameAsc(productId);
+    return posVariationsRepository.findAllByProduct_IdOrderByNameAsc(productId);
   }
 
   public PosVariation ownerSaveVariation(PosProduct posProduct, String id, FormVariation formVariation,
@@ -70,11 +70,6 @@ public class DbVariationService
         userService.gecosFromPrincipal(principal), posProduct, 
         formVariation.getName(), formVariation.getPrice(),
         formVariation.getTax());
-/*
-        Double.parseDouble(
-          dbPropertyService.getPropertyValue(
-            session, principal, DbService.KEY_DEFAULT_TAX)));
-*/
     }
     else
     {
