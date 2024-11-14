@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.db;
+package l9g.webapp.smartcardfront.form.validator;
 
-import java.util.List;
-import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
-import l9g.webapp.smartcardfront.db.model.PosTenant;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Repository
-public interface PosPointsOfSalesRepository extends
-  JpaRepository<PosPointOfSales, String>
+@Constraint(validatedBy = UniqueProductValidator.class)
+@Target(
 {
-  
-  
-  Optional<PosPointOfSales> findByName(String name);
-  
-  List<PosPointOfSales> findAllByTenantAndAddressId(PosTenant tenant, String addressId);
-  
-  List<PosPointOfSales> findAllByOrderByNameAsc();
+  ElementType.TYPE
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface UniquePointOfSales
+{
 
+  String message() default "{error.PointOfSales.name.unique}";
+
+  Class<?>[] groups() default 
+  {
+  };
+
+  Class<? extends Payload>[] payload() default 
+  {
+  };
 }
