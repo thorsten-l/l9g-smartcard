@@ -81,7 +81,14 @@ public class ClientSecurityConfig
           "/webjars/**", "/icons/**", "/css/**", "/images/**",
           "/actuator/**", "/flags/**", "/logout").permitAll()
         // admins only
-        .requestMatchers("/admin/tenant/**", "/api/v1/admin/tenant/**")
+        .requestMatchers(
+          "/admin/tenant/**", "/api/v1/admin/tenant/**",
+          "/admin/address/**",
+          "/admin/poinOfSales/**", // TODO: remove after fix typo
+          "/admin/pointofsale/**",
+          "/admin/creditcardreader/**",
+          "/admin/apitest/**"
+        )
         .hasRole(
           PosRole.POS_ADMINISTRATOR.toString()
         )

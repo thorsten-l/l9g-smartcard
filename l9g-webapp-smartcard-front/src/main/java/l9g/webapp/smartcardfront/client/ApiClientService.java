@@ -19,6 +19,7 @@ import jakarta.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import l9g.smartcard.dto.DtoCreditCardReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -126,6 +127,44 @@ public class ApiClientService
       .body(new ParameterizedTypeReference<List<Map<String, String>>>()
       {
       });
+  }
+
+  public List<DtoCreditCardReader> findAllCreditCardReaders()
+  {
+    log.debug("findAllCreditCardReaders");
+    List<DtoCreditCardReader> result = restClient
+      .get()
+      .uri(uriBuilder -> uriBuilder
+      .path("/api/v1/creditcardreader")
+      .build()
+      )
+      .header("Authorization", "Bearer " + getBearer())
+      .retrieve()
+      .body(new ParameterizedTypeReference<List<DtoCreditCardReader>>()
+      {
+      });
+
+    log.debug("result={}", result);
+    return result;
+  }
+
+  public String sumupMerchantsMe()
+  {
+    log.debug("sumupMerchantsMe");
+    String result = restClient
+      .get()
+      .uri(uriBuilder -> uriBuilder
+      .path("/api/v1/test/me")
+      .build()
+      )
+      .header("Authorization", "Bearer " + getBearer())
+      .retrieve()
+      .body(new ParameterizedTypeReference<String>()
+      {
+      });
+
+    log.debug("result={}", result);
+    return result;
   }
 
   /*

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @Slf4j
-public class TestController
+public class SystemTestController
 {
   @GetMapping("/system/test/403")
   public String systemError403()

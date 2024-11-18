@@ -36,12 +36,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RequiredArgsConstructor
 public class DbCategoryService
-{  
+{
   private final DbUserService userService;
 
   private final DbTenantService tenantService;
-  
-  private final PosCategoriesRepository posCategoriesRepository; 
+
+  private final PosCategoriesRepository posCategoriesRepository;
 
   public List<PosCategory> ownerGetCategoriesByTenant(HttpSession session, DefaultOidcUser principal)
   {
@@ -55,6 +55,17 @@ public class DbCategoryService
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
   }
 
+  public PosCategory ownerGetDefaultCategory(
+    HttpSession session, DefaultOidcUser principal)
+  {
+    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
+
+    return posCategoriesRepository.findByTenant_IdAndName(
+      tenant.getId(), "Default").orElseThrow(()
+      -> new ResponseStatusException(
+        HttpStatus.NOT_FOUND, "Category not found"));
+  }
+
   public PosCategory ownerSaveCategory(String id, FormCategory formCategory,
     HttpSession session, DefaultOidcUser principal)
   {
@@ -65,7 +76,7 @@ public class DbCategoryService
     {
       formCategory.setName(null);
     }
-    
+
     if("add".equals(id))
     {
       log.debug("add new category");

@@ -5,6 +5,11 @@ private/
 nb-configuration.xml
 nbactions.xml
 config.yaml
+config.yaml*
+config*.yaml
+config*.yml
+config.yml
+config.yml*
 secret.bin
 
 .DS_Store

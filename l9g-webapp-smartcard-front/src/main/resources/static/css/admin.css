@@ -25,3 +25,7 @@ limitations under the License.
 .card-header {
   background-color: #e8f0ff;
 }
+
+.table td {
+    vertical-align: middle;
+}

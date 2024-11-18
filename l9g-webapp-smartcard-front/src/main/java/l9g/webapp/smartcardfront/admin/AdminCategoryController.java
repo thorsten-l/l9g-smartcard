@@ -73,9 +73,9 @@ public class AdminCategoryController
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
     if("add".equals(id))
     {
-      FormCategory formCategory =
-        new FormCategory();
-      formCategory.setTenantId(dbTenantService.getSelectedTenant(session, principal).getId());
+      FormCategory formCategory = new FormCategory();
+      formCategory.setTenantId(
+        dbTenantService.getSelectedTenant(session, principal).getId());
       formCategory.setId("add");
       log.debug("formCategory={}", formCategory);
       model.addAttribute("addCategory", true);

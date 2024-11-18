@@ -33,18 +33,18 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
+                      <th style="width: 20%"><span th:text="#{category}">Key</span></th>
                       <th style="width: 30%"><span th:text="#{name}">Key</span></th>
                       <th style="width: 30%"><span th:text="#{description}">Key</span></th>
-                      <th style="width: 20%"><span th:text="#{price}">Key</span></th>
                       <th style="width: 20%"><span th:text="#{variations}">V</span></th>
                       <th><span th:text="#{actions}">Actions</span></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr th:each="entry : ${products}">
+                      <td th:text="${entry.category.name}"></td>
                       <td th:text="${entry.name}"></td>
                       <td th:text="${entry.description}"></td>
-                      <td th:text="${entry.price}"></td>
                       <td th:text="${entry.variations.size()}"></td>
                       <td class="text-nowrap">
                         <a class="btn btn-primary" th:href="@{/admin/product/{id}(id=${entry.id})}"

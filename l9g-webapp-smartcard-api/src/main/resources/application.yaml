@@ -49,3 +49,9 @@ ldap:
 
 app:
   resource-access-roles: kasse
+
+sumup:
+  api:
+    base-url: "https://api.sumup.com"
+    merchant-code: "*** unset ***"
+    token: "*** unset ***"

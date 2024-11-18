@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -33,4 +35,7 @@ public interface PosProductsRepository extends
 
   List<PosProduct> findAllByOrderByNameAsc();
 
+  @Query("SELECT p FROM PosProduct p WHERE p.category.tenant.id = :tenantId ORDER BY p.category.name, p.name ASC")
+  List<PosProduct> findAllByTenantId(@Param("tenantId") String tenantId);
+  
 }

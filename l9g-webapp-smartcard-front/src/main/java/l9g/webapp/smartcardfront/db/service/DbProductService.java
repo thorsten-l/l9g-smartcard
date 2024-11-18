@@ -48,20 +48,26 @@ public class DbProductService
 
   private final PosProductsRepository posProductsRepository;
 
-  public List<PosProduct> ownerFindAllProducts(HttpSession session, DefaultOidcUser principal)
+  public List<PosProduct> ownerFindAllProducts(
+    HttpSession session, DefaultOidcUser principal)
   {
-    if(tenantService.checkTenantOwner(session, principal) != null)
+    PosTenant tenant = tenantService
+      .checkTenantOwner(session, principal);
+
+    if(tenant != null)
     {
-      return posProductsRepository.findAllByOrderByNameAsc();
+      return posProductsRepository.findAllByTenantId(tenant.getId());
     }
     return null;
   }
 
-  public PosProduct ownerGetProductById(String id, HttpSession session, DefaultOidcUser principal)
+  public PosProduct ownerGetProductById(
+    String id, HttpSession session, DefaultOidcUser principal)
   {
     tenantService.checkTenantOwner(session, principal);
     return posProductsRepository.findById(id)
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+      .orElseThrow(() -> new ResponseStatusException(
+      HttpStatus.NOT_FOUND, "Product not found"));
   }
 
   public PosProduct ownerSaveProduct(String id, FormProduct formProduct,
@@ -78,7 +84,8 @@ public class DbProductService
 
     String categoryId = formProduct.getCategoryId();
     PosCategory category = posCategoriesRepository.findById(categoryId)
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+      .orElseThrow(() -> new ResponseStatusException(
+      HttpStatus.NOT_FOUND, "Category not found"));
 
     if("add".equals(id))
     {
@@ -99,7 +106,8 @@ public class DbProductService
     return posProductsRepository.saveAndFlush(posProduct);
   }
 
-  public PosProduct ownerDeleteProduct(String id, HttpSession session, DefaultOidcUser principal)
+  public PosProduct ownerDeleteProduct(
+    String id, HttpSession session, DefaultOidcUser principal)
   {
     PosProduct product = ownerGetProductById(id, session, principal);
     posProductsRepository.delete(product);
@@ -107,7 +115,8 @@ public class DbProductService
     return product;
   }
 
-  public List<PosCategory> getAllCategories(HttpSession session, DefaultOidcUser principal)
+  public List<PosCategory> getAllCategories(
+    HttpSession session, DefaultOidcUser principal)
   {
     PosTenant tenant = tenantService.checkTenantOwner(session, principal);
     return posCategoriesRepository.findByTenantOrderByNameAsc(tenant);

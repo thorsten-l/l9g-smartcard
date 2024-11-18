@@ -21,7 +21,7 @@
 
         <div class="app-content">
           <div class="container-fluid">
-            
+
             <div class="w-100"> 
               <div class="card card-primary card-outline mb-4">
                 <div class="card-header">
@@ -29,11 +29,26 @@
                 </div>
                 <form th:action="${addProduct} ? @{/admin/product/add} : @{/admin/product/{id}(id=${formProduct.id})}" 
                       th:object="${formProduct}" th:method="POST">
-                  
+
                   <input type="hidden" th:field="*{id}"/>
-                  <input type="hidden" th:field="*{categoryId}"/>
-                  
+
                   <div class="card-body">
+
+                    <div class="mb-3"> 
+                      <label for="categoryId" class="form-label" th:text="#{category}">N</label> 
+                      <select class="form-control select2" th:field="*{categoryId}" style="width: 100%;">
+                        <div th:remove="tag" th:each="category : ${categories}">
+                          <option th:value="${category.id}" 
+                                  th:text="${category.name}"
+                                  th:selected="${category.id} == *{categoryId}"
+                                  >C</option>
+                        </div>
+                      </select>
+                      <div th:if="${#fields.hasErrors('categoryId')}" class="text-danger">
+                        <span th:errors="*{categoryId}"></span>
+                      </div>
+                    </div>
+
                     <div class="mb-3"> 
                       <label for="name" class="form-label" th:text="#{name}">Key</label> 
                       <input type="text" class="form-control" th:field="*{name}"/>
@@ -53,8 +68,8 @@
                       <label for="name" class="form-label" th:text="#{tax}">Key</label> 
                       <input type="text" class="form-control" th:field="*{tax}"/>
                     </div>
-                 </div>   
-                    
+                  </div>   
+
                   <div class="card-footer text-end"> 
                     <button type="submit" class="btn btn-primary" 
                             th:text="#{save}">Save</button> 

@@ -82,10 +82,8 @@ public class AdminProductController
     {
       FormProduct formProduct = new FormProduct();
       formProduct.setId("add");
-      if( ! categories.isEmpty())
-      {
-        formProduct.setCategoryId(categories.get(0).getId());
-      }
+      formProduct.setCategoryId(
+        dbCategoryService.ownerGetDefaultCategory(session, principal).getId());
       model.addAttribute("addProduct", true);
       model.addAttribute("formProduct", formProduct);
       log.debug("formProduct={}", formProduct);
