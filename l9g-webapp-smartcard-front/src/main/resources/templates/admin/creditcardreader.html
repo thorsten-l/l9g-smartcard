@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>POS Admin</title>
+    <div th:replace="~{app/admin::head}"></div>
+  </head>
+
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <div th:replace="~{app/admin::header}"></div>
+      <div th:replace="~{app/sidebar::sidebar}"></div>
+
+      <main class="app-main">
+
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="col-sm-6">
+              <h3 class="mb-0" th:text="#{credit_card_reader}">A</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-content">
+          <div class="container-fluid">
+            <div class="card card-primary card-outline mb-4">
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="card-title mb-0" th:text="#{overview}">O</div>
+                <div class="ms-auto">
+                  <a class="btn btn-success" th:href="@{/admin/creditcardreader/add}">
+                    <i class="fa-solid fa-plus"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body p-0">
+
+
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 50%"><span th:text="#{name}" th:remove="tags">name</span></th>
+                      <th style="width: 50%"><span th:text="#{model}" th:remove="tags">model</span></th>
+                      <th><span th:text="#{actions}" th:remove="tags">actions</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="align-middle" th:each="entry : ${creditCardReaders}">
+                      <td th:text="${entry.name}"></td>
+                      <td th:text="${entry.device.model}"></td>
+                      <td class="text-nowrap">
+                          <a class="btn btn-primary" 
+                             th:href="@{/admin/creditcardreader/{id}(id=${entry.id})}"
+                             th:title="${entry.id}">
+                            <i class="fa-solid fa-pencil"></i>
+                          </a>
+                          <button class="btn btn-danger" 
+                                  onclick="confirmDelete(this)"
+                                  th:attr="data-id=${entry.id}, data-name=${entry.name}">
+                            <i class="fa-solid fa-trash"></i>
+                          </button>
+                      </td>          
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div> 
+        </div> 
+      </main>
+    </div>
+
+    <script th:replace="~{app/admin::scripts}" th:remove="tag" />
+
+    <script th:if="${savedAddress}" th:inline="javascript">
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: /*[[#{saved}+'!']]*/ 'Title',
+        text: /*[[${savedAddress.name} + ' ' + #{saved}]]*/ 'Text',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    </script>
+
+    <script th:if="${deletedAddress}" th:inline="javascript">
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: /*[[#{deleted}+'!']]*/ 'Title',
+        text: /*[[${deletedAddress.name} + ' ' + #{deleted}]]*/ 'Text',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    </script>
+
+    <script th:inline="javascript">
+      function confirmDelete(button) {
+        const id = button.getAttribute("data-id");
+        const name = button.getAttribute("data-name");
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: `You are about to delete "${name}". This action cannot be undone.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/admin/creditcardreader/${id}/delete`;
+          }
+        });
+      }
+    </script>
+
+  </body>
+</html>
