@@ -110,8 +110,25 @@
                   </a>
                 </li>
 
+                <li class="nav-item">
+                  <a th:href="@{/admin/creditcardreader}" class="nav-link"
+                     th:classappend="${activePages == 'creditcardreader'} ? ' active' : ''">
+                    <i class="nav-icon fa-solid fa-credit-card me-2"></i>
+                    <p th:text="#{credit_card_reader}">Reader</p>
+                  </a>
+                </li>
+
+                <!-- /////////////////////////////////////////// -->              
+
                 <div th:if="${appDevelopment}" th:remove="tag">
                   <li class="nav-header">DEVELOPER</li>
+                  <li class="nav-item">
+                    <a th:href="@{/admin/apitest/home}" class="nav-link"
+                       th:classappend="${activePages == 'apitest'} ? ' active' : ''">
+                      <i class="nav-icon me-2 fa-solid fa-handshake"></i>
+                      <p>API Tests</p>
+                    </a>
+                  </li>
                   <li class="nav-item">
                     <a href="#" class="nav-link"> 
                       <i class="nav-icon bi bi-bug me-2"></i>

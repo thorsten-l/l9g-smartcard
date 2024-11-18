@@ -56,7 +56,7 @@ public class DbPointOfSalesService
 
     log.debug("Fetching Point of Sales for tenantId={} and addressId={}", tenant.getId(), address.getId());
 
-    return posPointsOfSalesRepository.findAllByTenantAndAddressId(tenant, address.getId());
+    return posPointsOfSalesRepository.findAllByTenant(tenant);
   }
 
   public PosPointOfSales ownerGetPointOfSalesById(String id, HttpSession session, DefaultOidcUser principal)
@@ -81,7 +81,7 @@ public class DbPointOfSalesService
     {
       log.debug("add new Point of Sales");
       posPointOfSales = new PosPointOfSales(userService.gecosFromPrincipal(principal),
-        tenant, posPointOfSales.getName());
+        tenant, formPointOfSales.getName());
     }
     else
     {

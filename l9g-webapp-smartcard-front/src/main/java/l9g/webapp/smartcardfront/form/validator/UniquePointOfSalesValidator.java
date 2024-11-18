@@ -49,9 +49,9 @@ public class UniquePointOfSalesValidator implements
       return true;
     }
 
-    Optional<PosPointOfSales> optional =
-      posPointOfSalesRepository
-        .findByTenant_IdAndNameAndAddress_ID(formPointOfSales.getName(), formPointOfSales.getName(), formPointOfSales.getAddressId());
+    Optional<PosPointOfSales> optional = null;
+    //  posPointOfSalesRepository
+    //    .findByTenant_IdAndNameAndAddress_ID(formPointOfSales.getName(), formPointOfSales.getName(), formPointOfSales.getAddressId());
 
     if(!optional.isEmpty() && !optional.get().getId().equals(formPointOfSales.getId()))
     {

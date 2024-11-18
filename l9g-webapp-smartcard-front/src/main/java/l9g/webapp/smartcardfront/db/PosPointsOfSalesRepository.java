@@ -30,12 +30,13 @@ import org.springframework.stereotype.Repository;
 public interface PosPointsOfSalesRepository extends
   JpaRepository<PosPointOfSales, String>
 {
-  
-  
+
   Optional<PosPointOfSales> findByName(String name);
-  
-  List<PosPointOfSales> findAllByTenantAndAddressId(PosTenant tenant, String addressId);
-  
+
+  List<PosPointOfSales> findAllByTenant(PosTenant tenant);
+
+  Optional<PosPointOfSales> findByTenant_IdAndName(String tenantId, String name);
+
   List<PosPointOfSales> findAllByOrderByNameAsc();
 
 }

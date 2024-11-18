@@ -57,7 +57,7 @@ public class AdminPointOfSalesController
     HttpSession session)
   {
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
-    model.addAttribute("pointOfSales", dbPointOfSalesService.ownerGetPointOfSalesByTenantAndAddress(session, principal));
+    //model.addAttribute("pointOfSales", dbPointOfSalesService.ownerGetPointOfSalesByTenantAndAddress(session, principal));
     return "admin/pointOfSales";
   }
 
@@ -71,7 +71,7 @@ public class AdminPointOfSalesController
     log.debug("pointOfSalesForm {} for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
-    List<PosPointOfSales> pointsOfSales = dbPointOfSalesService.ownerGetPointOfSalesByTenantAndAddress(session, principal);
+    List<PosPointOfSales> pointsOfSales = List.of(); //dbPointOfSalesService.ownerGetPointOfSalesByTenantAndAddress(session, principal);
     model.addAttribute("pointOfSales", pointsOfSales);
 
     if("add".equals(id))
@@ -105,7 +105,7 @@ public class AdminPointOfSalesController
     BindingResult bindingResult, Model model)
   {
     log.debug("pointOfSalesForm action {} for {}", id, principal.getPreferredUsername());
-    List<PosPointOfSales> pointsOfSales = dbPointOfSalesService.ownerGetPointOfSalesById(id, session, principal);
+    List<PosPointOfSales> pointsOfSales = null; //dbPointOfSalesService.ownerGetPointOfSalesById(id, session, principal);
     model.addAttribute("pointsOfSales", pointsOfSales);
 
     if(bindingResult.hasErrors())
@@ -123,8 +123,8 @@ public class AdminPointOfSalesController
     try
     {
       log.debug("formPointOfSales = {}", formPointOfSales);
-      redirectAttributes.addFlashAttribute("savedPointOfSales",
-        dbPointOfSalesService.ownerSavePointOfSales(id, formPointOfSales, session, principal));
+      redirectAttributes.addFlashAttribute("savedPointOfSales", null);
+        // dbPointOfSalesService.ownerSavePointOfSales(id, formPointOfSales, session, principal));
     }
     catch(Throwable t)
     {
