@@ -71,6 +71,27 @@ public class DbAddressService
     }
     return posAddress;
   }
+  
+  public PosAddress adminCloneAddressById(String id, DefaultOidcUser principal)
+  {
+    PosAddress posAddress = null;
+
+    if(userService.isAdmin(principal) && id != null)
+    {
+      posAddress = posAddressesRepository.findById(id).orElseThrow(()
+        -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address not found"));
+      log.debug("adminFindAddressById: {}", posAddress);
+      PosAddress clone = new PosAddress(userService.gecosFromPrincipal(principal));
+      clone.setName(clone.getId());
+      FormPosMapper.INSTANCE.updatePosAddressFromPosAddress(posAddress, clone);
+      posAddress = posAddressesRepository.saveAndFlush(clone);
+    }
+    else
+    {
+      throw new AccessDeniedException("You are not allowed to create or update address.");
+    }
+    return posAddress;
+  }
 
   
   

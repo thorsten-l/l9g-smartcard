@@ -80,6 +80,16 @@ public class AdminAddressController
     return "admin/addressForm";
   }
 
+  @GetMapping("/admin/address/{id}/clone")
+  public String addressClone(@PathVariable String id,
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    Model model, HttpSession session)
+  {
+    log.debug("addressClone {} for {}", id, principal.getPreferredUsername());
+    dbAddressService.adminCloneAddressById(id, principal);
+    return "redirect:/admin/address";
+  }
+
   @PostMapping("/admin/address/{id}")
   public String addressFormAction(
     RedirectAttributes redirectAttributes,
