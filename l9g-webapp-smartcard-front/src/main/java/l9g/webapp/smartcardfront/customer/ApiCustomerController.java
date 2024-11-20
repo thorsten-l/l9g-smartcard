@@ -119,7 +119,7 @@ public class ApiCustomerController
 
       log.debug("search term = '{}'", term);
 
-      List<Map<String, String>> clientResult = searchCache.get(term, apiClientService :: findByTerm);
+      List<Map<String, String>> clientResult = searchCache.get(term, apiClientService :: findPersonsByTerm);
       clientResultSize = clientResult.size();
 
       int _page = page - 1;
@@ -141,7 +141,7 @@ public class ApiCustomerController
   public Map<String, String> findBySerial(@PathVariable long serial)
   {
     log.debug("serial = {}", serial);
-    Map<String, String> result = byCardCache.get(serial, apiClientService :: findBySerial);
+    Map<String, String> result = byCardCache.get(serial, apiClientService :: findPersonBySerial);
     editResult(result);
     log.debug("findBySerial result = {}", result);
     return result;
@@ -151,8 +151,7 @@ public class ApiCustomerController
   public Map<String, String> findBySerial(@PathVariable String customerId)
   {
     log.debug("customerId = {}", customerId);
-    Map<String, String> result = byUserIdCache.get(
-      customerId, apiClientService :: findByPersonId);
+    Map<String, String> result = byUserIdCache.get(customerId, apiClientService :: findPersonById);
     editResult(result);
     return result;
   }

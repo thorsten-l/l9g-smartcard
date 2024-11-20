@@ -148,9 +148,31 @@ limitations under the License.
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/adminlte.min.js}"></script>
     <script th:src="@{/webjars/select2/dist/js/select2.min.js}" ></script>
+    <script th:src="@{/webjars/autonumeric/dist/autoNumeric.min.js}"></script>
+    <script th:inline="javascript">
+      const currentLocale = /*[[${locale}]]*/ 'de';
+      const currencySymbol = /*[[${currencySymbol}]]*/ '€';
+      const currencySymbolPlacement = /*[[${currencySymbolPlacement}]]*/ 's';
 
-    <!--begin::Third Party Plugin(OverlayScrollbars)-->
-    <script>
+      // Format für deutsche Lokalisierung: #.###,##€
+      const autoNumericOptions = currentLocale === 'de' ? {
+        digitGroupSeparator: '.', // Tausendertrennzeichen
+        decimalCharacter: ',', // Dezimaltrennzeichen
+        currencySymbol: currencySymbol, // Währungssymbol
+        currencySymbolPlacement: currencySymbolPlacement, // Nachgestelltes Währungssymbol
+        minimumValue: '0',
+        decimalPlaces: 2
+      } : {
+        digitGroupSeparator: ',', // Tausendertrennzeichen
+        decimalCharacter: '.', // Dezimaltrennzeichen
+        currencySymbol: currencySymbol, // Währungssymbol
+        currencySymbolPlacement: currencySymbolPlacement, // Vorangestelltes Währungssymbol
+        minimumValue: '0',
+        decimalPlaces: 2
+      };
+      
+      $('.select2').select2({theme: 'bootstrap-5'});
+
       const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
 
       const Default = {
@@ -171,12 +193,6 @@ limitations under the License.
             }
           });
         }
-      });
-    </script> 
-    <!--end::OverlayScrollbars Configure-->
-    <script>
-      $('.select2').select2({
-        theme: 'bootstrap-5'
       });
     </script>
     <!--end::Scripts-->

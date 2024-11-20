@@ -42,7 +42,7 @@ public class PosTransaction extends PosUuidObject
   private static final long serialVersionUID = -3887176763514856101L;
 
   public PosTransaction(String createdBy, PosTenant tenant,
-    PosPointOfSales pointOfSales)
+    PosPointOfSale pointOfSales)
   {
     super(createdBy);
     this.tenant = tenant;
@@ -55,7 +55,7 @@ public class PosTransaction extends PosUuidObject
 
   @ManyToOne
   @JoinColumn(name = "point_of_sales_id")
-  private PosPointOfSales pointOfSales;
+  private PosPointOfSale pointOfSales;
 
   private String cashier;
 

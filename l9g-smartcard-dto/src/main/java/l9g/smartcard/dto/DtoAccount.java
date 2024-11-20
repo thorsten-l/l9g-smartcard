@@ -1,7 +1,7 @@
 /*
- * Copyright 2024 Thorsten Ludewig <t.ludewig@gmail.com>.
+ * Copyright 2024 Thorsten Ludewig (t.ludewig@gmail.com).
  *
- * Licensed under the Apache License, Version 2.0 (the "License")
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.smartcardfront.json;
+package l9g.smartcard.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  *
- * @author Thorsten Ludewig <t.ludewig@gmail.com>
+ * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
-public interface View
+@Getter
+@ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DtoAccount
 {
-  static final String JSON_STATUS_OK = "{\"status\": \"OK\"}";
+  private String username;
 
-  public static class None
-  {
-  };
-
-  public static class Base
-  {
-  };
-
-  public static class Tenant extends Base
-  {
-  };
-
-  public static class PointsOfSale extends Base
-  {
-  };
+  private String type;
 
 }

@@ -37,21 +37,21 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "point_of_sales")
+@Table(name = "point_of_sale")
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PosPointOfSales extends PosUuidObject
+public class PosPointOfSale extends PosUuidObject
 {
   private static final long serialVersionUID = 4418213295209635591L;
 
-  public PosPointOfSales(String createdBy, PosTenant tenant, String name)
+  public PosPointOfSale(String createdBy, PosTenant tenant, String name)
   {
     super(createdBy);
     this.tenant = tenant;
     this.name = name;
   }
 
-  @JsonView(View.PointsOfSales.class)
+  @JsonView(View.PointsOfSale.class)
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "tenant_id", nullable = false)
   private PosTenant tenant;
@@ -65,8 +65,16 @@ public class PosPointOfSales extends PosUuidObject
   private String sumupReaderId;
 
   @JsonView(View.Base.class)
-  @Column(name = "amount_cash", nullable = false)
-  private double amountCash;
+  @Column(name = "sumup_reader_name", unique = true)
+  private String sumupReaderName;
+
+  @JsonView(View.Base.class)
+  @Column(name = "cash_register_balance", nullable = false)
+  private double cashRegisterBalance; // Summe des gesamten Bargeldbestandes
+
+  @JsonView(View.Base.class)
+  @Column(name = "cash_float", nullable = false)
+  private double cashFloat; // Wechselgeldeinlage in einer Registrierkasse z.B. 50€
 
   @JsonView(View.Base.class)
   @Column(name = "card_issuing")
@@ -76,7 +84,7 @@ public class PosPointOfSales extends PosUuidObject
   @Column(name = "card_payment")
   private boolean cardPayment;
 
-  @JsonView(View.PointsOfSales.class)
+  @JsonView(View.PointsOfSale.class)
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "address_id")
   private PosAddress address;

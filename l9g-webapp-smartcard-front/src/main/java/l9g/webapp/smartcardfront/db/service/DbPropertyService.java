@@ -121,5 +121,12 @@ public class DbPropertyService
     return getPropertyValue(session, principal,
       DbService.KEY_DEFAULT_CURRENCY_SYMBOL);
   }
+  
+  public String getCurrencySymbolPlacement(
+    HttpSession session, DefaultOidcUser principal)
+  {
+    return getPropertyValue(session, principal,
+      DbService.KEY_DEFAULT_CURRENCY_SYMBOL_PLACEMENT);
+  }
 
 }

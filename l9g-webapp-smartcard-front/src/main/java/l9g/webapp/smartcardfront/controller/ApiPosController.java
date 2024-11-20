@@ -18,8 +18,7 @@ package l9g.webapp.smartcardfront.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
-import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSale;
 import l9g.webapp.smartcardfront.json.View;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import l9g.webapp.smartcardfront.db.PosPointsOfSaleRepository;
 
 /**
  *
@@ -40,19 +40,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApiPosController
 {
-  private final PosPointsOfSalesRepository posPointsOfSalesRepository;
+  private final PosPointsOfSaleRepository posPointsOfSalesRepository;
   
-  @JsonView(View.PointsOfSales.class)
+  @JsonView(View.PointsOfSale.class)
   @GetMapping("/{name}")
-  public PosPointOfSales findByName(@PathVariable String name,
+  public PosPointOfSale findByName(@PathVariable String name,
     HttpSession session)
   {
-    PosPointOfSales result = null;
+    PosPointOfSale result = null;
     log.debug("name = {}", name);
     
     session.setAttribute("POINT_OF_SALES_NAME", name);
     
-    Optional<PosPointOfSales> optional =
+    Optional<PosPointOfSale> optional =
       posPointsOfSalesRepository.findByName(name);
     
     if(optional.isPresent())

@@ -89,6 +89,16 @@
                 <li class="nav-header">ADMINISTRATOR</li>
 
                 <li class="nav-item">
+                  <a th:href="@{/admin/pointOfSale}" class="nav-link"
+                     th:classappend="${activePages == 'pointOfSale'} ? ' active' : ''">
+                    <i class="nav-icon fa-solid fa-cash-register me-2"></i>
+                    <p th:text="#{points_of_sale}">Kassensystem</p>
+                  </a>
+                </li>
+
+                <li class="nav-header">SYSTEM</li>
+
+                <li class="nav-item">
                   <a th:href="@{/admin/tenant}" class="nav-link"
                      th:classappend="${activePages == 'tenant'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-building me-2"></i><p th:text="#{tenants}">T</p>
@@ -99,14 +109,6 @@
                   <a th:href="@{/admin/address}" class="nav-link"
                      th:classappend="${activePages == 'address'} ? ' active' : ''">
                     <i class="nav-icon fa-solid fa-location-dot me-2"></i><p th:text="#{addresses}">T</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a th:href="@{/admin/pointOfSales}" class="nav-link"
-                     th:classappend="${activePages == 'pos'} ? ' active' : ''">
-                    <i class="nav-icon fa-solid fa-cash-register me-2"></i>
-                    <p th:text="#{points_of_sale}">Kassensystem</p>
                   </a>
                 </li>
 

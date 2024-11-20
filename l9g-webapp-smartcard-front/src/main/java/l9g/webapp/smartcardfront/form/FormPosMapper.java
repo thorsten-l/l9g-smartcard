@@ -17,7 +17,7 @@ package l9g.webapp.smartcardfront.form;
 
 import l9g.webapp.smartcardfront.db.model.PosAddress;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSale;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
@@ -25,7 +25,7 @@ import l9g.webapp.smartcardfront.db.model.PosUser;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.form.model.FormAddress;
 import l9g.webapp.smartcardfront.form.model.FormCategory;
-import l9g.webapp.smartcardfront.form.model.FormPointOfSales;
+import l9g.webapp.smartcardfront.form.model.FormPointOfSale;
 import l9g.webapp.smartcardfront.form.model.FormProduct;
 import l9g.webapp.smartcardfront.form.model.FormProperty;
 import l9g.webapp.smartcardfront.form.model.FormTenant;
@@ -55,7 +55,7 @@ public interface FormPosMapper
   FormUser posUserToFormUser(PosUser posUser);
 
   FormAddress posAddressToFormAddress(PosAddress posAddress);
-  
+
   @Mapping(target = "tenantId", expression = "java(posCategory.getTenant() != null ? posCategory.getTenant().getId() : null)")
   FormCategory posCategoryToFormCategory(PosCategory posCategory);
 
@@ -65,10 +65,10 @@ public interface FormPosMapper
 
   @Mapping(target = "productId", expression = "java(posVariation.getProduct() != null ? posVariation.getProduct().getId() : null)")
   FormVariation posVariationToFormVariation(PosVariation posVariation);
-  
-  @Mapping(target = "tenantId", expression = "java(posPointOfSales.getTenant() != null ? posPointOfSales.getTenant().getId() : null)")
-  @Mapping(target = "addressId", expression = "java(posPointOfSales.getAddress() != null ? posPointOfSales.getAddress().getId() : null)")
-  FormPointOfSales posPointOfSaleToFormPointOfSales(PosPointOfSales posPointOfSales);
+
+  @Mapping(target = "tenantId", expression = "java(posPointOfSale.getTenant() != null ? posPointOfSale.getTenant().getId() : null)")
+  @Mapping(target = "addressId", expression = "java(posPointOfSale.getAddress() != null ? posPointOfSale.getAddress().getId() : null)")
+  FormPointOfSale posPointOfSaleToFormPointOfSale(PosPointOfSale posPointOfSale);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createTimestamp", ignore = true)
@@ -87,6 +87,13 @@ public interface FormPosMapper
   @Mapping(target = "modifiedBy", ignore = true)
   @Mapping(target = "product", ignore = true)
   void updatePosVariationFromFormVariation(FormVariation source, @MappingTarget PosVariation target);
-  
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createTimestamp", ignore = true)
+  @Mapping(target = "modifiedBy", ignore = true)
+  @Mapping(target = "tenant", ignore = true)
+  @Mapping(target = "address", ignore = true)
+  @Mapping(target = "sumupReaderName", ignore = true)
+  void updatePostPointOfSaleFromFormPointOfSale(FormPointOfSale source, @MappingTarget PosPointOfSale target);
 
 }

@@ -15,13 +15,12 @@
  */
 package l9g.webapp.smartcardapi.controller;
 
-import java.util.Map;
+import l9g.smartcard.dto.DtoMe;
 import l9g.webapp.smartcardapi.client.ApiSumUpClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,28 +29,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
 @RestController
-@RequestMapping(path = "/api/v1/test",
+@RequestMapping(path = "/api/v1/me",
                 produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @RequiredArgsConstructor
-public class ApiTestController
+public class MeController
 {
   private final ApiSumUpClientService apiCreditCardReaderService;
 
-  @GetMapping("/{name}")
-  public String apiTest(@PathVariable String name)
+  @GetMapping()
+  public DtoMe me()
   {
-    log.debug("api test name={}", name);
-
-    String testResult = null;
-
-    switch(name)
-    {
-      case "me" ->
-        testResult = apiCreditCardReaderService.sumupMe().toString();
-    }
-
-    return testResult;
+    log.debug("me");
+    return apiCreditCardReaderService.sumupMe();
   }
 
 }

@@ -17,7 +17,7 @@ package l9g.webapp.smartcardfront.db;
 
 import java.util.List;
 import java.util.Optional;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSale;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -27,16 +27,16 @@ import org.springframework.stereotype.Repository;
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
 @Repository
-public interface PosPointsOfSalesRepository extends
-  JpaRepository<PosPointOfSales, String>
+public interface PosPointsOfSaleRepository extends
+  JpaRepository<PosPointOfSale, String>
 {
 
-  Optional<PosPointOfSales> findByName(String name);
+  Optional<PosPointOfSale> findByName(String name);
 
-  List<PosPointOfSales> findAllByTenant(PosTenant tenant);
+  List<PosPointOfSale> findAllByTenantOrderByNameAsc(PosTenant tenant);
 
-  Optional<PosPointOfSales> findByTenant_IdAndName(String tenantId, String name);
+  Optional<PosPointOfSale> findByTenant_IdAndName(String tenantId, String name);
 
-  List<PosPointOfSales> findAllByOrderByNameAsc();
+  List<PosPointOfSale> findAllByOrderByNameAsc();
 
 }

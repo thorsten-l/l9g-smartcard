@@ -17,12 +17,12 @@ package l9g.webapp.smartcardfront.form.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
-import l9g.webapp.smartcardfront.form.validator.UniquePointOfSales;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import l9g.webapp.smartcardfront.form.validator.UniquePointOfSale;
 
 /**
  *
@@ -34,22 +34,29 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@UniquePointOfSales(message = "{error.PointOfSales.name.unique}")
-public class FormPointOfSales
+@UniquePointOfSale(message = "{error.pointOfSale.name.unique}")
+public class FormPointOfSale
 {
 
   private String id;
 
-  private String tenantId;
-  
-  private String addressId;
-  
-  private String amount_cash;
-  
-  private String sumup_reader_id;
-
   @NotBlank(message = "{error.name.notBlank}")
   private String name;
 
+  private String tenantId;
+
+  private String addressId;
+
+  private String sumupReaderId;
+
+  private double cashRegisterBalance;
+
+  private double cashFloat;
+
+  private boolean cardIssuing;
+
+  private boolean cardPayment;
+
   private boolean hidden;
+
 }

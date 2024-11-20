@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import l9g.smartcard.dto.DtoCreditCardReader;
+import l9g.smartcard.dto.DtoMe;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,9 +84,9 @@ public class ApiClientService
       });
   }
 
-  public Map<String, String> findByPersonId(String personId)
+  public Map<String, String> findPersonById(String personId)
   {
-    log.debug("findByPersonId");
+    log.debug("findPersonById");
 
     return restClient
       .get()
@@ -97,7 +98,7 @@ public class ApiClientService
       });
   }
 
-  public Map<String, String> findBySerial(long serial)
+  public Map<String, String> findPersonBySerial(long serial)
   {
     log.debug("findBySerial");
 
@@ -111,7 +112,7 @@ public class ApiClientService
       });
   }
 
-  public List<Map<String, String>> findByTerm(String term)
+  public List<Map<String, String>> findPersonsByTerm(String term)
   {
     log.debug("findBySerial");
 
@@ -148,18 +149,32 @@ public class ApiClientService
     return result;
   }
 
-  public String sumupMerchantsMe()
+  public DtoCreditCardReader findCreditCardReaderById(String id)
+  {
+    log.debug("findByPersonId");
+
+    return restClient
+      .get()
+      .uri("/api/v1/creditcardreader/{id}", id)
+      .header("Authorization", "Bearer " + getBearer())
+      .retrieve()
+      .body(new ParameterizedTypeReference<DtoCreditCardReader>()
+      {
+      });
+  }
+
+  public DtoMe sumupMe()
   {
     log.debug("sumupMerchantsMe");
-    String result = restClient
+    DtoMe result = restClient
       .get()
       .uri(uriBuilder -> uriBuilder
-      .path("/api/v1/test/me")
+      .path("/api/v1/me")
       .build()
       )
       .header("Authorization", "Bearer " + getBearer())
       .retrieve()
-      .body(new ParameterizedTypeReference<String>()
+      .body(new ParameterizedTypeReference<DtoMe>()
       {
       });
 

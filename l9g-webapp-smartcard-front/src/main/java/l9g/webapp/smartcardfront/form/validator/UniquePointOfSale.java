@@ -26,16 +26,16 @@ import java.lang.annotation.Target;
  *
  * @author Thorsten Ludewig <t.ludewig@gmail.com>
  */
-@Constraint(validatedBy = UniqueProductValidator.class)
+@Constraint(validatedBy = UniquePointOfSaleValidator.class)
 @Target(
 {
   ElementType.TYPE
 })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UniquePointOfSales
+public @interface UniquePointOfSale
 {
 
-  String message() default "{error.PointOfSales.name.unique}";
+  String message() default "{error.pointOfSales.name.unique}";
 
   Class<?>[] groups() default 
   {

@@ -60,19 +60,19 @@ public class AdminApiTestController
     log.debug("apiTests '{}' for {}", id, principal.getPreferredUsername());
     adminService.generalModel(principal, model, session, ACTIVE_PAGES);
 
-    String testResult = null;
+    Object testResult = null;
 
     switch(id)
     {
       case "me" ->
-        testResult = apiClientService.sumupMerchantsMe();
+        testResult = apiClientService.sumupMe();
     }
 
     if(testResult != null)
     {
       try
       {
-        String prettyJson = objectMapper.writeValueAsString(objectMapper.readTree(testResult));
+        String prettyJson = objectMapper.writeValueAsString(testResult);
         log.debug("Test result for '{}' : \n{}", id, prettyJson);
       }
       catch(Exception e)

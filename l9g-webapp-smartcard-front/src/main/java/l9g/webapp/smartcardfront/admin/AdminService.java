@@ -84,7 +84,9 @@ public class AdminService
     model.addAttribute("currency",
       dbPropertyService.getCurrency(session, principal));
     model.addAttribute("currencySymbol",
-      dbPropertyService.getCurrencySymbol(session, principal));
+      dbPropertyService.getCurrencySymbol(session, principal));    
+    model.addAttribute("currencySymbolPlacement",
+      dbPropertyService.getCurrencySymbolPlacement(session, principal));
   }
 
 }

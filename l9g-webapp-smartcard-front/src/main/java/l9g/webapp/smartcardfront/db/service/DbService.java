@@ -17,7 +17,6 @@ package l9g.webapp.smartcardfront.db.service;
 
 import java.util.Optional;
 import l9g.webapp.smartcardfront.db.PosCategoriesRepository;
-import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
 import l9g.webapp.smartcardfront.db.PosProductsRepository;
 import l9g.webapp.smartcardfront.db.PosPropertiesRepository;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
@@ -26,7 +25,7 @@ import l9g.webapp.smartcardfront.db.PosUserRepository;
 import l9g.webapp.smartcardfront.db.PosVariationsRepository;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
 import l9g.webapp.smartcardfront.db.model.PosUser;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSale;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosProperty;
 import l9g.webapp.smartcardfront.db.model.PosRole;
@@ -39,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import l9g.webapp.smartcardfront.db.PosPointsOfSaleRepository;
 
 /**
  * DbService is responsible for managing and updating the properties related to
@@ -65,6 +65,7 @@ public class DbService
 
   public static final String KEY_DEFAULT_CURRENCY = "default.currency";
   public static final String KEY_DEFAULT_CURRENCY_SYMBOL = "default.currency.symbol";
+  public static final String KEY_DEFAULT_CURRENCY_SYMBOL_PLACEMENT = "default.currency.symbol.placement";
 
   public static final String KEY_DEFAULT_TAX = "default.tax";
 
@@ -96,21 +97,22 @@ public class DbService
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_CURRENCY_SYMBOL, "€"));
       posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
+        systemTenant, KEY_DEFAULT_CURRENCY_SYMBOL_PLACEMENT, "s"));
+      posPropertiesRepository.save(new PosProperty(KEY_SYSTEM_USER,
         systemTenant, KEY_DEFAULT_TAX, "0.0"));
 
-      PosPointOfSales pos = posPointsOfSalesRepository.save(
-        new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
+      PosPointOfSale pos = posPointsOfSalesRepository.save(new PosPointOfSale(KEY_SYSTEM_USER, systemTenant, KEY_SYSTEM_POS)
       );
       posTransactionsRepository.save(
         new PosTransaction(KEY_SYSTEM_USER, systemTenant, pos)
       );
 
-      pos = posPointsOfSalesRepository.save(
-        new PosPointOfSales(KEY_SYSTEM_USER, systemTenant, "rz-dev1")
+      pos = posPointsOfSalesRepository.save(new PosPointOfSale(KEY_SYSTEM_USER, systemTenant, "rz-dev1")
       );
 
       pos.setSumupReaderId("rz-dev1-sumup");
-      pos.setAmountCash(2.34);
+      pos.setCashRegisterBalance(2.34);
+      pos.setCashFloat(50.0);
       pos.setCardIssuing(true);
       pos.setCardPayment(true);
       posPointsOfSalesRepository.save(pos);
@@ -163,7 +165,7 @@ public class DbService
 
   private final PosPropertiesRepository posPropertiesRepository;
 
-  private final PosPointsOfSalesRepository posPointsOfSalesRepository;
+  private final PosPointsOfSaleRepository posPointsOfSalesRepository;
 
   private final PosTransactionsRepository posTransactionsRepository;
 

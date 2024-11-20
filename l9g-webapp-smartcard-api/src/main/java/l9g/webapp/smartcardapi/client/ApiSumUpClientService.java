@@ -17,10 +17,10 @@ package l9g.webapp.smartcardapi.client;
 
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import l9g.smartcard.dto.DtoCreditCardReader;
+import l9g.smartcard.dto.DtoMe;
 import l9g.webapp.smartcardapi.crypto.EncryptedValue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,18 +46,18 @@ public class ApiSumUpClientService
 
   @Value("${sumup.api.base-url}")
   private String sumupApiBaseUrl;
-
-  @EncryptedValue("${sumup.api.merchant-code}")
-  private String sumupApiMercantCode;
-
+  
   @EncryptedValue("${sumup.api.token}")
   private String sumupApiToken;
+
+  private String sumupApiMercantCode;
 
   @PostConstruct
   private void initialize()
   {
     log.debug("initialize appApiBaseUrl={}", sumupApiBaseUrl);
     restClient = builder.baseUrl(sumupApiBaseUrl).build();
+    sumupApiMercantCode = sumupMe().getMerchantProfile().getMerchantCode();
   }
 
   /**
@@ -88,16 +88,39 @@ public class ApiSumUpClientService
     return readersList;
   }
 
-  public String sumupMe()
+  public DtoCreditCardReader sumupMerchantsReaderById(String id)
   {
-    String result = null;
+    DtoCreditCardReader reader = null;
+
+    ResponseEntity<DtoCreditCardReader> responseEntity = restClient
+      .get()
+      .uri("/v0.1/merchants/{sumupApiMercantCode}/readers/{id}", sumupApiMercantCode, id)
+      .header("Authorization", "Bearer " + sumupApiToken)
+      .retrieve()
+      .toEntity(new ParameterizedTypeReference<DtoCreditCardReader>()
+      {
+      });
+
+    if(responseEntity.getStatusCode().is2xxSuccessful())
+    {
+      log.debug("*** is2xxSuccessful");
+      reader = responseEntity.getBody();
+    }
+
+    log.debug("reader={}", reader);
+    return reader;
+  }
+
+  public final DtoMe sumupMe()
+  {
+    DtoMe result = null;
     
-    ResponseEntity<String> responseEntity = restClient
+    ResponseEntity<DtoMe> responseEntity = restClient
       .get()
       .uri("/v0.1/me")
       .header("Authorization", "Bearer " + sumupApiToken)
       .retrieve()
-      .toEntity(new ParameterizedTypeReference<String>()
+      .toEntity(new ParameterizedTypeReference<DtoMe>()
       {
       });
 

@@ -18,12 +18,12 @@ package l9g.webapp.smartcardfront.form.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Optional;
-import l9g.webapp.smartcardfront.db.PosPointsOfSalesRepository;
-import l9g.webapp.smartcardfront.db.model.PosPointOfSales;
-import l9g.webapp.smartcardfront.form.model.FormPointOfSales;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSale;
+import l9g.webapp.smartcardfront.form.model.FormPointOfSale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import l9g.webapp.smartcardfront.db.PosPointsOfSaleRepository;
 
 /**
  *
@@ -32,24 +32,26 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UniquePointOfSalesValidator implements
-  ConstraintValidator<UniquePointOfSales, FormPointOfSales>
+public class UniquePointOfSaleValidator implements
+  ConstraintValidator<UniquePointOfSale, FormPointOfSale>
 {
-  private final PosPointsOfSalesRepository posPointOfSalesRepository;
+  private final PosPointsOfSaleRepository posPointOfSalesRepository;
 
   @Override
-  public boolean isValid(FormPointOfSales formPointOfSales,
+  public boolean isValid(FormPointOfSale formPointOfSales,
     ConstraintValidatorContext context)
   {
     log.debug("Validaiton formPointOfSales={}", formPointOfSales);
 
+    return true;
+    /*
     if(formPointOfSales == null || formPointOfSales.getName() == null
       || formPointOfSales.getName().isEmpty())
     {
       return true;
     }
 
-    Optional<PosPointOfSales> optional = null;
+    Optional<PosPointOfSale> optional = null;
     //  posPointOfSalesRepository
     //    .findByTenant_IdAndNameAndAddress_ID(formPointOfSales.getName(), formPointOfSales.getName(), formPointOfSales.getAddressId());
 
@@ -63,7 +65,7 @@ public class UniquePointOfSalesValidator implements
       return false;
     }
 
-    return true;
+    return true;*/
   }
 
 }

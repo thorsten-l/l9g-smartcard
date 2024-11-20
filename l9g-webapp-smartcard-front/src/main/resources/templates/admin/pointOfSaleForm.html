@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Product Form</title>
+    <div th:replace="~{app/admin::head}"></div>
+  </head>
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
+      <div th:replace="~{app/admin::header}"></div>
+      <div th:replace="~{app/sidebar::sidebar}"></div>
+
+      <main class="app-main">
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="d-flex align-items-center">
+              <h3 class="mb-0 me-2" th:text="#{point_of_sale}">Category</h3>
+              <h3 th:unless="${addPointOfSale}" class="mb-0" th:text="${': ' + formPointOfSale.name}"></h3>
+            </div>
+          </div> 
+        </div>
+
+        <div class="app-content">
+          <div class="container-fluid">
+
+            <div class="w-100"> 
+              <div class="card card-primary card-outline mb-4">
+                <div class="card-header">
+                  <div class="card-title" th:text="#{overview}">Details</div>
+                </div>
+                <form th:action="${addPointOfSale} ? @{/admin/pointOfSale/add} : @{/admin/pointOfSale/{id}(id=${formPointOfSale.id})}" 
+                      th:object="${formPointOfSale}" th:method="POST">
+
+                  <input type="hidden" th:field="*{id}"/>
+
+                  <div class="card-body">
+                    <div class="mb-3"> 
+                      <label for="name" class="form-label" th:text="#{name}">Key</label> 
+                      <input type="text" class="form-control" th:field="*{name}"/>
+                      <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                        <span th:errors="*{name}"></span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3"> 
+                      <label for="cashRegisterBalance" class="form-label" th:text="#{cash_register_balance}">Key</label> 
+                      <input type="text" class="form-control" th:field="*{cashRegisterBalance}"/>
+                      <div th:if="${#fields.hasErrors('cashRegisterBalance')}" class="text-danger">
+                        <span th:errors="*{cashRegisterBalance}"></span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3"> 
+                      <label for="cashFloat" class="form-label" th:text="#{cash_float}">Key</label> 
+                      <input type="text" class="form-control" th:field="*{cashFloat}"/>
+                      <div th:if="${#fields.hasErrors('cashFloat')}" class="text-danger">
+                        <span th:errors="*{cashFloat}"></span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3"> 
+                      <label for="addressId" class="form-label" th:text="#{address}">N</label> 
+                      <select class="form-control select2" th:field="*{addressId}" style="width: 100%;">
+                        <option value="">-</option>
+                        <div th:remove="tag" th:each="address : ${addresses}">
+                          <option th:value="${address.id}" 
+                                  th:text="${address.name}"
+                                  th:selected="${address.id} == *{addressId}"
+                                  >A</option>
+                        </div>
+                      </select>
+                      <div th:if="${#fields.hasErrors('addressId')}" class="text-danger">
+                        <span th:errors="*{addressId}"></span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3"> 
+                      <label for="creditCardReader" class="form-label" th:text="#{credit_card_reader}">N</label> 
+                      <select class="form-control select2" th:field="*{sumupReaderId}" style="width: 100%;">
+                        <option value="">-</option>
+                        <div th:remove="tag" th:each="reader : ${creditCardReaders}">
+                          <option th:value="${reader.id}" 
+                                  th:text="${reader.name}"
+                                  th:selected="${reader.id} == *{sumupReaderId}"
+                                  >CR</option>
+                        </div>
+                      </select>
+                      <div th:if="${#fields.hasErrors('sumupReaderId')}" class="text-danger">
+                        <span th:errors="*{sumupReaderId}"></span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" 
+                             th:field="*{cardIssuing}" id="cardIssuing"/>
+                      <label for="cardIssuing" class="form-check-label" 
+                             th:text="#{card_issuing}">CI</label>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" 
+                             th:field="*{cardPayment}" id="cardPayment"/>
+                      <label for="cardPayment" class="form-check-label" 
+                             th:text="#{card_payment}">CP</label>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" 
+                             th:field="*{hidden}" id="hiddenCheckbox"/>
+                      <label for="hiddenCheckbox" class="form-check-label" 
+                             th:text="#{hidden}">Hidden</label>
+                    </div>
+
+                  </div>   
+
+                  <div class="card-footer text-end"> 
+                    <button type="submit" class="btn btn-primary" 
+                            th:text="#{save}">Save</button> 
+                    <a type="button" class="btn btn-danger" 
+                       th:href="@{/admin/pointOfSale}"
+                       th:text="#{cancel}" >Cancel</a>                  
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script th:replace="~{app/admin::scripts}" th:remove="tag"/>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        new AutoNumeric('#cashRegisterBalance', autoNumericOptions);
+        new AutoNumeric('#cashFloat', autoNumericOptions);
+      });
+    </script>
+
+    <script th:if="${savePointOfSaleError}" th:inline="javascript">
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: 'Fehler',
+        text: 'Eigenschaft wurde nicht gespeichert. Schlüssel nicht einzigartig.'
+      });
+    </script>
+
+  </body>
+</html>
