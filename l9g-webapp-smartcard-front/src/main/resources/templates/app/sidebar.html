@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Fragments</title>
+    <script src="https://unpkg.com/htmx.org"></script>
   </head>
   <body>
     <div th:fragment="sidebar" th:remove="tag">
@@ -49,32 +50,48 @@
               <div sec:authorize="hasAnyRole('ROLE_POS_ADMINISTRATOR','ROLE_POS_OWNER')" th:remove="tag">
                 <li class="nav-header">OWNER</li>
                 <li class="nav-item">
-                  <a th:href="@{/admin/category}" class="nav-link"
-                     th:classappend="${activePages == 'category'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'category'} ? ' active' : ''"
+                     hx-get="/admin/category"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-layer-group me-2"></i>
                     <p th:text="#{categories}">Kategorien</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/product}" class="nav-link"
-                     th:classappend="${activePages == 'product'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'product'} ? ' active' : ''"
+                     hx-get="/admin/product"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-bullseye me-2"></i>
                     <p th:text="#{products}">Produkte</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/user}" class="nav-link"
-                     th:classappend="${activePages == 'user'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'user'} ? ' active' : ''"
+                     hx-get="/admin/user"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-user-group me-2"></i>
                     <p th:text="#{users}">Benutzer</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/property}" class="nav-link"
-                     th:classappend="${activePages == 'property'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'property'} ? ' active' : ''"
+                     hx-get="/admin/property"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-gear me-2"></i>
                     <p th:text="#{properties}">T</p>
                   </a>
@@ -89,8 +106,12 @@
                 <li class="nav-header">ADMINISTRATOR</li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/pointOfSale}" class="nav-link"
-                     th:classappend="${activePages == 'pointOfSale'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'pointOfSale'} ? ' active' : ''"
+                     hx-get="/admin/pointOfSale"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-cash-register me-2"></i>
                     <p th:text="#{points_of_sale}">Kassensystem</p>
                   </a>
@@ -99,22 +120,34 @@
                 <li class="nav-header">SYSTEM</li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/tenant}" class="nav-link"
-                     th:classappend="${activePages == 'tenant'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'tenant'} ? ' active' : ''"
+                     hx-get="/admin/tenant"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-building me-2"></i><p th:text="#{tenants}">T</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a th:href="@{/admin/address}" class="nav-link"
-                     th:classappend="${activePages == 'address'} ? ' active' : ''">
+                  <a class="nav-link"
+                     th:classappend="${activePages == 'address'} ? ' active' : ''"
+                     hx-get="/admin/address"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false"> 
                     <i class="nav-icon fa-solid fa-location-dot me-2"></i><p th:text="#{addresses}">T</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
                   <a th:href="@{/admin/creditcardreader}" class="nav-link"
-                     th:classappend="${activePages == 'creditcardreader'} ? ' active' : ''">
+                     th:classappend="${activePages == 'creditcardreader'} ? ' active' : ''"
+                     hx-get="/admin/creditcardreader"
+                     hx-target="#appMainBody"
+                     hx-trigger="click"
+                     hx-push-url="false">
                     <i class="nav-icon fa-solid fa-credit-card me-2"></i>
                     <p th:text="#{credit_card_reader}">Reader</p>
                   </a>
@@ -125,8 +158,12 @@
                 <div th:if="${appDevelopment}" th:remove="tag">
                   <li class="nav-header">DEVELOPER</li>
                   <li class="nav-item">
-                    <a th:href="@{/admin/apitest/home}" class="nav-link"
-                       th:classappend="${activePages == 'apitest'} ? ' active' : ''">
+                    <a class="nav-link"
+                       th:classappend="${activePages == 'apitest'} ? ' active' : ''"
+                       hx-get="/admin/apitest/home"
+                       hx-target="#appMainBody"
+                       hx-trigger="click"
+                       hx-push-url="false">
                       <i class="nav-icon me-2 fa-solid fa-handshake"></i>
                       <p>API Tests</p>
                     </a>
@@ -142,25 +179,41 @@
 
                     <ul class="nav nav-treeview">
                       <li class="nav-item">
-                        <a th:href="@{/system/test/400}" class="nav-link">
+                        <a class="nav-link"
+                           hx-get="/system/test/400"
+                           hx-target="#appMainBody"
+                           hx-trigger="click"
+                           hx-push-url="false">
                           <i class="nav-icon bi bi-circle"></i>
                           <p>400 Bad Request</p>
                         </a> 
                       </li>
                       <li class="nav-item">
-                        <a th:href="@{/system/test/403}" class="nav-link">
+                        <a class="nav-link"
+                           hx-get="/system/test/403"
+                           hx-target="#appMainBody"
+                           hx-trigger="click"
+                           hx-push-url="false">
                           <i class="nav-icon bi bi-circle"></i>
                           <p>403 Permission denied</p>
                         </a> 
                       </li>
                       <li class="nav-item">
-                        <a th:href="@{/system/test/404}" class="nav-link">
+                        <a class="nav-link"
+                           hx-get="/system/test/404"
+                           hx-target="#appMainBody"
+                           hx-trigger="click"
+                           hx-push-url="false">
                           <i class="nav-icon bi bi-circle"></i>
                           <p>404 Page not found</p>
                         </a> 
                       </li>
                       <li class="nav-item">
-                        <a th:href="@{/system/test/500}" class="nav-link">
+                        <a class="nav-link"
+                           hx-get="/system/test/500"
+                           hx-target="#appMainBody"
+                           hx-trigger="click"
+                           hx-push-url="false">
                           <i class="nav-icon bi bi-circle"></i>
                           <p>500 Internal server error</p>
                         </a> 
@@ -172,7 +225,11 @@
 
                   <li class="nav-item"
                       th:classappend="${layoutCategory == 'info'} ? ' menu-open' : ''">
-                    <a th:href="@{/ui/info/info}" class="nav-link"> 
+                    <a class="nav-link"
+                       hx-get="/ui/info/info"
+                       hx-target="#appMainBody"
+                       hx-trigger="click"
+                       hx-push-url="false">
                       <i class="nav-icon bi bi-info-circle me-2"></i>
                       <p>
                         Info
@@ -181,15 +238,23 @@
                     </a>
                     <ul class="nav nav-treeview">
                       <li class="nav-item">
-                        <a th:href="@{/ui/info/build-properties}" class="nav-link"
-                           th:classappend="${layoutPage == 'build-properties'} ? ' active' : ''">
+                        <a class="nav-link"
+                           th:classappend="${layoutPage == 'build-properties'} ? ' active' : ''"
+                           hx-get="/ui/info/build-properties"
+                           hx-target="#appMainBody"
+                           hx-trigger="click"
+                           hx-push-url="false">
                           <i class="nav-icon bi bi-circle"></i>
                           <p>Build Properties</p>
                         </a> 
                       </li>
                       <li class="nav-item">
-                        <a th:href="@{/ui/info/system-properties}" class="nav-link"
-                           th:classappend="${layoutPage == 'system-properties'} ? ' active' : ''">
+                        <a class="nav-link"
+                           th:classappend="${layoutPage == 'system-properties'} ? ' active' : ''"
+                           hx-get="/ui/info/system-properties"
+                           hx-target="#appMainBody"
+                           hx-trigger="click"
+                           hx-push-url="false">
                           <i class="nav-icon bi bi-circle"></i>
                           <p>System Properties</p>
                         </a> 
