@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: l9g-webapp-smartcard-monitor
+  profiles:
+    active: default
+  config:
+    import: optional:file:config.yaml
+
+logging:
+  pattern:
+    console: null
+  level:
+    root: INFO
+  file:
+    name: smartcard-monitor.log
+
+server:
+  address: 127.0.0.1
+  port: 38080
+
+scheduler:
+  heartbeat:
+    rate: 15000
+
+smartcard:
+  terminal:
+    timeout: 5000
+
+app:
+  posname: "*** unset ***"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: debug
+
+logging:
+  pattern:
+    console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
+  level:
+    root: INFO
+    l9g: TRACE
