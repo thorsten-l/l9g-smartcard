@@ -3,6 +3,7 @@
   <head>
     <title>Categories</title>
     <div th:replace="~{app/admin::head}"></div>
+    <script src="https://unpkg.com/htmx.org"></script>
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
@@ -24,7 +25,10 @@
               <div class="card-header d-flex align-items-center justify-content-between">
                 <div class="card-title mb-0" th:text="#{overview}">Overview</div>
                 <div class="ms-auto">
-                  <a class="btn btn-success" th:href="@{/admin/category/add}">
+                  <a class="btn btn-success"
+                     hx-get="/admin/category/add"
+                     hx-target="#appMainBody"
+                     hx-trigger="click">
                     <i class="fa-solid fa-plus"></i>
                   </a>
                 </div>
