@@ -78,7 +78,8 @@ public class ClientSecurityConfig
         .requestMatchers("/system/test/error403").denyAll()
         // allow all
         .requestMatchers("/", "/error/**", "/api/v1/buildinfo",
-          "/webjars/**", "/icons/**", "/css/**", "/images/**", "/signotec/**",
+          "/webjars/**", "/icons/**", "/css/**", "/js/**", "/images/**", 
+          "/signotec/**",
           "/actuator/**", "/flags/**", "/logout").permitAll()
         // admins only
         .requestMatchers(
