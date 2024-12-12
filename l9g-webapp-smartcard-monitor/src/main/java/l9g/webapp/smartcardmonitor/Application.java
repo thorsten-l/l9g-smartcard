@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardmonitor;
 
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,9 +25,9 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
  * The main entry point for the Smartcard Monitor web application.
  * This class is annotated with {@code @SpringBootApplication} to indicate a Spring Boot application.
  * It excludes the {@code UserDetailsServiceAutoConfiguration} class from auto-configuration.
- * 
+ *
  * The {@code main} method uses {@code SpringApplication.run} to launch the application.
- * 
+ *
  * Annotations:
  * {@code @SpringBootApplication} - Indicates a Spring Boot application.
  * {@code @Slf4j} - Provides a logger instance for logging purposes.
@@ -38,8 +39,22 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 @Slf4j
 public class Application
 {
-  public static void main(String[] args)
+  public static void main(String[] args) throws IOException
   {
-    SpringApplication.run(Application.class, args);
+    
+    System.getProperties().forEach((key,value) -> System.out.println( key + " = " + value));
+    System.out.println("---------------");
+    System.getenv().forEach((key,value) -> System.out.println( key + " = " + value));
+
+    // ProcessBuilder processBuilder = new ProcessBuilder("myCommand", "myArg");
+    // Process process = processBuilder.start();
+    
+    System.out.println("---------------");
+    System.out.println("os.name=" + System.getProperty("os.name"));
+    System.out.println("java.home=" + System.getProperty("java.home"));
+    System.out.println("PWD=" + System.getenv("PWD"));
+    
+    // SpringApplication.run(Application.class, args);
   }
+
 }
