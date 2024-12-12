@@ -17,6 +17,7 @@ Thumbs.db
 
 *.bak
 *.log
+*.log.*
 *.jar
 *.iml
 
