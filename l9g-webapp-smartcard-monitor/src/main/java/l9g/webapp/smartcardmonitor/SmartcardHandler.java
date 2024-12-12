@@ -42,8 +42,9 @@ import org.springframework.stereotype.Component;
 public class SmartcardHandler implements ApplicationRunner
 {
   private final MonitorWebSocketHandler webSockerHandler;
+
   private final BuildProperties buildProperties;
-  
+
   @Value("${app.posname}")
   private String appPosName;
 
@@ -54,6 +55,7 @@ public class SmartcardHandler implements ApplicationRunner
    * it reads the card's UID and fires events accordingly.
    *
    * @param args Application arguments passed to the run method.
+   *
    * @throws Exception if an error occurs during the execution.
    *
    * The method performs the following steps:
@@ -78,21 +80,21 @@ public class SmartcardHandler implements ApplicationRunner
     CardTerminals terminals = factory.terminals();
 
     System.out.println("\n\n**********************************************");
-    System.out.println( "Point of sales name = " + appPosName );
-    System.out.println( "\nApplication:");
-    System.out.println( "  - name: " + buildProperties.get("name") );
-    System.out.println( "  - description: " + buildProperties.get("description") );
-    System.out.println( "  - version: " + buildProperties.get("version") );
-    System.out.println( "  - build time: " + buildProperties.getTime().toString() );
+    System.out.println("Point of sales name = " + appPosName);
+    System.out.println("\nApplication:");
+    System.out.println("  - name: " + buildProperties.get("name"));
+    System.out.println("  - description: " + buildProperties.get("description"));
+    System.out.println("  - version: " + buildProperties.get("version"));
+    System.out.println("  - build time: " + buildProperties.getTime().toString());
     System.out.println("**********************************************\n\n");
-    
-    log.info("appPosName={}",appPosName);
-    log.info("appName={}",buildProperties.get("name"));
-    log.info("appVersion={}",buildProperties.get("version"));
-    log.info("appBuildDate={}",buildProperties.getTime().toString());
-      
+
+    log.info("appPosName={}", appPosName);
+    log.info("appName={}", buildProperties.get("name"));
+    log.info("appVersion={}", buildProperties.get("version"));
+    log.info("appBuildDate={}", buildProperties.getTime().toString());
+
     cardReaderConnectedEventFired = false;
-    
+
     while(true)
     {
       try
@@ -102,11 +104,11 @@ public class SmartcardHandler implements ApplicationRunner
           log.debug("Available card readers: {}", terminals.list());
 
           CardTerminal terminal = terminals.list().get(0);
-          if( !cardReaderConnectedEventFired )
+          if( ! cardReaderConnectedEventFired)
           {
             webSockerHandler
-            .fireEvent(new DtoEvent(DtoEvent.EVENT_CARD_READER_CONNECTED,
-              terminal.getName() ));
+              .fireEvent(new DtoEvent(DtoEvent.EVENT_CARD_READER_CONNECTED,
+                terminal.getName()));
             cardReaderConnectedEventFired = true;
           }
           log.debug("Using card reader: {}", terminal.getName());
@@ -177,6 +179,10 @@ public class SmartcardHandler implements ApplicationRunner
             .fireEvent(new DtoEvent(DtoEvent.EVENT_ERROR,
               "No card reader found!"));
           Thread.sleep(terminalTimeout);
+          if(Application.isOsWindows())
+          {
+            System.exit(-100);
+          }
         }
       }
       catch(Throwable t)
@@ -187,6 +193,10 @@ public class SmartcardHandler implements ApplicationRunner
           .fireEvent(new DtoEvent(DtoEvent.EVENT_ERROR,
             t.getMessage()));
         Thread.sleep(terminalTimeout);
+        if(Application.isOsWindows())
+        {
+          System.exit(-101);
+        }
       }
     }
   }
@@ -216,4 +226,5 @@ public class SmartcardHandler implements ApplicationRunner
   private long terminalTimeout;
 
   private boolean cardReaderConnectedEventFired;
+
 }
