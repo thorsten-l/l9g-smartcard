@@ -3,7 +3,6 @@
   <head>
     <title>Property Form</title>
     <div th:replace="~{app/admin::head}"></div>
-    <script src="https://unpkg.com/htmx.org"></script>
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
@@ -28,13 +27,7 @@
                   <div class="card-title" th:text="#{overview}">Details</div>
                 </div>
                 <form th:action="${addCategory} ? @{/admin/category/add} : @{/admin/category/{id}(id=${formCategory.id})}" 
-                      th:object="${formCategory}" th:method="POST"
-                      th:attr="hx-post=${addCategory} ? @{/admin/category/add} : @{/admin/category/{id}(id=${formCategory.id})}"
-                      hx-post="@{/admin/category/{id}(id=${formCategory.id})}"
-                      hx-target="#appMainBody" 
-                      hx-trigger="submit"
-                      hx-push-url="false">
-                      
+                      th:object="${formCategory}" th:method="POST">
 
                   <input type="hidden" th:field="*{id}"/>
                   <input type="hidden" th:field="*{tenantId}"/>
@@ -57,10 +50,8 @@
                   <div class="card-footer text-end"> 
                     <button type="submit" class="btn btn-primary" 
                             th:text="#{save}">Save</button> 
-                    <a type="button" class="btn btn-danger"                         
-                       hx-get="/admin/category"
-                       hx-target="#appMainBody"
-                       hx-trigger="click"
+                    <a type="button" class="btn btn-danger" 
+                       th:href="@{/admin/category}"
                        th:text="#{cancel}" >Cancel</a>                  
                   </div>
                 </form>
