@@ -78,7 +78,8 @@ public class ClientSecurityConfig
         .requestMatchers("/system/test/error403").denyAll()
         // allow all
         .requestMatchers("/", "/error/**", "/api/v1/buildinfo",
-          "/webjars/**", "/icons/**", "/css/**", "/images/**",
+          "/webjars/**", "/icons/**", "/css/**", "/js/**", "/images/**", 
+          "/signotec/**",
           "/actuator/**", "/flags/**", "/logout").permitAll()
         // admins only
         .requestMatchers(
@@ -114,6 +115,10 @@ public class ClientSecurityConfig
           PosRole.POS_ADMINISTRATOR.toString()
         )
     )
+      .headers(
+        headers -> headers
+          .frameOptions(frameOptions -> frameOptions.disable()
+          ))
       .oauth2Login(
         login -> login
           .authorizationEndpoint(
@@ -130,8 +135,8 @@ public class ClientSecurityConfig
           .logoutSuccessHandler(
             oidcLogoutSuccessHandler(clientRegistrationRepository))
       );
-      // permit even POST, PUT and DELETE requests
-      // .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
+    // permit even POST, PUT and DELETE requests
+    // .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
 
     return http.build();
   }

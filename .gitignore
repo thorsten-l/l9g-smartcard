@@ -29,3 +29,6 @@ server.p12
 .idea/
 .cache_ggshield/
 
+l9g-webapp-smartcard-front/src/main/resources/static/js/STPadServerLib.js
+l9g-webapp-smartcard-front/src/main/resources/static/signotec*
+
