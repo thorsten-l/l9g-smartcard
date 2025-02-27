@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 package l9g.webapp.smartcardfront.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +35,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  *
  * @author Thorsten Ludewig (t.ludewig@gmail.com)
  */
+
+/*
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -88,3 +92,4 @@ public class AdminApiTestController
   }
 
 }
+*/

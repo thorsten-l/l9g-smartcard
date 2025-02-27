@@ -103,18 +103,7 @@
           </p>
           <p id="action_payment2" style="display: none"><a style="width: 100%" class="btn btn-primary">Kassenbuch</a></p>
           <p id="action_issuing" style="display: none">
-            <button disabled="true" id="action_issuing_button" style="width: 100%" class="btn btn-primary" onclick='Swal.fire({
-                  title: "Karte herausgeben?",
-                  icon: "question",
-                  showCancelButton: true,
-                  confirmButtonText: "Herausgeben",
-                  cancelButtonText: "Abbruch",
-                }).then((result) => {
-                  /* Read more about isConfirmed, isDenied below */
-                  if (result.isConfirmed) {
-                    Swal.fire("Gespeichert!", "Karte erfolgreich herausgegeben.", "success");
-                  }
-                });'>
+            <button disabled="true" id="action_issuing_button" style="width: 100%" class="btn btn-primary" onclick="startPadProcessWithPopup()">
               Kartenausgabe
             </button>
           </p>

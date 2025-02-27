@@ -1,0 +1,70 @@
+- Für die Verbindung braucht man einen Websocket dieser für den Rechner runtergeladen werden kann: https://www.signotec.com/portal/seiten/signotec-signopad-api-web-900000546-10002.html
+
+- Man kann diesen silent installieren (Auszug aus er Doku):
+5.8 Silent Installation 
+Eine Silent-Installation ermöglicht Ihnen die Installation des signotec signoPAD-API/Web ohne 
+Einblendung von Dialogfenstern durchzuführen, sodass keine zusätzliche Benutzerinteraktion 
+erforderlich ist. Um solch eine Installation vorzunehmen, muss die Eingabeaufforderung 
+(Kommandozeile) aufgerufen werden. Anschließend muss in das Verzeichnis gewechselt 
+werden, in dem sich das Setup des signotec signoPAD-API/Web befindet. 
+CERT_SEL Optionen 
+"Default" 
+Erklärung 
+Installation mit Option1 - default Wert 
+"DefaultAndLocalhost" 
+"Localhost" 
+Installation mit Option2 
+Installation mit Option3 
+"NoTLS" 
+WEBSOCKET_URL 
+Installation mit Option4 
+"Url" 
+Erklärung 
+Installation richtet den WebSocket Pad 
+Server für die Verbindung durch die Url ein 
+ALLOW_EDGE_LOOPBACK Optionen 
+"Yes" 
+Erklärung 
+Edge localhost-Verbindungen erlaubt 
+"" 
+Edge localhost-Verbindungen nicht erlaubt 
+signotec signoPAD-API/Web Dokumentation 
+Seite 11 von 65 
+© 2000 – 2024 signotec GmbH 
+DONT_REMOVE_OLD_CA_CERT Optionen 
+"Yes" 
+Erklärung 
+Zertifikat wird nicht entfernt 
+"" 
+Feature Variable 
+Zertifikat wird entfernt 
+WebSocketPadServer 
+Erklärung 
+Installation des WebSocket Pad Servers 
+Documentation 
+Example 
+Installation der Dokumentation 
+Installation des Beispielprogrammes 
+PadDrivers 
+Installation der signotec HID- und WinUSB
+Treiber 
+Die Variablen sind Case-Sensitive.  
+Beispiele: 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"/qn CERT_SEL=\"Default\"" 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"/qn CERT_SEL=\"Localhost\"" 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"ADDLOCAL=ALL REMOVE=Example /qn" 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"/qn ALLOW_EDGE_LOOPBACK=\"Yes\"" 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"/qn ALLOW_EDGE_LOOPBACK=\"\"" 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"/qn ALLOW_EDGE_LOOPBACK=\"\" 
+DONT_REMOVE_OLD_CA_CERT=\"Yes\"" 
+signotec_signoPAD-API_Web_X.X.X.exe /s /v"/qn 
+WEBSOCKET_URL=\"test.websocket.url.de\" ALLOW_EDGE_LOOPBACK=\"\" 
+DONT_REMOVE_OLD_CA_CERT=\"Yes\""
+
+- Nach der Installation ist dieser automatisch im Autostart
+
+- Der Websocket wird über Java Script angeschlossen. Die komplette Doku ist im Installationspaket des WEB/API Socket enthalten
+
+- Im Moment habe ich das skript über "header.html" eingebunden, weil ich nicht genau wusste wie ich eine eigenständige Datei in das custom.html laden lass
+
+- Man braucht als Bibilothek die Date STPadServerLib-3.4.0.js
