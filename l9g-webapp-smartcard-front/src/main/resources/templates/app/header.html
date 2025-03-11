@@ -27,6 +27,7 @@ limitations under the License.
     <link th:rel="stylesheet" th:href="@{/css/adminlte.min.css}"></link>
     <script th:src="@{/js/sweetalert2.all.min.js}"></script>
     <script src="/js/STPadServerLib-3.4.0.js"></script>
+    <script>
       var AppPos = {
         id: null,
         name: null,
@@ -53,6 +54,7 @@ limitations under the License.
   let foundPads = [];
   let activePadIndex = null;
   let isSigningActive = false;
+  let selectionStatus = {};
 
   function onConnectionOpen(event) { console.log("WebSocket geöffnet.", event); }
   function onConnectionClose(event) { console.log("WebSocket geschlossen.", event); }
@@ -99,6 +101,10 @@ limitations under the License.
 
       let selectionParams = new STPadServerLibDefault.Params.startSelectionDialog();
       selectionParams.addCheckboxInformation([{ id: "confirm", text: "Hiermit bestätige ich den Erhalt der Ostfalia-Karte und erkläre mich ausdrücklich damit einverstanden, im Falle eines Verlustes oder einer Beschädigung der Karte eine Gebühr in Höhe von 20 € für die Ausstellung einer Ersatzkarte zu zahlen", checked: false, required: true }]);
+      STPadServerLibDefault.handleSelectionChange = function(fieldId, checked){
+        console.log("Auswahl wurde zu" + fieldId + "-->" + checked);
+        selectionStatus[fieldId] = checked;      
+      };
       await STPadServerLibDefault.startSelectionDialog(selectionParams);
 
     } catch (error) {
@@ -128,6 +134,7 @@ limitations under the License.
       let value = await STPadServerLibDefault.getSignatureData(params);
       storedSignatureData = value.signData;
       console.log("Signaturdaten (Base64):", storedSignatureData);
+      console.log("Checkbox:", selectionStatus)
       // Update des Popups: Jetzt soll der Button "Herausgeben" erscheinen.
       Swal.fire({
         title: "Unterschrift erfasst",
@@ -219,6 +226,73 @@ limitations under the License.
     }
   }
 </script>
+    
+<script>
+    function showVariationSelector(productId) {
+      getProductVariations(productId).then(variations => {
+        if (Object.keys(variations).length === 0) {
+          Swal.fire({
+            title: 'Keine Variationen verfügbar!',
+            icon: 'warning'
+          });
+          return;
+        }
+
+        // Konvertiere das Variations-Array in ein Key-Value-Objekt
+        let variationOptions = {};
+        variations.forEach(variation => {
+          variationOptions[variation.id] = `${variation.name} - ${variation.price} €`;
+        });
+
+        Swal.fire({
+          title: 'Wähle eine Variation',
+          input: 'select',
+          inputOptions: variationOptions,
+          inputPlaceholder: 'Wählen Sie eine Variation aus...',
+          showCancelButton: true,
+          confirmButtonText: 'Zum Warenkorb hinzufügen',
+          cancelButtonText: 'Abbrechen',
+        }).then((result) => {
+          if (result.isConfirmed && result.value) {
+            addToCartWithVariation(productId, result.value);
+          }
+        });
+      });
+    }
+
+    function getProductVariations(productId) {
+      return fetch(`/posx/sales/variations?productId=${productId}`)
+        .then(response => response.json())
+        .then(data => data)  // Direkte Rückgabe des JSON-Arrays
+        .catch(error => {
+          console.error('Fehler beim Abrufen der Variationen:', error);
+          return [];
+        });
+    }
+
+    function addToCartWithVariation(productId, variationId) {
+      $.post('/posx/sales/addToCart', {
+        productId: productId,
+        variationId: variationId
+      }, function(cart) {
+        updateCartUI(cart);
+      });
+    }
+
+    function updateCartUI(cart) {
+      let cartTableBody = $('#cartTable tbody');
+      cartTableBody.empty();
+      cart.forEach(item => {
+        cartTableBody.append(`
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.price} €</td>
+          </tr>
+        `);
+      });
+    }
+</script>
+
 
     <link th:replace="~{app/posCss::posCss}" th:remove="tags" />
   </div>

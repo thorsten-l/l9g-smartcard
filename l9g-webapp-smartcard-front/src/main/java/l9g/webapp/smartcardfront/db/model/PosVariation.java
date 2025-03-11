@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,6 +60,7 @@ public class PosVariation extends PosUuidObject
     this.tax = tax;
   }
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "product_id", nullable = false)
   @ToString.Exclude

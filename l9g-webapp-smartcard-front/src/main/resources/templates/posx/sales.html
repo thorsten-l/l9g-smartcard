@@ -1,11 +1,95 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-  <h1>Sales Page</h1>
- 
-  <a style="width: 100%" class="btn btn-primary"
-               hx-get="/posx/customer"
-               hx-target="#appMainContainer" 
-               hx-trigger="click">Kundensuche</a>
-  
+  <div class="row">
+    <h1 th:text="#{sales_page}">Sales Page</h1>
+
+    <div class="col-md-8">
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card card-primary card-outline mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0" th:text="#{product}">Produkte</div>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 50%"><span th:text="#{product.name}">Produktname</span></th>
+                    <th style="width: 20%"><span th:text="#{product.price}">Preis (€)</span></th>
+                    <th style="width: 20%"><span th:text="#{product.category.name}">Kategorie</span></th>
+                    <th style="width: 10%"><span th:text="#{variations}">Variationen</span></th>
+                    <th><span th:text="#{actions}">Aktionen</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="product : ${products}">
+                    <td th:text="${product.name}"></td>
+                    <td th:text="${product.price} + ' €'"></td>
+                    <td th:text="${product.category.name}"></td>
+                    <td th:text="${product.variations.size()}"></td>
+                    <td class="text-nowrap">
+                      <button class="btn btn-success"
+                              th:if="${product.variations.size() == 0}"
+                              onclick="addToCart('${product.id}')">
+                        <i class="fa-solid fa-cart-plus"></i> Zum Warenkorb
+                      </button>
+                      <button class="btn btn-info"
+                            th:if="${product.variations.size() > 0}"
+                            th:attr="onclick='showVariationSelector(\'' + ${product.id} + '\')'">
+                      <i class="fa-regular fa-object-group"></i> Variationen
+                    </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card card-primary card-outline mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0" th:text="#{shopping_cart}">Warenkorb</div>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-striped" id="cartTable">
+                <thead>
+                  <tr>
+                    <th>Produktname</th>
+                    <th>Preis (€)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Der Warenkorb wird hier dynamisch hinzugefügt -->
+                </tbody>
+              </table>
+            </div>
+            
+             <div class="d-flex justify-content-center">
+                <a style="flex: 1; margin-right: 5px; white-space: nowrap;" class="btn btn-success"
+                      hx-get="/posx/customer"
+                      hx-target="#appMainContainer" 
+                      hx-trigger="click">Bezahlen</a>
+                   
+                <a style="flex: 1; margin-left: 5px; white-space: nowrap;" class="btn btn-danger"
+                      hx-get="/posx/customer"
+                      hx-target="#appMainContainer" 
+                      hx-trigger="click">Abbrechen</a>
+              </div> 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a style="width: 100%; margin-top: 50px;" class="btn btn-primary"
+     hx-get="/posx/customer"
+     hx-target="#appMainContainer"
+     hx-trigger="click">Zur Kundensuchen zurück</a>
+
 </html>

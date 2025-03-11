@@ -15,6 +15,7 @@
  */
 package l9g.webapp.smartcardfront.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -84,6 +85,7 @@ public class PosProduct extends PosUuidObject
 
   private double price;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE,
              fetch = FetchType.EAGER)
   private List<PosVariation> variations = new ArrayList<>();

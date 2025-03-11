@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class PosXController
 {
+
   @Value("${app.barcode.enabled}")
   private boolean barcodeEnabled;
 
@@ -53,10 +54,12 @@ public class PosXController
   }
 
   @GetMapping("/posx/{page}")
-  public String pos( @PathVariable String page,
+  public String pos(@PathVariable String page,
     @AuthenticationPrincipal DefaultOidcUser principal, Model model)
   {
+
     generalModel(principal, model);
     return "posx/" + page;
   }
+
 }
