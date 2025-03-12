@@ -12,6 +12,7 @@
               <div class="card-title mb-0" th:text="#{product}">Produkte</div>
             </div>
             <div class="card-body p-0">
+             <form method="post" action="/posx/sales/addToCart">
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -22,27 +23,36 @@
                     <th><span th:text="#{actions}">Aktionen</span></th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr th:each="product : ${products}">
-                    <td th:text="${product.name}"></td>
-                    <td th:text="${product.price} + ' €'"></td>
-                    <td th:text="${product.category.name}"></td>
-                    <td th:text="${product.variations.size()}"></td>
-                    <td class="text-nowrap">
-                      <button class="btn btn-success"
-                              th:if="${product.variations.size() == 0}"
-                              onclick="addToCart('${product.id}')">
-                        <i class="fa-solid fa-cart-plus"></i> Zum Warenkorb
-                      </button>
-                      <button class="btn btn-info"
-                            th:if="${product.variations.size() > 0}"
-                            th:attr="onclick='showVariationSelector(\'' + ${product.id} + '\')'">
-                      <i class="fa-regular fa-object-group"></i> Variationen
-                    </button>
-                    </td>
-                  </tr>
-                </tbody>
+                   <tbody>
+                    <tr th:each="product : ${products}">
+                        <td>
+                            <input type="hidden" name="productId" th:value="${product.id}" />
+                            <span th:text="${product.name}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${product.price} + ' €'"></span>
+                        </td>
+                        <td>
+                            <span th:text="${product.category.name}"></span>
+                        </td>
+                        <td>
+                            <select name="variationId" th:if="${product.variations.size() > 0}" class="form-select">
+                                <option value="">Keine</option>
+                                <option th:each="variation : ${product.variations}"
+                                        th:value="${variation.id}"
+                                        th:text="${variation.name} + ' - ' + ${variation.price} + ' €'">
+                                </option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-solid fa-cart-plus"></i> Hinzufügen
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
               </table>
+             </form>  
             </div>
           </div>
         </div>
@@ -55,32 +65,33 @@
           <div class="card card-primary card-outline mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="card-title mb-0" th:text="#{shopping_cart}">Warenkorb</div>
-            </div>
+            </div>          
             <div class="card-body p-0">
               <table class="table table-striped" id="cartTable">
                 <thead>
                   <tr>
-                    <th>Produktname</th>
-                    <th>Preis (€)</th>
+                    <th style="width: 50%"><span th:text="#{product.name}">Produktname</span></th>
+                    <th style="width: 50%"><span th:text="#{product.price}">Preis (€)</span></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Der Warenkorb wird hier dynamisch hinzugefügt -->
+                <tr th:each="item : ${cart}">
+                    <td th:text="${item.name}"></td>
+                    <td th:text="${item.price} + ' €'"></td>
+                </tr>
                 </tbody>
               </table>
             </div>
             
-             <div class="d-flex justify-content-center">
-                <a style="flex: 1; margin-right: 5px; white-space: nowrap;" class="btn btn-success"
-                      hx-get="/posx/customer"
-                      hx-target="#appMainContainer" 
-                      hx-trigger="click">Bezahlen</a>
-                   
-                <a style="flex: 1; margin-left: 5px; white-space: nowrap;" class="btn btn-danger"
-                      hx-get="/posx/customer"
-                      hx-target="#appMainContainer" 
-                      hx-trigger="click">Abbrechen</a>
-              </div> 
+            <div class="card-footer d-flex justify-content-between">
+               <form method="post" action="/posx/sales/checkout">
+                  <button type="submit" class="btn btn-success">Bezahlen</button>
+               </form>
+               <form method="post" action="/posx/sales/clearCart">
+                   <button type="submit" class="btn btn-danger">Abbrechen</button>
+               </form>
+            </div>
+            </div> 
           </div>
         </div>
       </div>

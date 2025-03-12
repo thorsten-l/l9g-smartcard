@@ -113,7 +113,7 @@ public class ClientSecurityConfig
           PosRole.POS_ACCOUNTANT.toString(),
           PosRole.POS_OWNER.toString(),
           PosRole.POS_ADMINISTRATOR.toString()
-        )
+        )     
     )
       .headers(
         headers -> headers

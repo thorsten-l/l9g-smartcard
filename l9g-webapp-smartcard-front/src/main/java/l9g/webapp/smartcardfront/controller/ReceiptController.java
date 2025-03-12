@@ -33,54 +33,34 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequiredArgsConstructor
 public class ReceiptController
 {
-
   private final DbProductService dbProductService;
 
   private final DbVariationService dbVariationService;
 
-  private final DbPropertyService dbPropertyService;
 
   @GetMapping("/posx/sales")
-  public String receiptProducts(Model model, HttpSession session,
-    @AuthenticationPrincipal DefaultOidcUser principal)
+  public String receiptProducts(Model model, HttpSession session, @AuthenticationPrincipal DefaultOidcUser principal)
   {
-    log.info("Lade Produktliste für Benutzer: {}", principal.getName());
     List<PosProduct> products = dbProductService.ownerFindAllProducts(session, principal);
+    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+
     model.addAttribute("products", products);
+    model.addAttribute("cart", cart != null ? cart : new ArrayList<>());
     return "posx/sales";
   }
 
-  @GetMapping("/posx/sales/variations")
-  @ResponseBody
-  public List<PosVariation> getProductVariations(@RequestParam("productId") String productId,
-    HttpSession session,
-    @AuthenticationPrincipal DefaultOidcUser principal)
-  {
-    log.info("Lade Variationen für Produkt: {}", productId);
-    PosProduct product = dbProductService.ownerGetProductById(productId, session, principal);
-    if(product != null)
-    {
-      List<PosVariation> variations = dbVariationService.productFindAllVariations(productId);
-      return variations != null ? variations : List.of();
-    }
-    log.warn("Produkt nicht gefunden: {}", productId);
-    return List.of();
-  }
-
   @PostMapping("/posx/sales/addToCart")
-  @ResponseBody
-  public List<PosProduct> addToCart(@RequestParam("productId") String productId,
+  public String addToCart(
+    @RequestParam("productId") String productId,
     @RequestParam(value = "variationId", required = false) String variationId,
     HttpSession session,
     @AuthenticationPrincipal DefaultOidcUser principal)
   {
-    log.info("Füge Produkt zum Warenkorb hinzu: {} (Variation: {})", productId, variationId);
 
     PosProduct product = dbProductService.ownerGetProductById(productId, session, principal);
     if(product == null)
     {
-      log.warn("Produkt nicht gefunden: {}", productId);
-      return getCart(session);
+      return "redirect:/posx/sales";
     }
 
     if(variationId != null)
@@ -92,25 +72,31 @@ public class ReceiptController
         product.setPrice(variation.getPrice());
         product.setTax(variation.getTax());
       }
-      else
-      {
-        log.warn("Variation nicht gefunden: {}", variationId);
-        double defaultTax = Double.parseDouble(
-          dbPropertyService.getPropertyValue(session, principal, DbService.KEY_DEFAULT_TAX));
-        product.setTax(defaultTax);
-      }
     }
 
-    List<PosProduct> cart = getCart(session);
+    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+    if(cart == null)
+    {
+      cart = new ArrayList<>();
+      session.setAttribute("cart", cart);
+    }
     cart.add(product);
-    session.setAttribute("cart", cart);
-    return cart;
+
+    return "redirect:/posx/sales";
   }
 
-  private List<PosProduct> getCart(HttpSession session)
+  @PostMapping("/posx/sales/clearCart")
+  public String clearCart(HttpSession session)
   {
-    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
-    return cart != null ? cart : new ArrayList<>();
+    session.removeAttribute("cart");
+    return "redirect:/posx/sales";
+  }
+
+  @PostMapping("/posx/sales/checkout")
+  public String checkout(HttpSession session)
+  {
+    session.removeAttribute("cart");
+    return "redirect:/posx/customer";
   }
 
 }
