@@ -28,12 +28,15 @@
                       <td>
                         <input type="hidden" name="productId" th:value="${product.id}" />
                         <span th:text="${product.name}"></span>
+                        <input type="hidden" name="productName" th:value="${product.name}" />
                       </td>
                       <td>
                         <span th:text="${product.price} + ' €'"></span>
+                        <input type="hidden" name="productPrice" th:value="${product.price}" />
                       </td>
                       <td>
                         <span th:text="${product.category.name}"></span>
+                        <input type="hidden" name="productCategory" th:value="${product.category.name}" />
                       </td>
                       <td>
                         <select name="variationId" th:if="${product.variations.size() > 0}" class="form-select">
