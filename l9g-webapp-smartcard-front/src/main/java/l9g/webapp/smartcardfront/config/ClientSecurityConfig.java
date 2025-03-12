@@ -78,7 +78,7 @@ public class ClientSecurityConfig
         .requestMatchers("/system/test/error403").denyAll()
         // allow all
         .requestMatchers("/", "/error/**", "/api/v1/buildinfo",
-          "/webjars/**", "/icons/**", "/css/**", "/js/**", "/images/**", 
+          "/webjars/**", "/icons/**", "/css/**", "/js/**", "/images/**",
           "/signotec/**",
           "/actuator/**", "/flags/**", "/logout").permitAll()
         // admins only
@@ -113,7 +113,7 @@ public class ClientSecurityConfig
           PosRole.POS_ACCOUNTANT.toString(),
           PosRole.POS_OWNER.toString(),
           PosRole.POS_ADMINISTRATOR.toString()
-        )     
+        )
     )
       .headers(
         headers -> headers
@@ -148,7 +148,7 @@ public class ClientSecurityConfig
     {
       if(authentication != null && authentication.getPrincipal() instanceof DefaultOidcUser)
       {
-        DefaultOidcUser oidcUser = (DefaultOidcUser)authentication.getPrincipal();
+        DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
         userService.invalidateCache(oidcUser.getPreferredUsername());
       }
       new SecurityContextLogoutHandler().logout(request, response, authentication);
@@ -189,8 +189,8 @@ public class ClientSecurityConfig
         if(log.isDebugEnabled())
         {
           authorities.stream()
-            .map(GrantedAuthority :: getAuthority)
-            .forEach(System.out :: println);
+            .map(GrantedAuthority::getAuthority)
+            .forEach(System.out::println);
         }
 
         return new DefaultOidcUser(

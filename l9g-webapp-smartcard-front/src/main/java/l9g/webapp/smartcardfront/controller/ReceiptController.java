@@ -7,6 +7,7 @@ package l9g.webapp.smartcardfront.controller;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import l9g.webapp.smartcardfront.admin.AdminService;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
@@ -32,70 +33,79 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class ReceiptController {
-    
-    private final DbProductService dbProductService;
-    private final DbVariationService dbVariationService;
+public class ReceiptController
+{
 
-    // Zeigt alle Produkte und den Warenkorb an
-    @GetMapping("/posx/sales")
-    public String receiptProducts(Model model, HttpSession session, @AuthenticationPrincipal DefaultOidcUser principal) {
-        List<PosProduct> products = dbProductService.ownerFindAllProducts(session, principal);
-        List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+  private final DbProductService dbProductService;
 
-        model.addAttribute("products", products);
-        model.addAttribute("cart", cart != null ? cart : new ArrayList<>());
-        return "posx/sales";
+  private final DbVariationService dbVariationService;
+
+  @GetMapping("/posx/sales")
+  public String receiptProducts(Model model, HttpSession session, @AuthenticationPrincipal DefaultOidcUser principal)
+  {
+    if(principal != null)
+    {
+      log.debug("Benutzerrollen: {}", principal.getAuthorities());
+    }
+    List<PosProduct> products = dbProductService.ownerFindAllProducts(session, principal);
+    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+
+    model.addAttribute("products", products);
+    model.addAttribute("cart", cart != null ? cart : new ArrayList<>());
+    return "posx/sales";
+  }
+
+  @PostMapping("/posx/sales/addToCart/{productId}/{variationId}")
+  public String addToCart(
+    @PathVariable("productId") String productId,
+    @PathVariable(value = "variationId", required = false) String variationId,
+    HttpSession session,
+    @AuthenticationPrincipal DefaultOidcUser principal, Model model)
+  {
+
+    log.debug("Füge Produkt mit ID: {} und Variation mit ID: {} zum Warenkorb hinzu", productId, variationId);
+
+    PosProduct product = dbProductService.ownerGetProductById(productId, session, principal);
+    if(product == null)
+    {
+      return "redirect:/posx/sales";
     }
 
-    // Fügt ein Produkt in den Warenkorb hinzu, nutzt @PathVariable für die Produkt- und Variations-IDs
-    @PostMapping("/posx/sales/addToCart/{productId}/{variationId}")
-    public String addToCart(
-        @PathVariable("productId") String productId,
-        @PathVariable(value = "variationId", required = false) String variationId,
-        HttpSession session,
-        @AuthenticationPrincipal DefaultOidcUser principal) {
-        
-        log.debug("Füge Produkt mit ID: {} und Variation mit ID: {} zum Warenkorb hinzu", productId, variationId);
-
-        // Produkt aus der Datenbank holen
-        PosProduct product = dbProductService.ownerGetProductById(productId, session, principal);
-        if (product == null) {
-            return "redirect:/posx/sales";  // Produkt nicht gefunden, zurück zur Verkaufsseite
-        }
-
-        // Wenn eine Variation angegeben ist, diese hinzufügen
-        if (variationId != null) {
-            PosVariation variation = dbVariationService.ownerGetVariationById(variationId, session, principal);
-            if (variation != null) {
-                product.setName(product.getName() + " - " + variation.getName());
-                product.setPrice(variation.getPrice());
-                product.setTax(variation.getTax());
-            }
-        }
-
-        // Warenkorb aus der Session holen
-        List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
-            session.setAttribute("cart", cart);  // Wenn der Warenkorb leer ist, erstelle einen neuen
-        }
-        
-        cart.add(product);  // Produkt zum Warenkorb hinzufügen
-        return "redirect:/posx/sales";  // Zurück zur Verkaufsseite
+    if(variationId != null)
+    {
+      PosVariation variation = dbVariationService.ownerGetVariationById(variationId, session, principal);
+      if(variation != null)
+      {
+        product.setName(product.getName() + " - " + variation.getName());
+        product.setPrice(variation.getPrice());
+        product.setTax(variation.getTax());
+      }
     }
 
-    // Leert den Warenkorb
-    @PostMapping("/posx/sales/clearCart")
-    public String clearCart(HttpSession session) {
-        session.removeAttribute("cart");
-        return "redirect:/posx/sales";  // Zurück zur Verkaufsseite
+    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+    if(cart == null)
+    {
+      cart = new ArrayList<>();
+      session.setAttribute("cart", cart);
     }
 
-    // Checkout-Prozess, entfernt den Warenkorb und leitet zur Kunden-Seite weiter
-    @PostMapping("/posx/sales/checkout")
-    public String checkout(HttpSession session) {
-        session.removeAttribute("cart");  // Warenkorb leeren
-        return "redirect:/posx/customer";  // Weiterleitung zur Kunden-Seite
-    }
+    cart.add(product);
+    return "redirect:/posx/sales";
+  }
+
+  // Leert den Warenkorb
+  @PostMapping("/posx/sales/clearCart")
+  public String clearCart(@AuthenticationPrincipal DefaultOidcUser principal, HttpSession session)
+  {
+    session.removeAttribute("cart");
+    return "redirect:/posx/sales";
+  }
+
+  @PostMapping("/posx/sales/checkout")
+  public String checkout(@AuthenticationPrincipal DefaultOidcUser principal, HttpSession session)
+  {
+    session.removeAttribute("cart");
+    return "redirect:/posx/customer";
+  }
+
 }
