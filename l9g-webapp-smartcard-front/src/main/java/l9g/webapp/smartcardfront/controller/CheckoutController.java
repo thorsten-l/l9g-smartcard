@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class ReceiptController
+public class CheckoutController
 {
 
   private final DbProductService dbProductService;
