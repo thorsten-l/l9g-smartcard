@@ -12,7 +12,7 @@
               <div class="card-title mb-0" th:text="#{product}" style="font-weight: bold;">Produkte</div>
             </div>
             <div class="card-body p-0">
-              <form method="post" action="/posx/sales/addToCart">
+              <form method="post" action="/posx/sales/addToCart" hx-post="/posx/sales/addToCart" hx-target="#cartTable">
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -69,7 +69,7 @@
               <div class="card-title mb-0" th:text="#{shopping_cart}" style="font-weight: bold;">Warenkorb</div>
             </div>          
             <div class="card-body p-0">
-              <form method="post" action="/posx/sales/checkout">
+              <form method="post" action="/posx/sales/checkout" hx-post="/posx/sales/checkout" hx-target="#cartTable">
                 <table class="table table-striped" id="cartTable">
                   <thead>
                     <tr>
@@ -86,7 +86,7 @@
                 </table>
                 <div class="card-footer d-flex justify-content-center" style="gap: 25px;">
                   <button type="submit" class="btn btn-success" style="margin-left: 30px;">Bezahlen</button>
-                  <form method="post" action="/posx/sales/clearCart">
+                  <form method="post" action="/posx/sales/clearCart" hx-post="/posx/sales/clearCart" hx-target="#cartTable">
                     <button type="submit" class="btn btn-danger" style="margin-left: 80px;">Abbrechen</button>
                   </form>
                 </div>
