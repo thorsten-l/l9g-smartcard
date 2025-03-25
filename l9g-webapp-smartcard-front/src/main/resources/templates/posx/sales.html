@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
+  
   <div class="row">
     <h1 th:text="#{sales_page}" style="margin: 10px;">Sales Page</h1>  
    <div class="col-md-8">
@@ -13,8 +13,6 @@
 
             <div class="card-body">
               <form method="post" action="/posx/sales/addToCart" hx-post="/posx/sales/addToCart" hx-target="#cartTable">
-
-
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                   <div th:each="product : ${products}" class="col">
                     <div class="card h-100">
