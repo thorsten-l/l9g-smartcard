@@ -20,7 +20,7 @@ spring:
             scope: openid,profile,email,roles
         provider:
           app:
-            issuer-uri: https://id.dev.sonia.de/realms/dev
+            issuer-uri: https://id.dev.sonia.de/realms/sonia
             user-name-attribute: preferred_username
 
   sql:

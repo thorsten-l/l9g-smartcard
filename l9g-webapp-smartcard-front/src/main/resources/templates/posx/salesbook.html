@@ -1,11 +1,98 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-  <h1>Sales Book</h1>
- 
-  <a style="width: 100%" class="btn btn-primary"
+   <div class="row">
+    <h1 th:text="#{sales_book}" style="margin: 10px;">Sales Page</h1>
+
+    <div class="col-12" style="overflow-y: auto; max-height: 80vh;">
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card card-primary card-outline mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0" th:text="#{sales_book}" style="font-weight: bold;">Produkte</div>
+            </div>
+            <div class="card-body p-3">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 7%"><span th:text="#{salesbook.tenant}">Produktname</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.pointOfSales}">Preis (€)</span></th>
+                      <th style="width: 5%"><span th:text="#{salesbook.cashier}">Kategorie</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.amount}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.amountReceived}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.amountRefundet}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.currency}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.customerName}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.customerNumber}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.customerCardSerial}">Variationen</span></th>
+                      <th style="width: 6%"><span th:text="#{salesbook.paymentType}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.purpose}">Variationen</span></th>
+                      <th style="width: 5%"><span th:text="#{salesbook.status}">Variationen</span></th>
+                      <th style="width: 7%"><span th:text="#{salesbook.sumupUser}">Variationen</span></th>
+                      <th style="width: 8%"><span th:text="#{salesbook.sumupTransactionId}">Variationen</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="transaction : ${transactions}">
+                      <td>
+                        <span th:text="${transaction.tenant.name}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.pointOfSales.name}"></span>
+                      </td>
+                     <td>
+                        <span th:text="${transaction.cashier}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.amount}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.amountReceived}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.amountRefundet}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.currency}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.customerName}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.customerNumber}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.customerCardSerial}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.paymentType}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.purpose}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.status}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.sumupUser}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${transaction.sumupTransactionId}"></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <a style="width: 100%; margin-top: 4rem;" class="btn btn-primary"
                hx-get="/posx/customer"
                hx-target="#appMainContainer" 
                hx-trigger="click">Kundensuche</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
   
 </html>

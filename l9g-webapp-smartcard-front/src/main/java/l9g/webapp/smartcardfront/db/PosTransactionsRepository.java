@@ -15,9 +15,13 @@
  */
 package l9g.webapp.smartcardfront.db;
 
+import java.util.List;
+import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -29,4 +33,5 @@ public interface PosTransactionsRepository extends
   JpaRepository<PosTransaction, String>,
   PagingAndSortingRepository<PosTransaction, String>
 {
+  List<PosTransaction> findAllByTenantId(String tenantId);
 }
