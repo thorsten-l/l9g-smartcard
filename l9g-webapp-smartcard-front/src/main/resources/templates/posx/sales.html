@@ -3,7 +3,7 @@
   
   <div class="row">
     <h1 th:text="#{sales_page}" style="margin: 10px;">Sales Page</h1>  
-   <div class="col-md-8">
+   <div class="col-md-6">
       <div class="app-content">
         <div class="container-fluid">
           <div class="card card-primary card-outline mb-4">
@@ -49,29 +49,54 @@
     </div>      
           
 
-    <div class="col-md-4">
+    <div class="col-md-6">
       <div class="app-content">
         <div class="container-fluid">
           <div class="card card-primary card-outline mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="card-title mb-0" th:text="#{shopping_cart}" style="font-weight: bold;">Warenkorb</div>
             </div>          
-            <div class="card-body p-0">
+            <div class="card-body p-3">
               <form method="post" action="/posx/sales/checkout" hx-post="/posx/sales/checkout" hx-target="#cartTable">
+                <div class="table-responsive"> 
                 <table class="table table-striped" id="cartTable">
                   <thead>
                     <tr>
-                      <th style="width: 50%"><span th:text="#{product.name}">Produktname</span></th>
-                      <th style="width: 50%"><span th:text="#{product.price}">Preis (€)</span></th>
+                      <th style="width: 40%"><span th:text="#{product.name}">Produktname</span></th>
+                      <th style="width: 15%"><span th:text="#{product.quantity}">Preis (€)</span></th>
+                      <th style="width: 15%"><span th:text="#{product.price}">Preis (€)</span></th>
+                      <th style="width: 15%"><span th:text="#{product.tax}">Preis (€)</span></th>
+                      <th style="width: 15%"><span th:text="#{product.combined}">Preis (€)</span></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr th:each="item : ${cart}">
                       <td th:text="${item.name}"></td>
+                      <td th:text="${item.quantity}"></td>
                       <td th:text="${item.price} + ' €'"></td>
+                      <td th:text="${item.tax}"></td>
+                      <td th:text="${item.quantity * (item.product.price + item.product.tax)} + ' €'"></td>
                     </tr>
                   </tbody>
+                  <tfoot style="border-top: 3px solid #ccc;">
+                    <tr>
+                    <td colspan="4">
+                         <strong th:text="#{item.tax.combined}">Gesamtsteuer:</strong></td>
+                        <td th:text="${#numbers.formatDecimal(totalTax, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+                    </tr>
+                      <tr>
+                        <td colspan="4">
+                          <strong th:text="#{item.tax.combined.without.tax}">Gesamtpreis (exkl. Steuer):</strong></td>
+                        <td th:text="${#numbers.formatDecimal(totalPriceExcl, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+                      </tr>
+                      <tr>
+                        <td colspan="4">
+                          <strong th:text="#{item.tax.combined.with.tax}">Gesamtbetrag (inkl. Steuer):</strong></td>
+                        <td th:text="${#numbers.formatDecimal(totalPriceIncl, 1, 'COMMA', 2, 'POINT')} + ' €'">></td>
+                    </tr>
+                  </tfoot>
                 </table>
+                </div>   
                 <div class="card-footer d-flex justify-content-center" style="gap: 25px;">
                   <button type="submit" class="btn btn-success" style="margin-left: 30px;">Bezahlen</button>
                   <form method="post" action="/posx/sales/clearCart" hx-post="/posx/sales/clearCart" hx-target="#cartTable">

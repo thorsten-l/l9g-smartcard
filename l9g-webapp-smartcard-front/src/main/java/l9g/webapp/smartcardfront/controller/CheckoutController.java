@@ -6,7 +6,10 @@ package l9g.webapp.smartcardfront.controller;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import l9g.webapp.smartcardfront.db.model.PosCartItem;
 import l9g.webapp.smartcardfront.db.model.PosProduct;
 import l9g.webapp.smartcardfront.db.model.PosVariation;
 import l9g.webapp.smartcardfront.db.service.DbProductService;
@@ -43,10 +46,31 @@ public class CheckoutController
       log.debug("Benutzerrollen: {}", principal.getAuthorities());
     }
     List<PosProduct> products = dbProductService.ownerFindAllProducts(session, principal);
-    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+    Map<String, PosCartItem> cart = (Map<String, PosCartItem>) session.getAttribute("cart");
+    if(cart == null)
+    {
+      cart = new HashMap<>();
+    }
+    
+    double totalTax = 0.0;
+    double totalPriceExel = 0.0;
+    double totalPriceIncl = 0.0;
+    
+    for(PosCartItem item : cart.values()){
+    double price = item.getProduct().getPrice();
+    double tax = item.getProduct().getTax();
+    int quantity = item.getQuantity();
+    totalTax += tax * quantity;
+    totalPriceExel += price * quantity;
+    totalPriceIncl += (price + tax) * quantity;
+    
+    }
 
     model.addAttribute("products", products);
-    model.addAttribute("cart", cart != null ? cart : new ArrayList<>());
+    model.addAttribute("cart", cart);
+    model.addAttribute("totalTax", totalTax);
+    model.addAttribute("totalPriceExel", totalPriceExel);
+    model.addAttribute("totalPriceIncl", totalPriceIncl);
     return "posx/sales";
   }
 
@@ -77,14 +101,24 @@ public class CheckoutController
       }
     }
 
-    List<PosProduct> cart = (List<PosProduct>) session.getAttribute("cart");
+    Map<String, PosCartItem> cart = (Map<String, PosCartItem>) session.getAttribute("cart");
     if(cart == null)
     {
-      cart = new ArrayList<>();
+      cart = new HashMap<>();
       session.setAttribute("cart", cart);
     }
 
-    cart.add(product);
+    if(cart.containsKey(product.getId()))
+    {
+      
+      cart.get(product.getId()).incrementQuantity();
+    }
+    else
+    {
+      
+      cart.put(product.getId(), new PosCartItem(product));
+    }
+
     return "redirect:/posx/sales";
   }
 
