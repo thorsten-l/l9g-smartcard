@@ -36,6 +36,8 @@ public interface PosPointsOfSaleRepository extends
   List<PosPointOfSale> findAllByTenantOrderByNameAsc(PosTenant tenant);
 
   Optional<PosPointOfSale> findByTenant_IdAndName(String tenantId, String name);
+  
+  List<PosPointOfSale> findAllByTenantId(String tenantId);  
 
   List<PosPointOfSale> findAllByOrderByNameAsc();
 

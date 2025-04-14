@@ -6,10 +6,10 @@ package l9g.webapp.smartcardfront.controller;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import l9g.webapp.smartcardfront.db.model.PosPointOfSale;
 import l9g.webapp.smartcardfront.db.model.PosTransaction;
-import l9g.webapp.smartcardfront.db.service.DbProductService;
+import l9g.webapp.smartcardfront.db.service.DbPointOfSaleService;
 import l9g.webapp.smartcardfront.db.service.DbTransactionsService;
-import l9g.webapp.smartcardfront.db.service.DbVariationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 /**
  *
  * @author kevin
@@ -29,6 +30,8 @@ public class SalesbookController
 
   private final DbTransactionsService dbTransactionService;
 
+  private final DbPointOfSaleService dbPointOfSaleService;
+
   @GetMapping("/posx/salesbook")
   public String receiptProducts(Model model, HttpSession session, @AuthenticationPrincipal DefaultOidcUser principal)
   {
@@ -37,8 +40,11 @@ public class SalesbookController
       log.debug("Benutzerrollen: {}", principal.getAuthorities());
     }
     List<PosTransaction> transactions = dbTransactionService.ownerFindAllTransactions(session, principal);
+    List<PosPointOfSale> allPointOfSales = dbPointOfSaleService.findAllPointsOfSale(session, principal);
 
     model.addAttribute("transactions", transactions);
+    model.addAttribute("pointOfSales", allPointOfSales);
     return "posx/salesbook";
   }
+
 }

@@ -16,6 +16,8 @@
 package l9g.webapp.smartcardfront.db.service;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import l9g.smartcard.dto.DtoCreditCardReader;
 import l9g.webapp.smartcardfront.client.ApiClientService;
@@ -28,6 +30,7 @@ import l9g.webapp.smartcardfront.form.model.FormPointOfSale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -48,7 +51,7 @@ public class DbPointOfSaleService
   private final PosPointsOfSaleRepository posPointsOfSaleRepository;
 
   private final PosAddressesRepository posAddressesRepository;
-  
+
   private final ApiClientService apiClientService;
 
   public List<PosPointOfSale> findPointsOfSaleByTenant(HttpSession session, DefaultOidcUser principal)
@@ -59,6 +62,25 @@ public class DbPointOfSaleService
     log.debug("Fetching Point of Sale for tenantId={}", tenant.getId());
 
     return posPointsOfSaleRepository.findAllByTenantOrderByNameAsc(tenant);
+  }
+
+  public List<PosPointOfSale> findAllPointsOfSale(HttpSession session, DefaultOidcUser principal)
+  {
+    Collection<? extends GrantedAuthority> authorities = principal.getAuthorities();
+    boolean isAccountant = authorities.stream()
+      .anyMatch(a -> a.getAuthority().equals("ROLE_POS_ACCOUNTANT"));
+
+    if(isAccountant)
+    {
+      return posPointsOfSaleRepository.findAllByOrderByNameAsc();
+    }
+
+    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
+    if(tenant != null)
+    {
+      return posPointsOfSaleRepository.findAllByTenantId(tenant.getId());
+    }
+    return Collections.emptyList();
   }
 
   public PosPointOfSale findPointOfSaleById(String id)
@@ -95,19 +117,19 @@ public class DbPointOfSaleService
     posPointOfSale.setAddress(
       posAddressesRepository.findById(
         formPointOfSale.getAddressId()).orElse(null));
-    
-    if ( formPointOfSale.getSumupReaderId() != null 
-        && ! formPointOfSale.getSumupReaderId().isBlank()  )
+
+    if(formPointOfSale.getSumupReaderId() != null
+      && !formPointOfSale.getSumupReaderId().isBlank())
     {
       DtoCreditCardReader reader = apiClientService.findCreditCardReaderById(formPointOfSale.getSumupReaderId());
-      if ( reader != null )
+      if(reader != null)
       {
         posPointOfSale.setSumupReaderName(reader.getName());
       }
       else
       {
         posPointOfSale.setSumupReaderId(null);
-        posPointOfSale.setSumupReaderName(null);        
+        posPointOfSale.setSumupReaderName(null);
       }
     }
     else

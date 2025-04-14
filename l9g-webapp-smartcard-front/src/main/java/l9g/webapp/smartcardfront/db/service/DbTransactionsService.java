@@ -16,15 +16,18 @@
 package l9g.webapp.smartcardfront.db.service;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosTransaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
-
 
 /**
  *
@@ -43,14 +46,24 @@ public class DbTransactionsService
   public List<PosTransaction> ownerFindAllTransactions(
     HttpSession session, DefaultOidcUser principal)
   {
-    PosTenant tenant = tenantService
-      .checkTenantOwner(session, principal);
+    Collection<? extends GrantedAuthority> authorities = principal.getAuthorities();
+    
+    boolean isAccountant = authorities.stream()
+      .anyMatch(a -> a.getAuthority().equals("ROLE_POS_ACCOUNTANT"));
 
+    if(isAccountant)
+    {
+      return posTransactionsRepository.findAll();
+    }
+
+    
+    PosTenant tenant = tenantService.checkTenantOwner(session, principal);
     if(tenant != null)
     {
       return posTransactionsRepository.findAllByTenantId(tenant.getId());
     }
-    return null;
+
+    return Collections.emptyList();
   }
 
   /**
