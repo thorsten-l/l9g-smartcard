@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
+  <div id="salesbookTableContainer" hx-swap="outerHTML">
    <div class="row">
     <h1 th:text="#{sales_book}" style="margin: 10px;">Sales Page</h1>
-
     <div class="col-12" style="overflow-y: auto; max-height: 80vh;">
       <div class="app-content">
         <div class="container-fluid">
@@ -11,28 +10,47 @@
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="card-title mb-0" th:text="#{sales_book}" style="font-weight: bold;">Produkte</div>
             </div>
+            <form hx-get="/posx/salesbook" hx-target="#salesbookTableContainer" hx-push-url="false" hx-trigger="submit" class="htmx-filter-form">
             <div class="row g-3 align-items-end" style="margin: 1rem 0;">
               <div class="col-md-6">
                 <label class="form-label" th:text="#{period}">Zeitraum</label>
-                <select class="form-select">
-                  <option value="in_total" th:text="#{in_total}">In total</option>
-                  <option value="1st_quarter" th:text="#{1st_quarter}">1st quarter</option>
-                  <option value="2nd_quarter" th:text="#{2nd_quarter}">2nd quarter</option>
-                  <option value="3rd_quarter" th:text="#{3rd_quarter}">3rd quarter</option>
-                  <option value="4th_quarter" th:text="#{4th_quarter}">4th quarter</option>
-                </select>
+                  <select class="form-select" name="quarter">
+                   <option value="in_total"
+                           th:text="#{in_total}"
+                           th:selected="${selectedQuarter == null or selectedQuarter == 'in_total'}">In total</option>
+                   <option value="1"
+                           th:text="#{1st_quarter}"
+                           th:selected="${selectedQuarter == '1'}">1st quarter</option>
+                   <option value="2"
+                           th:text="#{2nd_quarter}"
+                           th:selected="${selectedQuarter == '2'}">2nd quarter</option>
+                   <option value="3"
+                           th:text="#{3rd_quarter}"
+                           th:selected="${selectedQuarter == '3'}">3rd quarter</option>
+                   <option value="4"
+                           th:text="#{4th_quarter}"
+                           th:selected="${selectedQuarter == '4'}">4th quarter</option>
+                 </select>
               </div>
               <div class="col-md-6">
                 <label for="pointOfSale" class="form-label" th:text="#{salesbook.pointOfSales}">Verkaufsstelle</label>
-                <select class="form-select" name="pointOfSale">
-                  <option value="all" th:text="#{all_pointOfSales}">Alle</option>
-                  <option th:each="pos : ${pointOfSales}"
-                          th:value="${pos.id}"
-                          th:text="${pos.name}">
-                  </option>
+                <select class="form-select" name="pointOfSaleId">
+                  <option value="all" th:text="#{all_pointOfSales}" th:selected="${selectedPointOfSaleId == null or selectedPointOfSaleId == 'all'}">Alle</option>
+                  <option th:each="pos : ${pointOfSales}" 
+                          th:value="${pos.name}" 
+                          th:text="${pos.name}" 
+                          th:selected="${selectedPointOfSaleId != null and selectedPointOfSaleId.equals(pos.name)}">POS</option>
                 </select>
               </div>
-            </div>  
+              <div class="col-12">
+                <button class="btn btn-primary" type="submit" th:text="#{filter}">Filtern</button>
+                  <button class="btn btn-secondary"
+                  type="button"
+                  onclick="resetSalesbookFilters()" 
+                  th:text="#{reset}">reset</button>
+              </div> 
+            </div>
+           </form> 
             <div class="card-body p-3">
               <div class="table-responsive">
                 <table class="table table-bordered">
@@ -109,16 +127,16 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
+              </div>             
               <a style="width: 100%; margin-top: 4rem;" class="btn btn-primary"
                hx-get="/posx/customer"
                hx-target="#appMainContainer" 
                hx-trigger="click">Kundensuche</a>
             </div>
+           </div>
           </div>
         </div>
       </div>
     </div>
-   </div>
-  
+   </div> 
 </html>
