@@ -46,6 +46,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
+
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -136,7 +137,7 @@ public class ClientSecurityConfig
             oidcLogoutSuccessHandler(clientRegistrationRepository))
       );
     // permit even POST, PUT and DELETE requests
-    // .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
+    //.csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/admin/**"));
 
     return http.build();
   }

@@ -56,7 +56,7 @@ logging:
     root: INFO
     com.zaxxer.hikari.pool.HikariPool: ERROR
     org.hibernate.engine.jdbc.spi.SqlExceptionHelper: ERROR
-
+    l9g.webapp.smartcardfront.controller: DEBUG
 server:
   port: 8443
   servlet:

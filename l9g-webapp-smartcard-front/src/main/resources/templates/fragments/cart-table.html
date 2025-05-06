@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<table class="table table-striped" id="cartTable" th:fragment="cartTable">
+  <thead>
+    <tr>
+      <th><span th:text="#{products}">Produktname</span></th>
+      <th><span th:text="#{product.quantity}">Produktname</span></th>
+      <th><span th:text="#{price} + ' (€)'">Produktname</span></th>
+      <th><span th:text="#{tax} + ' (%)'">Produktname</span></th>
+      <th><span th:text="#{salesbook.amount} + ' (€)'">Produktname</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="entry : ${cart.entrySet()}">
+      <td th:text="${entry.value.product.name}"></td>
+      <td th:text="${entry.value.quantity}"></td>
+      <td th:text="${entry.value.product.price}"></td>
+      <td th:text="${entry.value.product.tax}"></td>
+      <td th:text="${#numbers.formatDecimal(entry.value.quantity * (entry.value.product.price * (1 + entry.value.product.tax/100)), 1, 'COMMA', 2, 'POINT')}"></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4"><strong>Gesamtsteuer:</strong></td>
+      <td th:text="${#numbers.formatDecimal(totalTax, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+    </tr>
+    <tr>
+      <td colspan="4"><strong>Gesamtpreis (exkl. Steuer):</strong></td>
+      <td th:text="${#numbers.formatDecimal(totalPriceExel, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+    </tr>
+    <tr>
+      <td colspan="4"><strong>Gesamtbetrag (inkl. Steuer):</strong></td>
+      <td th:text="${#numbers.formatDecimal(totalPriceIncl, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
+    </tr>
+  </tfoot>
+</table>

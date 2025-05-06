@@ -23,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -46,49 +48,70 @@ public class CheckoutController
       log.debug("Benutzerrollen: {}", principal.getAuthorities());
     }
     List<PosProduct> products = dbProductService.ownerFindAllProducts(session, principal);
+    log.debug("Geladene Produkte: {}", products);
+
     Map<String, PosCartItem> cart = (Map<String, PosCartItem>) session.getAttribute("cart");
+
     if(cart == null)
     {
+      log.debug("Kein Warenkorb in der Session gefunden. Initialisiere neuen Warenkorb.");
       cart = new HashMap<>();
     }
-    
-    double totalTax = 0.0;
-    double totalPriceExel = 0.0;
-    double totalPriceIncl = 0.0;
-    
-    for(PosCartItem item : cart.values()){
-    double price = item.getProduct().getPrice();
-    double tax = item.getProduct().getTax();
-    int quantity = item.getQuantity();
-    totalTax += tax * quantity;
-    totalPriceExel += price * quantity;
-    totalPriceIncl += (price + tax) * quantity;
-    
+    else
+    {
+      log.debug("Warenkorb aus der Session geladen: {}", cart);
     }
+
+    double totalTax = 0.0;
+    double totalPriceExcl = 0.0;
+    double totalPriceIncl = 0.0;
+
+    for(PosCartItem item : cart.values())
+    {
+      double price = item.getProduct().getPrice();
+      double taxRate = item.getProduct().getTax();  // Steuer in Prozent (z.B. 19 für 19%)
+      int quantity = item.getQuantity();
+
+      double taxPerItem = price * taxRate / 100.0;
+      totalTax += taxPerItem * quantity;
+      totalPriceExcl += price * quantity;
+      totalPriceIncl += (price + taxPerItem) * quantity;
+    }
+
+    log.debug("Steuer: {}, Preis exkl. MwSt: {}, Preis inkl. MwSt: {}", totalTax, totalPriceExcl, totalPriceIncl);
 
     model.addAttribute("products", products);
     model.addAttribute("cart", cart);
     model.addAttribute("totalTax", totalTax);
-    model.addAttribute("totalPriceExel", totalPriceExel);
+    model.addAttribute("totalPriceExel", totalPriceExcl);
     model.addAttribute("totalPriceIncl", totalPriceIncl);
     return "posx/sales";
   }
 
-  @PostMapping("/posx/sales/addToCart/{productId}/{variationId}")
+  @PostMapping("/posx/sales/addToCart")
   public String addToCart(
-    @PathVariable("productId") String productId,
-    @PathVariable(value = "variationId", required = false) String variationId,
+    @RequestParam("productId") String productId,
+    @RequestParam(value = "variationId", required = false) String variationId,
     HttpSession session,
-    @AuthenticationPrincipal DefaultOidcUser principal, Model model)
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    Model model,
+    @RequestHeader(value = "HX-Request", required = false) String hxRequest
+  )
   {
-
-    log.debug("Füge Produkt mit ID: {} und Variation mit ID: {} zum Warenkorb hinzu", productId, variationId);
+    log.debug("Produkt ID: {}", productId);
+    if(variationId != null)
+    {
+      log.debug("Variante ID: {}", variationId);
+    }
 
     PosProduct product = dbProductService.ownerGetProductById(productId, session, principal);
     if(product == null)
     {
+      log.debug("Produkt mit ID {} konnte nicht gefunden werden.", productId);
       return "redirect:/posx/sales";
     }
+
+    String cartKey = product.getId();
 
     if(variationId != null)
     {
@@ -98,34 +121,71 @@ public class CheckoutController
         product.setName(product.getName() + " - " + variation.getName());
         product.setPrice(variation.getPrice());
         product.setTax(variation.getTax());
+        log.debug("Produkt nach Variation aktualisiert: {}", product);
+        cartKey = variation.getId();
+      }
+      else
+      {
+        log.debug("Variante mit ID {} konnte nicht gefunden werden.", variationId);
       }
     }
 
     Map<String, PosCartItem> cart = (Map<String, PosCartItem>) session.getAttribute("cart");
     if(cart == null)
     {
+      log.debug("Kein Warenkorb in der Session gefunden. Initialisiere neuen Warenkorb.");
       cart = new HashMap<>();
       session.setAttribute("cart", cart);
     }
-
-    if(cart.containsKey(product.getId()))
-    {
-      
-      cart.get(product.getId()).incrementQuantity();
-    }
     else
     {
-      
-      cart.put(product.getId(), new PosCartItem(product));
+      log.debug("Warenkorb aus der Session geladen: {}", cart);
     }
 
+    cart.compute(cartKey, (key, item) ->
+    {
+      if(item == null)
+      {
+        log.debug("Produkt zum Warenkorb hinzugefügt: {}", product);
+        return new PosCartItem(product);
+      }
+      item.incrementQuantity();
+      return item;
+    });
+
+    // Berechnung der Steuer- und Gesamtsummen...
+    double totalTax = 0.0;
+    double totalPriceExcl = 0.0;
+    double totalPriceIncl = 0.0;
+    for(PosCartItem item : cart.values())
+    {
+      double price = item.getProduct().getPrice();
+      double taxRate = item.getProduct().getTax();  // Steuer in Prozent
+      int quantity = item.getQuantity();
+
+      double taxPerItem = price * taxRate / 100.0;
+      totalTax += taxPerItem * quantity;
+      totalPriceExcl += price * quantity;
+      totalPriceIncl += (price + taxPerItem) * quantity;
+    }
+    log.debug("Steuer: {}, Preis exkl. MwSt: {}, Preis inkl. MwSt: {}", totalTax, totalPriceExcl, totalPriceIncl);
+
+    model.addAttribute("cart", cart);
+    model.addAttribute("totalTax", totalTax);
+    model.addAttribute("totalPriceExel", totalPriceExcl);
+    model.addAttribute("totalPriceIncl", totalPriceIncl);
+
+    if("true".equals(hxRequest))
+    {
+      return "fragments/cart-table :: cartTable";
+    }
     return "redirect:/posx/sales";
   }
 
-  // Leert den Warenkorb
   @PostMapping("/posx/sales/clearCart")
   public String clearCart(@AuthenticationPrincipal DefaultOidcUser principal, HttpSession session)
   {
+    log.debug("Warenkorb wird gelöscht.");
     session.removeAttribute("cart");
     return "redirect:/posx/sales";
   }
@@ -133,6 +193,7 @@ public class CheckoutController
   @PostMapping("/posx/sales/checkout")
   public String checkout(@AuthenticationPrincipal DefaultOidcUser principal, HttpSession session)
   {
+    log.debug("Checkout wird durchgeführt. Warenkorb wird gelöscht.");
     session.removeAttribute("cart");
     return "redirect:/posx/customer";
   }
