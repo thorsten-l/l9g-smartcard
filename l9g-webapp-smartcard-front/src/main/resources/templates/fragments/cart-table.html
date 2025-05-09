@@ -6,11 +6,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 <table class="table table-striped" id="cartTable" th:fragment="cartTable">
   <thead>
     <tr>
-      <th><span th:text="#{products}">Produktname</span></th>
-      <th><span th:text="#{product.quantity}">Produktname</span></th>
-      <th><span th:text="#{price} + ' (€)'">Produktname</span></th>
-      <th><span th:text="#{tax} + ' (%)'">Produktname</span></th>
-      <th><span th:text="#{salesbook.amount} + ' (€)'">Produktname</span></th>
+      <th style="width: 32%;"><span th:text="#{products}">Produktname</span></th>
+      <th style="width: 17%;"><span th:text="#{product.quantity}">Produktname</span></th>
+      <th style="width: 17%;"><span th:text="#{price} + ' (€)'">Produktname</span></th>
+      <th style="width: 17%;"><span th:text="#{tax} + ' (%)'">Produktname</span></th>
+      <th style="width: 17%;"><span th:text="#{salesbook.amount} + ' (€)'">Produktname</span></th>
     </tr>
   </thead>
   <tbody>
@@ -23,7 +23,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </tr>
   </tbody>
   <tfoot>
-    <tr>
+    <tr style="border-top: 3px solid black;">
       <td colspan="4"><strong>Gesamtsteuer:</strong></td>
       <td th:text="${#numbers.formatDecimal(totalTax, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
     </tr>

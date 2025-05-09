@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-  <div id="salesbookTableContainer" hx-swap="outerHTML">
+  <div id="salesbookTableContainer" hx-swap="innerHTML">
    <div class="row">
     <h1 th:text="#{sales_book}" style="margin: 10px;">Sales Page</h1>
     <div class="col-12" style="overflow-y: auto; max-height: 80vh;">
@@ -8,7 +8,11 @@
         <div class="container-fluid">
           <div class="card card-primary card-outline mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-              <div class="card-title mb-0" th:text="#{sales_book}" style="font-weight: bold;">Produkte</div>
+              <div class="card-title mb-0 flex-grow-1" th:text="#{sales_book}" style="font-weight: bold;">Produkte</div>  
+              <a class="btn btn-primary"
+                 hx-get="/posx/customer"
+                 hx-target="#appMainContainer"
+                 hx-trigger="click">Zur Kundensuchen zurück</a>
             </div>
             <form hx-get="/posx/salesbook" hx-target="#salesbookTableContainer" hx-push-url="false" hx-trigger="submit" class="htmx-filter-form">
             <div class="row g-3 align-items-end" style="margin: 1rem 0;">
@@ -128,15 +132,11 @@
                   </tbody>
                 </table>
               </div>             
-              <a style="width: 100%; margin-top: 4rem;" class="btn btn-primary"
-               hx-get="/posx/customer"
-               hx-target="#appMainContainer" 
-               hx-trigger="click">Kundensuche</a>
             </div>
            </div>
           </div>
         </div>
       </div>
     </div>
-   </div> 
+   </div>
 </html>

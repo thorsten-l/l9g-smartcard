@@ -1,90 +1,100 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-  
-    <div class="row">
-    <h1 th:text="#{sales_page}" style="margin: 10px;">Sales Page</h1>  
-   <div class="col-md-6">
-      <div class="app-content">
-        <div class="container-fluid">
-          <div class="card card-primary card-outline mb-4">
-            <div class="card-header d-flex align-items-center justify-content-between">
-              <div class="card-title mb-0" th:text="#{product}" style="font-weight: bold;">Produkte</div>
-            </div>
 
-            <div class="card-body">
-              <form method="post" action="/posx/sales/addToCart" hx-post="/posx/sales/addToCart" hx-target="#cartTable">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />              
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                  <div th:each="product : ${products}" class="col">
-                    <div class="card h-100" style="border: 1px solid black;">
-                      <div class="card-body">
-                        <h5 class="card-title text-start">
-                          <span th:text="${product.name}" style="margin-bottom: 1rem;">Produktname</span><br>
-                            <span class="card-subtitle text-body-secondary text-start" th:if="${product.variations.size() == 0}"  th:text="${product.price} + ' €'" style="margin-bottom: 1rem;">Preis</span><br>
-                          <span class="card-text text-muted" th:text="${product.category.name}" style="margin-bottom: 1rem;"> Kategorie</span>
-                        </h5>
-                        <div th:if="${product.variations.size() > 0}" style="margin-top: 5rem;">
-                          <select name="variationId" class="form-select">             
-                            <option th:each="variation : ${product.variations}"
-                                    th:value="${variation.id}"
-                                    th:text="${variation.name} + ' - ' + ${variation.price} + ' €'">
-                            </option>
-                          </select>
-                        </div>
-                        <div th:if="${product.variations.size() == 0}" style="margin-top: 3.5rem;">
-                          <div class="form-select invisible">Keine Varianten</div>
-                        </div>
+<h1 th:text="#{sales_page}" style="margin: 10px;">Sales Page</h1>   
 
-          
-                        <input type="hidden" name="productId" th:value="${product.id}" />
-                        <button type="submit" class="btn btn-success mt-5">
-                          <i class="fa-solid fa-cart-plus"></i> In den Warenkorb
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </form>
-            </div>
+<div class="row"> 
+  <div class="col-md-6">
+    <div class="app-content">
+      <div class="container-fluid">
+        <div class="card card-primary card-outline mb-4">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="card-title mb-0" th:text="#{product}" style="font-weight: bold;">Produkte</div>
           </div>
-        </div>
-      </div>
-    </div>      
- <div id="popup-container"></div>         
 
-    <div class="col-md-6">
-      <div class="app-content">
-        <div class="container-fluid">
-          <div class="card card-primary card-outline mb-4">
-            <div class="card-header d-flex align-items-center justify-content-between">
-              <div class="card-title mb-0" th:text="#{shopping_cart}" style="font-weight: bold;">Warenkorb</div>
-            </div>          
-            <div class="card-body p-3">
-              <form id="checkoutForm" method="post" action="/posx/sales/checkout" hx-post="/posx/sales/checkout" hx-target="#appMainContainer">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <div class="table-responsive"> 
-                 <div id="cartTable" th:replace="~{fragments/cart-table :: cartTable}"></div>
-                </div>   
-                <div class="card-footer d-flex justify-content-center" style="gap: 25px;">
-                  <button type="submit" class="btn btn-success" style="margin-left: 30px;">Bezahlen</button>                
-              </form>
-              <form method="post" action="/posx/sales/clearCart" hx-post="/posx/sales/clearCart" hx-target="#appMainContainer">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                 <button type="submit" class="btn btn-danger">Abbrechen</button>
-                </form>
+          <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+              <div th:each="product : ${products}" class="col">
+                <div class="card h-100" style="border: 1px solid black;">
+                  <div class="card-body">
+                    <h5 class="card-title text-start">
+                      <span th:text="${product.name}" style="margin-bottom: 1rem;">Produktname</span><br>
+                      <span class="card-subtitle text-body-secondary text-start" 
+                            th:if="${product.variations.size() == 0}"  
+                            th:text="${product.price} + ' €'" 
+                            style="margin-bottom: 1rem;">Preis</span><br>
+                      <span class="card-text text-muted" 
+                            th:text="${product.category.name}" 
+                            style="margin-bottom: 1rem;">Kategorie</span>
+                    </h5>
+
+                    <form method="post" action="/posx/sales/addToCart"
+                          hx-post="/posx/sales/addToCart"
+                          hx-target="#cartTable">
+
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                      <input type="hidden" name="productId" th:value="${product.id}" />
+
+                      <div th:if="${product.variations.size() > 0}" style="margin-top: 1rem;">
+                        <select name="variationId" class="form-select">             
+                          <option th:each="variation : ${product.variations}"
+                                  th:value="${variation.id}"
+                                  th:text="${variation.name} + ' - ' + ${variation.price} + ' €'">
+                          </option>
+                        </select>
+                      </div>
+
+                      <div th:if="${product.variations.size() == 0}" style="margin-top: 1rem;">
+                        <div class="form-select invisible">Keine Varianten</div>
+                      </div>
+
+                      <button type="submit" class="btn btn-success mt-4 w-100">
+                        <i class="fa-solid fa-cart-plus"></i> In den Warenkorb
+                      </button>
+                    </form>
+
                   </div>
                 </div>
               </div>
-            </div> 
-          </div>
+            </div> <!-- /.row-cols -->
+          </div> <!-- /.card-body -->
         </div>
+      </div>
+    </div>
+  </div>
 
+  <div class="col-md-6">
+    <div class="app-content">
+      <div class="container-fluid">
+        <div class="card card-primary card-outline mb-4">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="card-title mb-0" th:text="#{shopping_cart}" style="font-weight: bold;">Warenkorb</div>
+          </div>          
+          <div class="card-body p-3">
+            <form id="checkoutForm" method="post" action="/posx/sales/checkout" hx-post="/posx/sales/checkout" hx-target="#appMainContainer">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <div class="table-responsive"> 
+                <div id="cartTable" th:replace="~{fragments/cart-table :: cartTable}"></div>
+              </div>   
+              <div class="card-footer d-flex justify-content-center" style="gap: 25px;">
+                <button type="submit" class="btn btn-success" style="margin-left: 30px;">Bezahlen</button>                
+            </form>
+            <form method="post" action="/posx/sales/clearCart" hx-post="/posx/sales/clearCart" hx-target="#appMainContainer">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <button type="submit" class="btn btn-danger">Abbrechen</button>
+            </form>
+              </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
 
+<div id="popup-container"></div>
 
-  <a style="width: 100%; margin-top: 50px;" class="btn btn-primary"
-     hx-get="/posx/customer"
-     hx-target="#appMainContainer"
-     hx-trigger="click">Zur Kundensuchen zurück</a>
+<a style="width: 100%; margin-top: 50px;" class="btn btn-primary"
+   hx-get="/posx/customer"
+   hx-target="#appMainContainer"
+   hx-trigger="click">Zur Kundensuchen zurück</a>
 
 </html>
