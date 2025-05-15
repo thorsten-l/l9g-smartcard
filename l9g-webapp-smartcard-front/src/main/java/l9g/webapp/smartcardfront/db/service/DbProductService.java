@@ -90,8 +90,14 @@ public class DbProductService
     if("add".equals(id))
     {
       log.debug("add new product");
-      posProduct = new PosProduct(userService.gecosFromPrincipal(principal),
-        category, formProduct.getName());
+      posProduct = new PosProduct(
+        userService.gecosFromPrincipal(principal),
+        category,
+        formProduct.getName(),
+        formProduct.getDescription(),
+        formProduct.getPrice(),
+        formProduct.getTax()
+      );
     }
     else
     {
