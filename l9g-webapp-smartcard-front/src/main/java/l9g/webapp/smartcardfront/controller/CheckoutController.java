@@ -191,11 +191,17 @@ public class CheckoutController
   }
 
   @PostMapping("/posx/sales/checkout")
-  public String checkout(@AuthenticationPrincipal DefaultOidcUser principal, HttpSession session)
+  public String checkout(
+    @AuthenticationPrincipal DefaultOidcUser principal,
+    HttpSession session,
+    @RequestParam("paymentType") String paymentType,
+    @RequestParam("givenAmount") double givenAmount
+  )
   {
-    log.debug("Checkout wird durchgeführt. Warenkorb wird gelöscht.");
+    log.info("Checkout gestartet. Zahlungsart: {}, Gegeben: {} €", paymentType, givenAmount);
     session.removeAttribute("cart");
-    return "redirect:/posx/customer";
+
+    return "redirect:/posx/home";
   }
 
 }

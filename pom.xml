@@ -83,18 +83,18 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
-        <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
-          <release>${java.version}</release>
-          <compilerArgs>
-            <arg>-proc:full</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.13.0</version>
+  <configuration>
+    <encoding>${project.build.sourceEncoding}</encoding>
+    <release>${java.version}</release>
+    <compilerArgs>
+      <arg>-parameters</arg>
+    </compilerArgs>
+  </configuration>
+</plugin>
       
       <plugin>
         <groupId>org.springframework.boot</groupId>
