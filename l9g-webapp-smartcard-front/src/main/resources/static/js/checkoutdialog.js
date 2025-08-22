@@ -50,7 +50,9 @@
     });
 
     if (formValues) {
-      const change = formValues.givenAmount - totalAmount;
+      const totalCents = Math.round(totalAmount * 100);
+      const givenCents = Math.round(parseFloat(formValues.givenAmount) * 100);
+      const change = (givenCents - totalCents) / 100;
       if (formValues.paymentType === 'BAR' && change < 0) {
         Swal.fire(translation.errorTitle, translation.errorNotEnough, 'error');
         return;
