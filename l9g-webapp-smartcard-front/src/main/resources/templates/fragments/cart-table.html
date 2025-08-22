@@ -20,15 +20,15 @@
   </tbody>
   <tfoot>
     <tr style="border-top: 3px solid black;">
-      <td colspan="4"><strong>Gesamtsteuer:</strong></td>
+      <td colspan="4" th:text="#{totalTax}"><strong>Gesamtsteuer:</strong></td>
       <td th:text="${#numbers.formatDecimal(totalTax, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
     </tr>
     <tr>
-      <td colspan="4"><strong>Gesamtpreis (exkl. Steuer):</strong></td>
+      <td colspan="4" th:text="#{amountWithoutTax}"><strong>Gesamtpreis (exkl. Steuer):</strong></td>
       <td th:text="${#numbers.formatDecimal(totalPriceExel, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
     </tr>
     <tr>
-      <td colspan="4"><strong>Gesamtbetrag (inkl. Steuer):</strong></td>
+      <td colspan="4" th:text="#{amountWithTax}"><strong>Gesamtbetrag (inkl. Steuer):</strong></td>
       <td id="totalPriceInclCell" th:text="${#numbers.formatDecimal(totalPriceIncl, 1, 'COMMA', 2, 'POINT')} + ' €'"></td>
     </tr>
   </tfoot>
@@ -41,14 +41,15 @@
             class="btn btn-success"
             style="margin-left: 30px;"
             th:disabled="${cart == null or cart.isEmpty()}"
-            th:title="${cart == null or cart.isEmpty()} ? 'Bitte zuerst Produkte in den Warenkorb legen' : null">
+            th:title="${cart == null or cart.isEmpty()} ? 'Bitte zuerst Produkte in den Warenkorb legen' : null"
+            th:text="#{pay}">
       Bezahlen
     </button>
   </form>
 
   <form method="post" action="/posx/sales/clearCart" hx-post="/posx/sales/clearCart" hx-target="#appMainContainer">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-    <button type="submit" class="btn btn-danger">Abbrechen</button>
+    <button type="submit" class="btn btn-danger" th:text="#{cancel}">Abbrechen</button>
   </form>
 </div> 
 </div>

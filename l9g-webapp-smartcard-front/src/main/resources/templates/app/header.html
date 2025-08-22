@@ -16,6 +16,7 @@ limitations under the License.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <div th:fragment="head" th:remove="tag">
+    <div id="translation" th:replace="~{fragments/translation :: translation}"></div>
     <meta charset="UTF-8"></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1" ></meta>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"></link>
@@ -26,9 +27,7 @@ limitations under the License.
     <link th:rel="stylesheet" th:href="@{/css/flag-icons.min.css}" ></link>
     <link th:rel="stylesheet" th:href="@{/css/adminlte.min.css}"></link>
     <script th:src="@{/js/sweetalert2.all.min.js}"></script>
-    <script th:src="@{/js/STPadServerLib-3.4.0.js}"></script>
     <script th:src="@{/js/resetSalesbookFilters.js}"></script>
-    <script th:src="@{/js/cardissueSignoPadScript.js}"></script>
     <script th:src="@{/js/checkoutdialog.js}"></script>
     <script>
       var AppPos = {

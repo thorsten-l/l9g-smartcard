@@ -1,17 +1,17 @@
     async function startPayment(totalAmount) {
     const { value: formValues } = await Swal.fire({
-      title: 'Zahlung starten',
+      title: translation.startPaymentTitle,
       html:
         `<div style="display: flex; flex-direction: column; align-items: center;">
-          <label for="paymentType" style="margin-top: 10px; margin-bottom: 5px;">Zahlungsart:</label>
+          <label for="paymentType" style="margin-top: 10px; margin-bottom: 5px;">${translation.paymentTypeLabel}</label>
           <select id="paymentType"
                   style="width: 200px; padding: 6px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc;">
-            <option value="BAR">Bar</option>
-            <option value="KARTE">Karte</option>
+            <option value="BAR">${translation.paymentCash}</option>
+            <option value="KARTE">${translation.paymentCard}</option>
           </select>
 
           <div id="givenWrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-            <label for="givenAmount" style="margin-bottom: 5px;">Gegeben (in €):</label>
+            <label for="givenAmount" style="margin-bottom: 5px;">${translation.givenLabel}</label>
             <input type="number"
                    id="givenAmount"
                    placeholder="z. B. 50.00"
@@ -40,32 +40,34 @@
         const paymentType = document.getElementById('paymentType').value;
         const givenAmount = parseFloat(document.getElementById('givenAmount').value);
         if (paymentType === 'BAR' && isNaN(givenAmount)) {
-          Swal.showValidationMessage('Bitte gültigen Betrag eingeben');
+          Swal.showValidationMessage(translation.errorInvalidAmount);
         }
         return { paymentType, givenAmount };
       },
       showCancelButton: true,
-      confirmButtonText: 'Weiter zur Berechnung',
-      cancelButtonText: 'Abbrechen'
+      confirmButtonText: translation.continuePay,
+      cancelButtonText: translation.cancel
     });
 
     if (formValues) {
       const change = formValues.givenAmount - totalAmount;
       if (formValues.paymentType === 'BAR' && change < 0) {
-        Swal.fire('Fehler', 'Gegebener Betrag reicht nicht aus!', 'error');
+        Swal.fire(translation.errorTitle, translation.errorNotEnough, 'error');
         return;
       }
 
       const confirmPayment = await Swal.fire({
-        title: 'Wechselgeld:',
-        html: `<p>Wechselgeld: <strong>${change.toFixed(2)} €</strong></p>`,
+        title: translation.changeTitle,
+        html: `<p>${translation.changeTitle}: <strong>${change.toFixed(2)} €</strong></p>`,
         icon: 'info',
         showCancelButton: true,
-        confirmButtonText: 'Wechselgeld ausgegeben',
-        cancelButtonText: 'Abbrechen'
+        confirmButtonText: translation.changeConfirm,
+        cancelButtonText: translation.cancel
       });
 
       if (confirmPayment.isConfirmed) {
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+        const csrfParam = document.querySelector('input[name="_csrf"]').getAttribute("name");
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/posx/sales/checkout';
@@ -73,10 +75,12 @@
         form.innerHTML = `
           <input type="hidden" name="paymentType" value="${formValues.paymentType}">
           <input type="hidden" name="givenAmount" value="${formValues.givenAmount}">
+          <input type="hidden" name="${csrfParam}" value="${csrfToken}">
         `;
 
         document.body.appendChild(form);
         form.submit();
+        
       }
     }
   }

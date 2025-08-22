@@ -12,7 +12,8 @@
               <a class="btn btn-primary"
                  hx-get="/posx/customer"
                  hx-target="#appMainContainer"
-                 hx-trigger="click">Zur Kundensuchen zurück</a>
+                 hx-trigger="click"
+                 th:text="#{customerSearch}">Zur Kundensuchen zurück</a>
             </div>
             <form hx-get="/posx/salesbook" hx-target="#salesbookTableContainer" hx-push-url="false" hx-trigger="submit" class="htmx-filter-form">
             <div class="row g-3 align-items-end" style="margin: 1rem 0;">

@@ -45,11 +45,12 @@
                       </div>
 
                       <div th:if="${product.variations.size() == 0}" style="margin-top: 1rem;">
-                        <div class="form-select invisible">Keine Varianten</div>
+                        <div class="form-select invisible" th:text="#{noVariant}">Keine Varianten</div>
                       </div>
 
                       <button type="submit" class="btn btn-success mt-4 w-100">
-                        <i class="fa-solid fa-cart-plus"></i> In den Warenkorb
+                        <i class="fa-solid fa-cart-plus"></i> 
+                        <span th:text="#{addToCart}"> In den Warenkorb </span>
                       </button>
                     </form>
 
@@ -86,6 +87,8 @@
 <a style="width: 100%; margin-top: 50px;" class="btn btn-primary"
    hx-get="/posx/customer"
    hx-target="#appMainContainer"
-   hx-trigger="click">Zur Kundensuchen zurück</a>
+   hx-trigger="click"
+   th:text="#{customerSearch}">Zur Kundensuchen zurück
+</a>
 
 </html>

@@ -78,7 +78,7 @@ management:
 app:
   development: false
   api:
-    base-url: http://kasse.dev.sonia.de:8081
+    base-url: http://kasse.dev.sonia.de:8080
   web:
     base-url: https://kasse.dev.sonia.de
   oauth2:

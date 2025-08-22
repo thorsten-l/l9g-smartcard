@@ -1,0 +1,18 @@
+<div id ="translation" th:fragment="translation">
+<script th:inline="javascript">
+  window.translation = {
+    startPaymentTitle: [[#{payment.start}]],
+    paymentTypeLabel: [[#{payment.type}]],
+    paymentCash: [[#{payment.cash}]],
+    paymentCard: [[#{payment.card}]],
+    givenLabel: [[#{payment.given}]],
+    errorInvalidAmount: [[#{payment.error.invalidAmount}]],
+    changeTitle: [[#{payment.change}]],
+    changeConfirm: [[#{payment.change.confirm}]],
+    cancel: [[#{payment.cancel}]],
+    continuePay: [[#{payment.continue}]],
+    errorTitle: [[#{error}]],
+    errorNotEnough: [[#{payment.error.insufficient}]]
+  };
+</script>
+</div>

@@ -99,15 +99,20 @@
             <a style="width: 100%" class="btn btn-primary"
                hx-get="/posx/sales"
                hx-target="#appMainContainer" 
-               hx-trigger="click">Kasse</a>
+               hx-trigger="click"
+               th:text="#{sales_page}">Kasse</a>
           </p>
           <p id="action_payment2" style="display: none">
             <a style="width: 100%" class="btn btn-primary"
                hx-get="/posx/salesbook"
                hx-target="#appMainContainer"
-               hx-trigger="click">Kassenbuch</a></p>
+               hx-trigger="click"
+               th:text="#{sales_book}">Kassenbuch</a></p>
           <p id="action_issuing" style="display: none">
-            <button disabled="true" id="action_issuing_button" style="width: 100%" class="btn btn-primary" onclick="startPadProcessWithPopup()">
+            <button disabled="true" id="action_issuing_button" style="width: 100%" 
+                    class="btn btn-primary" 
+                    onclick="startPadProcessWithPopup()"
+                    th:text="#{card_issuing}">
               Kartenausgabe
             </button>
           </p>
