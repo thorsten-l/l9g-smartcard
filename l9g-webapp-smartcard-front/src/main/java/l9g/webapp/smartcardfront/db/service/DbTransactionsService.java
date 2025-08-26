@@ -16,12 +16,15 @@
 package l9g.webapp.smartcardfront.db.service;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import l9g.webapp.smartcardfront.db.PosTransactionProductsRepository;
 import l9g.webapp.smartcardfront.db.PosTransactionsRepository;
 import l9g.webapp.smartcardfront.db.model.PosTenant;
 import l9g.webapp.smartcardfront.db.model.PosTransaction;
+import l9g.webapp.smartcardfront.db.model.PosTransactionProduct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,6 +45,7 @@ public class DbTransactionsService
   private final DbTenantService tenantService;
 
   private final PosTransactionsRepository posTransactionsRepository;
+  private final PosTransactionProductsRepository posTransactionProductsRepository;
 
   public List<PosTransaction> ownerFindAllTransactions(
     HttpSession session, DefaultOidcUser principal)
@@ -65,6 +69,20 @@ public class DbTransactionsService
 
     return Collections.emptyList();
   }
+  
+@Transactional
+public PosTransaction saveTransaction(PosTransaction transaction)
+{
+  log.debug("Speicher Transaktion: {}", transaction);
+  return posTransactionsRepository.save(transaction);
+}
+
+@Transactional
+public PosTransactionProduct saveTransactionProduct(PosTransactionProduct transactionProduct)
+{
+  log.debug("Speichere Transaktions-Produkt: {}",transactionProduct );
+  return posTransactionProductsRepository.save(transactionProduct);
+}
 
   /**
    * public PosProduct ownerGetProductById(

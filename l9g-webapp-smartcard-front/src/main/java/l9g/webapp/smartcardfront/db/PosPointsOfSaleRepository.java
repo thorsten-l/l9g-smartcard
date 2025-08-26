@@ -32,7 +32,7 @@ public interface PosPointsOfSaleRepository extends
 {
 
   Optional<PosPointOfSale> findByName(String name);
-
+  
   List<PosPointOfSale> findAllByTenantOrderByNameAsc(PosTenant tenant);
 
   Optional<PosPointOfSale> findByTenant_IdAndName(String tenantId, String name);

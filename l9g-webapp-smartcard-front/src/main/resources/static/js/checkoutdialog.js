@@ -17,11 +17,19 @@
                    placeholder="z. B. 50.00"
                    style="width: 200px; padding: 6px; border-radius: 5px; border: 1px solid #ccc;">
           </div>
+           <div style="width: 100%; display: flex; flex-direction: column; 
+              align-items: center;">
+               <label for="purpose" style="margin-bottom: 5px;">${translation.purpose}</label>
+                     <input type="text" id="purpose" placeholder=
+              "${translation.purpose}" style="width: 200px; padding: 6px; 
+              border-radius: 5px; border: 1px solid #ccc;">
+          </div>
         </div>`,
       didOpen: () => {
         const paymentTypeEl = document.getElementById('paymentType');
         const givenAmountEl = document.getElementById('givenAmount');
         const givenWrapperEl = document.getElementById('givenWrapper');
+        
 
         const handleChange = () => {
           if (paymentTypeEl.value === 'KARTE') {
@@ -39,10 +47,11 @@
       preConfirm: () => {
         const paymentType = document.getElementById('paymentType').value;
         const givenAmount = parseFloat(document.getElementById('givenAmount').value);
+        const purpose = document.getElementById('purpose').value;
         if (paymentType === 'BAR' && isNaN(givenAmount)) {
           Swal.showValidationMessage(translation.errorInvalidAmount);
         }
-        return { paymentType, givenAmount };
+        return { paymentType, givenAmount, purpose };
       },
       showCancelButton: true,
       confirmButtonText: translation.continuePay,
@@ -77,6 +86,8 @@
         form.innerHTML = `
           <input type="hidden" name="paymentType" value="${formValues.paymentType}">
           <input type="hidden" name="givenAmount" value="${formValues.givenAmount}">
+          <input type="hidden" name="change" value="${change.toFixed(2)}">
+          <input type="hidden" name="purpose" value="${formValues.purpose}">
           <input type="hidden" name="${csrfParam}" value="${csrfToken}">
         `;
 

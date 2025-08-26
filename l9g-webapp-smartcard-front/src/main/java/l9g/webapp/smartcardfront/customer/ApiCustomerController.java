@@ -21,6 +21,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code39Writer;
+import jakarta.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -105,7 +106,7 @@ public class ApiCustomerController
     term = term.replace('#', ' ');
     term = term.trim();
 
-    if( ! term.isBlank() && term.length() > 4 && term.split("\\s+").length > 0)
+    if(!term.isBlank() && term.length() > 4 && term.split("\\s+").length > 0)
     {
       String[] tokens = term.split("\\s+");
       for(String token : tokens)
@@ -119,11 +120,11 @@ public class ApiCustomerController
 
       log.debug("search term = '{}'", term);
 
-      List<Map<String, String>> clientResult = searchCache.get(term, apiClientService :: findPersonsByTerm);
+      List<Map<String, String>> clientResult = searchCache.get(term, apiClientService::findPersonsByTerm);
       clientResultSize = clientResult.size();
 
       int _page = page - 1;
-      for(int i = 0; i < 10 && (i + (_page * 10)) < clientResult.size(); i ++)
+      for(int i = 0; i < 10 && (i + (_page * 10)) < clientResult.size(); i++)
       {
         entries.add(buildDtoUserinfoEntry(clientResult.get((i + (_page * 10)))));
       }
@@ -138,21 +139,42 @@ public class ApiCustomerController
   }
 
   @GetMapping("/serial/{serial}")
-  public Map<String, String> findBySerial(@PathVariable long serial)
+  public Map<String, String> findBySerial(@PathVariable long serial, HttpSession session)
   {
     log.debug("serial = {}", serial);
-    Map<String, String> result = byCardCache.get(serial, apiClientService :: findPersonBySerial);
+    Map<String, String> result = byCardCache.get(serial, apiClientService::findPersonBySerial);
     editResult(result);
     log.debug("findBySerial result = {}", result);
+
+    if(result != null && !result.isEmpty())
+    {
+      session.setAttribute("activeCustomer", result);
+      log.debug("Kunde {} in Session gespeichert", result.get("displayName"));
+      result.put("cardSerial", String.valueOf(serial));
+    }
+    else
+    {
+      session.removeAttribute("activeCustomer");
+      log.debug("Kein Kunde für serial={} gefunden, activeCustomer aus Session entfernt", serial);
+    }
     return result;
   }
 
   @GetMapping("/id/{customerId}")
-  public Map<String, String> findBySerial(@PathVariable String customerId)
+  public Map<String, String> findBySerial(@PathVariable String customerId, HttpSession session)
   {
     log.debug("customerId = {}", customerId);
-    Map<String, String> result = byUserIdCache.get(customerId, apiClientService :: findPersonById);
+    Map<String, String> result = byUserIdCache.get(customerId, apiClientService::findPersonById);
     editResult(result);
+
+    if(result != null && !result.isEmpty())
+    {
+      session.setAttribute("activeCustomer", result);
+      log.debug("Kunde{} (via Suche) in Session gespeichert", result.get("displayName"));
+    }else
+    {
+      session.removeAttribute("activeCustomer");
+    }
     return result;
   }
 

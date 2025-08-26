@@ -82,7 +82,7 @@
                   <tbody>
                     <tr th:each="transaction : ${transactions}">
                       <td>
-                        <span th:text="${#dates.format(transaction.tenant.createTimestamp, 'dd.MM.yyyy HH:mm')}"></span>
+                        <span th:text="${#dates.format(transaction.createTimestamp, 'dd.MM.yyyy HH:mm')}"></span>
                       </td>
                       <td>
                         <span th:text="${transaction.tenant.name}"></span>
