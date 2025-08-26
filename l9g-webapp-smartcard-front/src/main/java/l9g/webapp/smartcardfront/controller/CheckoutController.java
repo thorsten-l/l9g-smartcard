@@ -216,13 +216,23 @@ public class CheckoutController
     @AuthenticationPrincipal DefaultOidcUser principal,
     HttpSession session,
     @RequestParam("paymentType") String paymentType,
-    @RequestParam("givenAmount") double givenAmount,
+    @RequestParam("givenAmount") String givenAmountStr,
     @RequestParam("change") String changeStr,
     @RequestParam(value = "purpose", required = false) String purpose,
     @RequestParam(value = "cardSerial", required = false) String cardSerial,
     RedirectAttributes redirectAttributes
   )
   {
+    double givenAmount = 0.0;
+    try
+    {
+      givenAmount = Double.parseDouble(givenAmountStr.replace(",", "."));
+    }
+    catch(NumberFormatException e)
+    {
+      log.error("Fehler beim Parsen von givenAmount: {}", givenAmountStr, e);
+    }
+    
     Map<String, PosCartItem> cart = (Map<String, PosCartItem>) session.getAttribute("cart");
 
     if(cart == null || cart.isEmpty())
@@ -272,21 +282,20 @@ public class CheckoutController
     transaction.setPurpose(purpose);
 
     //Kundendaten von Karte holen
-      @SuppressWarnings("unchecked")
-      Map<String, String> customerData = (Map<String, String>)session.getAttribute("activeCustomer");
-      if(customerData != null)
-      {
-        log.debug("Kundendaten für Transaktion gefunden: {}", customerData);
-        transaction.setCustomerName(customerData.getOrDefault("sn", ""));
-        transaction.setCustomerEmail(customerData.getOrDefault("mail", ""));
-        transaction.setCustomerNumber(customerData.getOrDefault("soniaCustomerNumber", ""));
-        transaction.setCustomerCardSerial(cardSerial);
-      }
-      else
-      {
-        log.debug("Keine Kundendaten für Kartenserial {} gefunden", cardSerial);
-      }
-    
+    @SuppressWarnings("unchecked")
+    Map<String, String> customerData = (Map<String, String>) session.getAttribute("activeCustomer");
+    if(customerData != null)
+    {
+      log.debug("Kundendaten für Transaktion gefunden: {}", customerData);
+      transaction.setCustomerName(customerData.getOrDefault("sn", ""));
+      transaction.setCustomerEmail(customerData.getOrDefault("mail", ""));
+      transaction.setCustomerNumber(customerData.getOrDefault("soniaCustomerNumber", ""));
+      transaction.setCustomerCardSerial(cardSerial);
+    }
+    else
+    {
+      log.debug("Keine Kundendaten für Kartenserial {} gefunden", cardSerial);
+    }
 
     //Transaktion und Produkte speichern
     try

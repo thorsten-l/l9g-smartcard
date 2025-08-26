@@ -94,13 +94,13 @@
                         <span th:text="${transaction.cashier}"></span>
                       </td>
                       <td>
-                        <span th:text="${transaction.amount}"></span>
+                        <span th:text="${#numbers.formatDecimal(transaction.amount, 1, 'COMMA', 2, 'POINT')}"></span>
                       </td>
                       <td>
-                        <span th:text="${transaction.amountReceived}"></span>
+                        <span th:text="${#numbers.formatDecimal(transaction.amountReceived, 1, 'COMMA', 2, 'POINT')}"></span>
                       </td>
                       <td>
-                        <span th:text="${transaction.amountRefundet}"></span>
+                        <span th:text="${#numbers.formatDecimal(transaction.amountRefundet, 1, 'COMMA', 2, 'POINT')}"></span>
                       </td>
                       <td>
                         <span th:text="${transaction.currency}"></span>

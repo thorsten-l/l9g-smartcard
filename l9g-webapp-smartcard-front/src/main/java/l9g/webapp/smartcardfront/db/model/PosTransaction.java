@@ -60,7 +60,7 @@ public class PosTransaction extends PosUuidObject
   private String cashier;
 
   private double amount;
-
+ 
   @Column(name = "amount_received")
   private double amountReceived;
   
