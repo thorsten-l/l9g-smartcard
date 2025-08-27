@@ -1,36 +1,63 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const kasseButton = document.getElementById('kasse-button');
-  const mailInput = document.getElementById('mail');
-  
-  const customerInfoSelect = $('#customerInfo'); 
+(function () {
+  const HX_URL = '/posx/sales';
 
-  if (!kasseButton || !mailInput || customerInfoSelect.length === 0) {
-    console.error('Ein oder mehrere benötigte Elemente (Kasse-Button, Mail-Input, Customer-Select) wurden nicht gefunden.');
-    return;
+  function setButtonEnabled(btn, enabled) {
+    if (!btn) return;
+
+    if (enabled) {
+      btn.classList.remove('disabled'); // optisch
+      btn.removeAttribute('aria-disabled');
+      btn.setAttribute('hx-get', HX_URL);
+      // HTMX neu binden
+      if (window.htmx) {
+        htmx.process(btn);
+      }
+    } else {
+      btn.classList.add('disabled');
+      btn.setAttribute('aria-disabled', 'true');
+      btn.removeAttribute('hx-get');
+    }
+  }
+
+  function computeEnabled(mailEl) {
+    return !!(mailEl && mailEl.value && mailEl.value.trim() !== '');
   }
 
   function updateButtonState() {
-
-    setTimeout(function() {
-      if (mailInput.value.trim() !== '') {
-        kasseButton.classList.remove('disabled');
-        kasseButton.setAttribute('hx-get', '/posx/sales');
-      } else {
-        kasseButton.classList.add('disabled');
-        kasseButton.removeAttribute('hx-get');
-      }
-    }, 50);
+    const btn = document.getElementById('kasse-button');
+    const mailEl = document.getElementById('mail');
+    setButtonEnabled(btn, computeEnabled(mailEl));
   }
 
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('#kasse-button');
+    if (!btn) return;
 
-  customerInfoSelect.on('select2:select', updateButtonState);
-  
+    if (!btn.hasAttribute('hx-get')) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
 
-  customerInfoSelect.on('select2:clear', updateButtonState);
-  
+  if (window.jQuery) {
+    const $doc = jQuery(document);
+    $doc.on('select2:select select2:clear', '#customerInfo', function () {
+      setTimeout(updateButtonState, 0);
+    });
+  }
 
-  mailInput.addEventListener('input', updateButtonState);
+  document.addEventListener('htmx:afterSwap', updateButtonState);
+  document.addEventListener('htmx:afterSettle', updateButtonState);
 
+  let lastVal = null;
+  setInterval(function () {
+    const mailEl = document.getElementById('mail');
+    const current = mailEl ? mailEl.value : '';
+    if (current !== lastVal) {
+      lastVal = current;
+      updateButtonState();
+    }
+  }, 200);
 
-  updateButtonState();
-});
+  document.addEventListener('DOMContentLoaded', updateButtonState);
+})();
