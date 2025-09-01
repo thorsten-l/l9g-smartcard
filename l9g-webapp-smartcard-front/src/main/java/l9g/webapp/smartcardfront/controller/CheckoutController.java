@@ -232,7 +232,7 @@ public class CheckoutController
     {
       log.error("Fehler beim Parsen von givenAmount: {}", givenAmountStr, e);
     }
-    
+
     Map<String, PosCartItem> cart = (Map<String, PosCartItem>) session.getAttribute("cart");
 
     if(cart == null || cart.isEmpty())
@@ -290,7 +290,14 @@ public class CheckoutController
       transaction.setCustomerName(customerData.getOrDefault("sn", ""));
       transaction.setCustomerEmail(customerData.getOrDefault("mail", ""));
       transaction.setCustomerNumber(customerData.getOrDefault("soniaCustomerNumber", ""));
-      transaction.setCustomerCardSerial(cardSerial);
+
+      String serial = customerData.get("cardSerial");
+      if(serial == null)
+      {
+        serial = customerData.get("smartcardNumber");
+
+      }
+      transaction.setCustomerCardSerial(serial);
     }
     else
     {
