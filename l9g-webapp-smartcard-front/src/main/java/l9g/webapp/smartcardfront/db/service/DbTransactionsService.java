@@ -45,22 +45,22 @@ public class DbTransactionsService
   private final DbTenantService tenantService;
 
   private final PosTransactionsRepository posTransactionsRepository;
+
   private final PosTransactionProductsRepository posTransactionProductsRepository;
 
   public List<PosTransaction> ownerFindAllTransactions(
     HttpSession session, DefaultOidcUser principal)
   {
     Collection<? extends GrantedAuthority> authorities = principal.getAuthorities();
-    
+
     boolean isAccountant = authorities.stream()
-      .anyMatch(a -> a.getAuthority().equals("ROLE_POS_ACCOUNTANT"));
+      .anyMatch(a -> a.getAuthority().equals("ROLE_POS_ACCOUNTANT") || a.getAuthority().equals("ROLE_ADMIN"));
 
     if(isAccountant)
     {
       return posTransactionsRepository.findAll();
     }
 
-    
     PosTenant tenant = tenantService.checkTenantOwner(session, principal);
     if(tenant != null)
     {
@@ -69,20 +69,30 @@ public class DbTransactionsService
 
     return Collections.emptyList();
   }
-  
-@Transactional
-public PosTransaction saveTransaction(PosTransaction transaction)
-{
-  log.debug("Speicher Transaktion: {}", transaction);
-  return posTransactionsRepository.save(transaction);
-}
 
-@Transactional
-public PosTransactionProduct saveTransactionProduct(PosTransactionProduct transactionProduct)
-{
-  log.debug("Speichere Transaktions-Produkt: {}",transactionProduct );
-  return posTransactionProductsRepository.save(transactionProduct);
-}
+  public List<PosTransaction> findAllTransactionsByTenant(String tenantId)
+  {
+  
+    if(tenantId == null || tenantId.isBlank())
+    {
+      return Collections.emptyList();
+    }
+    return posTransactionsRepository.findAllByTenantId(tenantId);
+  }
+
+  @Transactional
+  public PosTransaction saveTransaction(PosTransaction transaction)
+  {
+    log.debug("Speicher Transaktion: {}", transaction);
+    return posTransactionsRepository.save(transaction);
+  }
+
+  @Transactional
+  public PosTransactionProduct saveTransactionProduct(PosTransactionProduct transactionProduct)
+  {
+    log.debug("Speichere Transaktions-Produkt: {}", transactionProduct);
+    return posTransactionProductsRepository.save(transactionProduct);
+  }
 
   /**
    * public PosProduct ownerGetProductById(

@@ -40,7 +40,7 @@
                   </thead>
                   <tbody>
                     <tr th:each="entry : ${categories}">
-                      <td th:text="${entry.name}"></td>
+                      <td th:text="${entry.name}"></td>        
                       <td th:text="#{${entry.hidden}}"></td>
                       <td class="text-nowrap">
                         <span th:unless="${entry.immutable}" th:remove="tag">

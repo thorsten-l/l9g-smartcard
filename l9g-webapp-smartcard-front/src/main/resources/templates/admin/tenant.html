@@ -35,14 +35,16 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th style="width: 70%"><span th:text="#{name}" th:remove="tags">name</span></th>
-                      <th style="width: 30%"><span th:text="#{shorthand}" th:remove="tags">shorthand</span></th>
+                      <th style="width: 40%"><span th:text="#{name}" th:remove="tags">name</span></th>
+                      <th style="width: 40%"><span th:text="#{address}" th:remove="tags">address</span></th>
+                      <th style="width: 20%"><span th:text="#{shorthand}" th:remove="tags">shorthand</span></th>
                       <th><span th:text="#{actions}" th:remove="tags">actions</span></th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="align-middle" th:each="entry : ${tenants}">
                       <td th:text="${entry.name}"></td>
+                      <td th:text="${entry.address?.name}"></td>
                       <td th:text="${entry.shorthand}"></td>
                       <td class="text-nowrap">
                         <span th:unless="${entry.immutable}" th:remove="tag">

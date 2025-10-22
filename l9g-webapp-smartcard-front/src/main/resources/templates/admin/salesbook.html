@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Salesbook</title>
+  <div th:replace="~{app/header::head}"></div>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <div th:replace="~{app/admin::header}"></div>
+    <div th:replace="~{app/sidebar::sidebar}"></div>
+
+    <main class="app-main">
+      <!-- Content Header -->
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="col-sm-6">
+            <h3 class="mb-0" th:text="#{sales_book}">Sales Page</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card card-primary card-outline mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0 flex-grow-1" th:text="#{sales_book}" style="font-weight: bold;">
+                Salesbook
+              </div>
+              
+              <a class="btn btn-primary"
+                 th:href="@{/admin/cashbook}"
+                 th:text="#{adminCashbook}">
+                 Zur Admin Seite
+              </a>
+            </div>
+
+            <!-- Filter Formular -->
+            <form hx-get="/posx/salesbook"
+                  hx-target="#salesbookTableContainer"
+                  hx-push-url="false"
+                  hx-trigger="submit"
+                  class="htmx-filter-form">
+              <div class="row g-3 align-items-end p-3">
+                <div class="col-md-6">
+                  <label class="form-label" th:text="#{period}">Zeitraum</label>
+                  <select class="form-select" name="quarter">
+                    <option value="in_total"
+                            th:text="#{in_total}"
+                            th:selected="${selectedQuarter == null or selectedQuarter == 'in_total'}">
+                            In total
+                    </option>
+                    <option value="1"
+                            th:text="#{1st_quarter}"
+                            th:selected="${selectedQuarter == '1'}">
+                            1st quarter
+                    </option>
+                    <option value="2"
+                            th:text="#{2nd_quarter}"
+                            th:selected="${selectedQuarter == '2'}">
+                            2nd quarter
+                    </option>
+                    <option value="3"
+                            th:text="#{3rd_quarter}"
+                            th:selected="${selectedQuarter == '3'}">
+                            3rd quarter
+                    </option>
+                    <option value="4"
+                            th:text="#{4th_quarter}"
+                            th:selected="${selectedQuarter == '4'}">
+                            4th quarter
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="pointOfSale" class="form-label" th:text="#{salesbook.pointOfSales}">Verkaufsstelle</label>
+                  <select class="form-select" name="pointOfSaleId">
+                    <option value="all"
+                            th:text="#{all_pointOfSales}"
+                            th:selected="${selectedPointOfSaleId == null or selectedPointOfSaleId == 'all'}">
+                            Alle
+                    </option>
+                    <option th:each="pos : ${pointOfSales}"
+                            th:value="${pos.name}"
+                            th:text="${pos.name}"
+                            th:selected="${selectedPointOfSaleId != null and selectedPointOfSaleId.equals(pos.name)}">
+                            POS
+                    </option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-primary" type="submit" th:text="#{filter}">Filtern</button>
+                  <button class="btn btn-secondary" type="button" onclick="resetSalesbookFilters()" th:text="#{reset}">Reset</button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Tabelle -->
+            <div class="card-body p-0">
+              <div class="table-responsive" id="salesbookTableContainer">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 6%;"><span th:text="#{salesbook.create_timestamp}">Datum</span></th>
+                      <th style="width: 6%;"><span th:text="#{salesbook.tenant}">Tenant</span></th>
+                      <th style="width: 6%;"><span th:text="#{salesbook.pointOfSales}">POS</span></th>
+                      <th style="width: 5%;"><span th:text="#{salesbook.cashier}">Cashier</span></th>
+                      <th style="width: 6%;"><span th:text="#{salesbook.amount}">Amount</span></th>
+                      <th style="width: 6%;"><span th:text="#{salesbook.amountReceived}">Received</span></th>
+                      <th style="width: 6%;"><span th:text="#{salesbook.amountRefundet}">Refunded</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.currency}">Currency</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.customerName}">Customer</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.customerNumber}">Customer Nr</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.customerCardSerial}">Card Serial</span></th>
+                      <th style="width: 6%;"><span th:text="#{salesbook.paymentType}">Payment</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.purpose}">Purpose</span></th>
+                      <th style="width: 5%;"><span th:text="#{salesbook.status}">Status</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.sumupUser}">SumUp User</span></th>
+                      <th style="width: 7%;"><span th:text="#{salesbook.sumupTransactionId}">SumUp Tx</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="transaction : ${transactions}">
+                      <td><span th:text="${#dates.format(transaction.createTimestamp, 'dd.MM.yyyy HH:mm')}"></span></td>
+                      <td><span th:text="${transaction.tenant.name}"></span></td>
+                      <td><span th:text="${transaction.pointOfSales.name}"></span></td>
+                      <td><span th:text="${transaction.cashier}"></span></td>
+                      <td><span th:text="${#numbers.formatDecimal(transaction.amount, 1, 'COMMA', 2, 'POINT')}"></span></td>
+                      <td><span th:text="${#numbers.formatDecimal(transaction.amountReceived, 1, 'COMMA', 2, 'POINT')}"></span></td>
+                      <td><span th:text="${#numbers.formatDecimal(transaction.amountRefundet, 1, 'COMMA', 2, 'POINT')}"></span></td>
+                      <td><span th:text="${transaction.currency}"></span></td>
+                      <td><span th:text="${transaction.customerName}"></span></td>
+                      <td><span th:text="${transaction.customerNumber}"></span></td>
+                      <td><span th:text="${transaction.customerCardSerial}"></span></td>
+                      <td><span th:text="${transaction.paymentType}"></span></td>
+                      <td><span th:text="${transaction.purpose}"></span></td>
+                      <td><span th:text="${transaction.status}"></span></td>
+                      <td><span th:text="${transaction.sumupUser}"></span></td>
+                      <td><span th:text="${transaction.sumupTransactionId}"></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </main>
+  </div>
+    <script th:replace="~{app/admin::scripts}" th:remove="tag"/>
+</body>
+</html>

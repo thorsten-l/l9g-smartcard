@@ -16,6 +16,9 @@
 package l9g.webapp.smartcardfront.db.service;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import l9g.webapp.smartcardfront.db.PosCategoriesRepository;
 import l9g.webapp.smartcardfront.db.PosTenantsRepository;
 import l9g.webapp.smartcardfront.db.model.PosCategory;
@@ -27,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -199,5 +203,20 @@ public class DbTenantService
   public PosTenant getSystemTenant()
   {
     return posTenantsRepository.findByName(DbService.KEY_SYSTEM_TENANT).get();
+  }
+  
+  public List<PosTenant> getAllTenants(HttpSession session, DefaultOidcUser principal)
+  {
+   Collection<? extends GrantedAuthority> authorities = principal.getAuthorities();
+    
+    boolean isAccountant = authorities.stream()
+      .anyMatch(a -> a.getAuthority().equals("ROLE_POS_ACCOUNTANT")|| a.getAuthority().equals("ROLE_POS_ADMINISTRATOR"));
+
+    if(isAccountant)
+    {
+    return posTenantsRepository.findAll();
+    }
+    
+    return Collections.emptyList();
   }
 }
